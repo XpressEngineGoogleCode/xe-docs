@@ -215,82 +215,120 @@ class xedocsModel extends xedocs {
 	function make_parents_links( $parents , $module_srl)
 	{
 		$site_module_info = Context::get('site_module_info');
-		
+
 		foreach($parents as $parent){
 			$url = getSiteUrl($site_module_info->document, '', 'document_srl',$parent->document_srl);
-			$parent->{'href'} = $url;	
+			$parent->{'href'} = $url;
 		}
 	}
-	
+
 	function getParents($document_srl, $module_srl)
 	{
 		$parents = $this->buildParents($document_srl, $module_srl);
 		$this->make_parents_links($parents, $module_srl);
 		return $parents;
 	}
-	
-	
+
+
+	//	function buildParents($document_srl, $module_srl){
+	//		$args->module_srl = $module_srl;
+	//		$output = executeQueryArray('xedocs.getTreeList', $args);
+	//
+	//		if(!$output->data || !$output->toBool()){
+	//			return array();
+	//		}
+	//
+	//		$list = array();
+	//
+	//		foreach($output->data as $node) {
+	//
+	//			if($node->title == 'Introduction to CUBRID Manual') {
+	//				$home_doc_srl= (int)$node->document_srl;
+	//			}
+	//
+	//			unset($obj);
+	//			$obj->document_srl = (int)$node->document_srl;
+	//			$obj->title = $node->title;
+	//
+	//			if($node->title == 'Front Page') {
+	//				$obj->parent_srl = 0;
+	//				$list[$obj->document_srl] = $obj;
+	//				continue;
+	//			}
+	//
+	//			$obj->parent_srl = (int)$node->parent_srl;
+	//			$list[$obj->document_srl] = $obj;
+	//		}
+	//
+	//		//get parents for document_srl
+	//		$result = array();
+	//		$doc_srl = $document_srl;
+	//
+	//		while(0 < $doc_srl){
+	//			$node = $list($doc_srl);
+	//			$result[] = $node;//add parent_srl
+	//			$doc_srl = $node->parent_srl;//check for parent_srl
+	//		}
+	////
+	////		$home = $list($home_doc_srl);
+	////		$home->title = "Home";
+	////		$result[] = $home;
+	//
+	//		return $result;
+	//	}
+
 	function buildParents($document_srl, $module_srl)
 	{
 
-		//get all nodes
-		$args->module_srl = $module_srl;
-		$output = executeQueryArray('xedocs.getTreeList', $args);
-
-		if(!$output->data || !$output->toBool()){
-			return array();
-		}
-
-		//get document and parent
-		$list = array();
-		$root = null;
-		foreach($output->data as $node) {
-				
-			unset($obj);
-			$obj->document_srl = (int)$node->document_srl;
-			$obj->title = $node->title;
-
-//			if($node->title == 'Introduction to CUBRID'){
-//				$obj->parent_srl =(int)$node->parent_srl;
-//				$root = $obj;
-//			}
-			if($node->title == 'Front Page') {
-				$obj->parent_srl = 0;
-				$list[$obj->document_srl] = $obj;
-				continue;
-			}else{
-				$obj->parent_srl = (int)$node->parent_srl;
-				$list[$obj->document_srl] = $obj;
-			}
-		}
 		//get parents for document_srl
 		$result = array();
 		$doc_srl = $document_srl;
+		//get all nodes in a list
+		$list[] = $this->readXedocsTreeCache($module_srl);
 
-		while($doc_srl){
-			$result[] = $list[$doc_srl];//add parent_srl
-			$doc_srl = $list[$doc_srl]->parent_srl;//check for parent_srl
+		while(0 < $doc_srl){
+			$node = $this->getNode($list, $doc_srl);
+			$result[] = $node;//add parent_srl
+			$doc_srl = $node->parent_srl;//check for parent_srl
 		}
-			
-//		$result[] = $root;
-//		
-//	$list2[] = $this->loadXedocsTreeCache($module_srl);
-//		//get parents for document_srl
-//		$result = array();
-//		$doc_srl = $document_srl;
-//
-//		foreach($list as $node){
-//			if($doc_srl == $node->docment_srl){
-//				$result[] = $list[$doc_srl];//add parent_srl
-//			}
-//		}
-//		while(0 < $doc_srl){
-//			$result[] = $list[$doc_srl];//add parent_srl
-//			$doc_srl = $list[$doc_srl]->parent_srl;//check for parent_srl
-//		}
-//			
-
+		$result[] = $this->getHomeNode($list);
 		return $result;
 	}
+
+	function getHomeNode($list){
+		foreach($list as $node => $ns){
+			foreach($ns as $n =>$val){
+
+				if($val->title == 'Introduction to CUBRID Manual'){
+					unset($obj);
+					$obj->parent_srl =  0;
+					$obj->document_srl = $val->document_srl;
+					$obj->title = 'Home';
+					return $obj;
+				}
+
+			}
+
+		}
+	}
+
+	function getNode($list, $doc_srl){
+		foreach($list as $node => $ns){
+			foreach($ns as $n =>$val){
+
+				$document_srl = $val->document_srl;
+				if($doc_srl == $document_srl){
+
+					unset($obj);
+					$obj->parent_srl =  $val->parent_srl;
+					$obj->document_srl = $document_srl;
+					$obj->title = $val->title;
+					return $obj;
+				}
+			}
+
+		}
+	}
+
 }
 ?>

@@ -73,58 +73,57 @@
 	{@ $divid=0; }
 	{@ $n=0; }
 			<ul>
-				<!--@foreach($list as $key => $val)-->
-				{@ $n++; }
-				<!--@if($_pDepth > $val->depth)-->
-				<!--@for($i=$val->depth; $i<$_pDepth; $i++)-->
-			</ul>
-	
+	<!--@foreach($list as $key => $val)-->
+		{@ $n++; }
+		<!--@if($_pDepth > $val->depth)-->
+			<!--@for($i=$val->depth; $i<$_pDepth; $i++)-->
+				
+				</ul>
+				</li>
+				
+			<!--@end-->
+		
+			{@ $_pDepth = $val->depth}
+		<!--@end-->
+		<li>
+		<!--@if(!$val->childs)-->
+                 <a href="{getSiteUrl($site_module_info->domain, '','mid',$mid,'document_srl',$val->document_srl)}&act=dispXedocsContent" onclick="show_content(this); return false;" >{$val->title} </a>
+                 {@ $_pDepth = $val->depth}
+		<!--@end-->
+		<!--   $_pDepth={$_pDepth}  $val->depth={$val->depth} -->
+			
+			<!--@if($val->childs)-->
+				<!--@if($n==1)-->
+					<div id="e{$divid}" onclick="hidediv('{$divid}');" style='display:inline; margin:0.5px; width:10px;  '>-
+	                </div>
+					<a href="{getSiteUrl($site_module_info->domain, '','mid',$mid,'document_srl',$val->document_srl)}&act=dispXedocsContent" onclick="show_content(this); return false;" >{$val->title}</a>
+					
+	                <div id="{$divid}"  >
+              
+              		 <!--@else-->
+	                <div id="e{$divid}" onclick="showdiv('{$divid}');" style='display:inline; margin:0.5px; width:10px;  '>+
+		                </div>					
+						
+	                <a href="{getSiteUrl($site_module_info->domain, '','mid',$mid,'document_srl',$val->document_srl)}&act=dispXedocsContent" onclick="show_content(this); return false;" >{$val->title}</a>
+					
+	                <div id="{$divid}" style="visibility:hidden; display:none;" >
+               <!--@end-->
+			
+				{@$_pDepth++; $divid++;}
+				<ul>
+			<!--@else-->
 			</li>
 			<!--@end-->
-			{@ $_pDepth = $val->depth}
-			<!--@end-->
-			<li>
-			<!--@if(!$val->childs)-->
-	                 <a href="{getSiteUrl($site_module_info->domain, '','mid',$mid,'document_srl',$val->document_srl)}&act=dispXedocsContent" onclick="show_content(this); return false;" >{$val->title} </a>
-			<!--@end-->
-			<!--   $_pDepth={$_pDepth}  $val->depth={$val->depth} -->
+		<!--@end-->
+		<!--@for($i=0;$i<$_pDepth;$i++)-->
+				</ul>
+         	  </div>
+          	  
+	    <!--@end-->
 				
-				<!--@if($val->childs)-->
-					<!--@if($n==2)-->
-						<div id="e{$divid}" onclick="hidediv('{$divid}');" style='display:inline; margin:0.5px; width:10px;  '>-
-		                </div>
-						<a href="{getSiteUrl($site_module_info->domain, '','mid',$mid,'document_srl',$val->document_srl)}&act=dispXedocsContent" onclick="show_content(this); return false;" >{$val->title}</a>
-						
-		                <div id="{$divid}"  >
-	              
-               		 <!--@else-->
-		                <div id="e{$divid}" onclick="showdiv('{$divid}');" style='display:inline; margin:0.5px; width:10px;  '>+
-			                </div>					
-							
-		                <a href="{getSiteUrl($site_module_info->domain, '','mid',$mid,'document_srl',$val->document_srl)}&act=dispXedocsContent" onclick="show_content(this); return false;" >{$val->title}</a>
-						
-		                <div id="{$divid}" style="visibility:hidden; display:none;" >
-	               <!--@end-->
-				
-						{@$_pDepth++; $divid++;}
-						<ul>
-							<!--@else-->
-							</li>
-							<!--@end-->
-							<!--@end-->
-							<!--@for($i=0;$i<$_pDepth;$i++)-->
-						</ul>
-             	  </div>
-	             	  
-			    <!--@end-->
-					
+	</li>
+	</ul>	
 		
-		
-		
-		</li>
-		</ul>
-
-
 
     <!--@if($grant->write_document)-->
     <div class="treeUI">
@@ -136,7 +135,7 @@
     <!--@end-->
 
 
-</div>
+
 
 
 

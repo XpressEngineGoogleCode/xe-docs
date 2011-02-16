@@ -4,37 +4,37 @@ $_debug_enable = false;
 
 function debug_syslog($level, $msg)
 {
-	syslog($level, $msg);
+	//syslog($level, $msg)
 }
 
 function get_resource_contents($stream)
 {
 
 	//return stream_get_contents($stream);
-	
-	
-	
+
+
+
 	$contents = '';
-	
-	$fp = $stream ;  
-	
+
+	$fp = $stream ;
+
 	if(!$fp){
 		//return stream_get_contents($stream);
 
 		exit("get_resource_contents failed\n");
 	}
-	
-	
+
+
 	while (!feof($fp)) {
-		
+
 		$contents .= fread($fp, 2);
-		
+
 	}
-	
+
 	fclose($fp);
 	return $contents;
-	
-	
+
+
 }
 
 
@@ -161,23 +161,23 @@ class TocTreeBuilder{
 			return false;
 		}
 		if( 0 != strcmp('', $relpath) ){
-			return $this->get_file_content($relpath);	
-			
+			return $this->get_file_content($relpath);
+				
 		}
 
 		return $this->get_child_list_content($toc_node);
 
-		
+
 	}
-	
+
 
 
 	function get_child_list_content($toc_node){
 
 		$content = "<h2>".$toc_node->name." </h2><ul>";
-		
+
 		foreach($toc_node->children as $i => $child){
-			$content .= "<li><a href=\"".$child->relpath."\" >". htmlspecialchars($child->name)." </a></li>"; 
+			$content .= "<li><a href=\"".$child->relpath."\" >". htmlspecialchars($child->name)." </a></li>";
 		}
 
 		$content .= "</ul>";
@@ -185,7 +185,7 @@ class TocTreeBuilder{
 		return $content;
 	}
 
-	
+
 	function getFile($fname, $name)
 	{
 

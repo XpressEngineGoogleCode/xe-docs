@@ -461,11 +461,6 @@ class ContentBuilderTocProcessor extends TocProcessor
 			$hasname= true;
 		}
 
-//		$idx1 = (int)strpos($element->href, '/');
-//		if( false != $idx1){
-//			$file = substr($element->href, $idx1+1);
-//			$element->href = $file;
-//		}
 
 		debug_syslog(1, "resolve_single_link ".$element->href."\n");
 
@@ -657,7 +652,7 @@ class ContentBuilderTocProcessor extends TocProcessor
 		$args->{'parent_srl'} = $toc_node->parent->document_srl;
 		$args->{'target_srl'} = $toc_node->parent->document_srl;
 		$args->{'source_srl'} = $toc_node->document_srl;
-		$args->module_srl     =  $this->module_srl;
+		$args->module_srl     = $this->module_srl;
 		$args->title 	      = $toc_node->name;
 
 		$output = executeQuery('xedocs.insertTreeNode',$args);
