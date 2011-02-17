@@ -8,9 +8,7 @@
        div = document.getElementById(id);
        div.style.visibility="visible";
        div.style.display="block";
-       var id = div.id
- 
-;
+       var id = div.id;
        div = document.getElementById('e'+id);
 
        div.innerHTML = div.innerHTML.replace('+', '-');
@@ -26,9 +24,7 @@
        div.style.visibility="hidden";
        div.style.display="none";
        var id = div.id;
-
        div = document.getElementById('e'+id);
-
        div.innerHTML = div.innerHTML.replace('-', '+');
        div.onclick=function() { eval("showdiv('"+ id+ "');"); };
 
@@ -133,11 +129,6 @@
 	-->
     </div>
     <!--@end-->
-
-
-
-
-
 
 </div>
 
