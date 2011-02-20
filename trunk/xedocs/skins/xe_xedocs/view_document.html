@@ -26,10 +26,15 @@
 	<div class="wikiReadFooter">
 		<div class="wikiNavigation">
 		<!--@if($oDocumentPrev)-->
-			<a href="{$oDocumentPrev->getPermanentUrl()}&act=dispXedocsContent" class="wikiPrev">&laquo; {$oDocumentPrev->getTitle()}</a>
+			<!--  <a href="{$oDocumentPrev->getPermanentUrl()}&act=dispXedocsContent" class="wikiPrev">&laquo; {$oDocumentPrev->getTitle()}</a>
+			-->
+			<a href="./?document_srl={$oDocumentPrev->document_srl}&act=dispXedocsContent" class="wikiPrev">&laquo; {$oDocumentPrev->getTitle()}</a>
 		<!--@end-->
 		<!--@if($oDocumentNext)-->
+			<!-- 
 			<a href="{$oDocumentNext->getPermanentUrl()}&act=dispXedocsContent" class="wikiNext">{$oDocumentNext->getTitle()} &raquo;</a>
+			-->
+			<a href="./?document_srl={$oDocumentNext->document_srl}&act=dispXedocsContent" class="wikiNext">{$oDocumentNext->getTitle()} &raquo;</a>
 		<!--@end-->
 		</div>
 
@@ -59,20 +64,29 @@
 		<!--@end-->
         
         <!--@if(!$oDocument->getTrackbackCount())-->
-		<dl class="trackbackURL">
-			<dt>{$lang->trackback} : </dt>
-			<dd><a href="{$oDocument->getTrackbackUrl()}" onclick="return false;">{$oDocument->getTrackbackUrl()}</a></dd>
-		</dl>
+	    <!--
+	    	<dl class="trackbackURL" style='visibility:hidden;'>
+				<dt>{$lang->trackback} : </dt>
+				<dd><a href="{$oDocument->getTrackbackUrl()}" onclick="return false;">{$oDocument->getTrackbackUrl()}</a></dd>
+			</dl>
+		-->
         <!--@end-->
 		
         <!--@if($contributors)-->
-    <div style='visibility:hidden;'>
+
+   <div style='visibility:hidden;'>
 		<dl class="contributors">
 			<dt>{$lang->contributors} : </dt>
-			<dd><!--@foreach($contributors as $key => $val)--><a href="#" class="member_{$val->member_srl}" onclick="return false;">{$val->nick_name}</a><!--@if($key<count($contributors)-1)-->, <!--@end--><!--@end--></dd>
+			<dd>
+			<!--@foreach($contributors as $key => $val)-->
+				<a href="#" class="member_{$val->member_srl}" onclick="return false;">
+					{$val->nick_name}</a>
+			<!--@if($key<count($contributors)-1)-->, <!--@end--><!--@end-->
+		</dd>
 		</dl>
+		</div>
         <!--@end-->
-</div>
+
 	</div>
 
 </div>

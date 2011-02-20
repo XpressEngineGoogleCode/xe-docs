@@ -49,7 +49,7 @@
     <div class="wikiRead">
         <div class="wikiReadHeader">
             <div class="titleArea">
-     	
+     		 <div style='visibility:hidden;'>
 	        
   
                 <h3 class="title"> 
@@ -72,9 +72,9 @@
                     </span>
                 </span>
             </div>
-
+	</div>
     <!--@if($visit_log)-->
-    <div class="visitLog">
+    <div class="visitLog" >
         {@ $bFirst = true; }
         <!--@foreach($visit_log as $_entry)-->
             <!--@if(!$bFirst)--> > <!--@else-->{@ $bFirst = false; }<!--@end--> <a href="{getUrl('entry',$_entry,'document_srl','')}">{$_entry}</a>

@@ -217,7 +217,8 @@ class xedocsModel extends xedocs {
 		$site_module_info = Context::get('site_module_info');
 
 		foreach($parents as $parent){
-			$url = getSiteUrl($site_module_info->document, '', 'document_srl',$parent->document_srl);
+			//$url = getSiteUrl($site_module_info->document, '', 'document_srl',$parent->document_srl);
+			$url = "./?document_srl=".$parent->document_srl;
 			$parent->{'href'} = $url;
 		}
 	}
@@ -230,53 +231,7 @@ class xedocsModel extends xedocs {
 	}
 
 
-	//	function buildParents($document_srl, $module_srl){
-	//		$args->module_srl = $module_srl;
-	//		$output = executeQueryArray('xedocs.getTreeList', $args);
-	//
-	//		if(!$output->data || !$output->toBool()){
-	//			return array();
-	//		}
-	//
-	//		$list = array();
-	//
-	//		foreach($output->data as $node) {
-	//
-	//			if($node->title == 'Introduction to CUBRID Manual') {
-	//				$home_doc_srl= (int)$node->document_srl;
-	//			}
-	//
-	//			unset($obj);
-	//			$obj->document_srl = (int)$node->document_srl;
-	//			$obj->title = $node->title;
-	//
-	//			if($node->title == 'Front Page') {
-	//				$obj->parent_srl = 0;
-	//				$list[$obj->document_srl] = $obj;
-	//				continue;
-	//			}
-	//
-	//			$obj->parent_srl = (int)$node->parent_srl;
-	//			$list[$obj->document_srl] = $obj;
-	//		}
-	//
-	//		//get parents for document_srl
-	//		$result = array();
-	//		$doc_srl = $document_srl;
-	//
-	//		while(0 < $doc_srl){
-	//			$node = $list($doc_srl);
-	//			$result[] = $node;//add parent_srl
-	//			$doc_srl = $node->parent_srl;//check for parent_srl
-	//		}
-	////
-	////		$home = $list($home_doc_srl);
-	////		$home->title = "Home";
-	////		$result[] = $home;
-	//
-	//		return $result;
-	//	}
-
+	
 	function buildParents($document_srl, $module_srl)
 	{
 

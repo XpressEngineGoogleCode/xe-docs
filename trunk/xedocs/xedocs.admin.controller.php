@@ -299,8 +299,8 @@ class ContentBuilderTocProcessor extends TocProcessor
 	{
 
 		if( !isset($document_srl) ) return false;
-
-		return "/xe/?module_srl=".$this->module_srl."&document_srl=".$document_srl."&act=dispXedocsContents";
+		
+		return "./?module_srl=".$this->module_srl."&document_srl=".$document_srl."&act=dispXedocsContents";
 	}
 
 	function resolve_links($toc_node)

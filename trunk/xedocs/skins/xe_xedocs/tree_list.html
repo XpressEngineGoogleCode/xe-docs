@@ -83,7 +83,7 @@
 		<!--@end-->
 		<li>
 		<!--@if(!$val->childs)-->
-                 <a href="{getSiteUrl($site_module_info->domain, '','mid',$mid,'document_srl',$val->document_srl)}&act=dispXedocsContent" onclick="show_content(this); return false;" >{$val->title} </a>
+                 <a href="./?mid={$mid}&amp;document_srl={$val->document_srl}&amp;act=dispXedocsContent" onclick="show_content(this); return false;" >{$val->title} </a>
                  {@ $_pDepth = $val->depth}
 		<!--@end-->
 		<!--   $_pDepth={$_pDepth}  $val->depth={$val->depth} -->
@@ -92,7 +92,7 @@
 				<!--@if($n==1)-->
 					<div id="e{$divid}" onclick="hidediv('{$divid}');" style='display:inline; margin:0.5px; width:10px;  '>-
 	                </div>
-					<a href="{getSiteUrl($site_module_info->domain, '','mid',$mid,'document_srl',$val->document_srl)}&act=dispXedocsContent" onclick="show_content(this); return false;" >{$val->title}</a>
+					<a href="./?mid={$mid}&amp;document_srl={$val->document_srl}&amp;act=dispXedocsContent" onclick="show_content(this); return false;" >{$val->title}</a>
 					
 	                <div id="{$divid}"  >
               
@@ -100,7 +100,7 @@
 	                <div id="e{$divid}" onclick="showdiv('{$divid}');" style='display:inline; margin:0.5px; width:10px;  '>+
 		                </div>					
 						
-	                <a href="{getSiteUrl($site_module_info->domain, '','mid',$mid,'document_srl',$val->document_srl)}&act=dispXedocsContent" onclick="show_content(this); return false;" >{$val->title}</a>
+	                <a href="./?mid={$mid}&amp;document_srl={$val->document_srl}&amp;act=dispXedocsContent" onclick="show_content(this); return false;" >{$val->title}</a>
 					
 	                <div id="{$divid}" style="visibility:hidden; display:none;" >
                <!--@end-->
