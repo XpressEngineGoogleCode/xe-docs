@@ -60,6 +60,10 @@
   overflow:auto;
 }
 
+.xedocstreenode {
+clear: both;
+}
+
 </style>
 
 <div id="selection-scroll" class="scroll-pane" >
@@ -68,7 +72,7 @@
 	{@ $_pDepth = 0;}
 	{@ $divid=0; }
 	{@ $n=0; }
-			<ul>
+			<ul class="xedocstree">
 	<!--@foreach($list as $key => $val)-->
 		{@ $n++; }
 		<!--@if($_pDepth > $val->depth)-->
@@ -81,7 +85,7 @@
 		
 			{@ $_pDepth = $val->depth}
 		<!--@end-->
-		<li>
+		<li class="xedocstreenode">
 		<!--@if(!$val->childs)-->
                  <a href="./?mid={$mid}&amp;document_srl={$val->document_srl}&amp;act=dispXedocsContent" onclick="show_content(this); return false;" >{$val->title} </a>
                  {@ $_pDepth = $val->depth}
@@ -106,7 +110,7 @@
                <!--@end-->
 			
 				{@$_pDepth++; $divid++;}
-				<ul>
+				<ul class="xedocstree">
 			<!--@else-->
 			</li>
 			<!--@end-->
