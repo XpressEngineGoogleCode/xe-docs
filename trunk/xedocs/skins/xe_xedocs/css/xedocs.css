@@ -450,3 +450,7 @@ a.buttonOfficial a{ _vertical-align:top;}
 .visitLog a { color:#AAA; text-decoration:underline; }
 
 .wiki a.inlink { text-decoration:underline; color:green; }
+
+h1, .h1, h2, h3, #xe h4, h5, h6, #xe p, ul, ol, #content li, .widgetTree, .widgetTree li, .video_thumb, .heading_menu, .description, table, table.col4 tr, table.col4 td, .category, .left, #xe .gap1, .contents-table li, .contents-table, .cubrid-tweets, .cubrid-tweets ul, .cubrid-tweets li, .rrt-author-img, .code, #slider-nav span, #xe dl, #xe dd, #footer, #footer_left_container, .app, .applogo, #xe .summary, #footer div, div.important, #cubrid-share {
+	float:none;
+}
