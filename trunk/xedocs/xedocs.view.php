@@ -247,7 +247,7 @@ class xedocsView extends xedocs {
 				}
 
 				$content = $oDocument->getContent(false);
-				$content = preg_replace_callback("!\[([^\]]+)\]!is", array( $this, 'callback_xedocslink' ), $content );
+				//$content = preg_replace_callback("!\[([^\]]+)\]!is", array( $this, 'callback_xedocslink' ), $content );
 				$oDocument->add('content', $content);
 
 
