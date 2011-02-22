@@ -92,6 +92,9 @@ class xedocsAdminController extends xedocs {
 		$this->setMessage('success_deleted');
 	}
 
+	function procXedocsAdminCompileVersion(){
+
+	}
 
 
 	function procXedocsAdminImportArchive()
@@ -220,7 +223,7 @@ class xedocsAdminController extends xedocs {
 		$processor->set_second_pass();
 
 		$walker->walk($toc, $processor);
-		debug_syslog(1, "second pass walk complete\n");
+		syslog(1, "second pass walk complete\n");
 
 		$builder->remove_archive();
 
@@ -251,6 +254,7 @@ class ContentBuilderTocProcessor extends TocProcessor
 	var $msg_code;
 	var $docid;
 	var $node_paths = array();
+	var $not_navigable = array();
 	var $second_pass=false;
 	public $controller;
 
@@ -299,7 +303,7 @@ class ContentBuilderTocProcessor extends TocProcessor
 	{
 
 		if( !isset($document_srl) ) return false;
-		
+
 		return "./?module_srl=".$this->module_srl."&document_srl=".$document_srl."&act=dispXedocsContents";
 	}
 
@@ -422,18 +426,59 @@ class ContentBuilderTocProcessor extends TocProcessor
 
 	function resolve_single_link($toc_node, $element, $changed)
 	{
+		if( 0 == strcmp('', trim($element->href)))  //empty link
+		{
+			return $this->resolve_empty_link($toc_node, $element, $changed);
+		}
+	
+		return $this->resolve_full_link($toc_node, $element, $changed);
+	}
+
+	function resolve_empty_link($toc_node, $element, $changed)
+	{
+		
+		//empty links may be resoved in $not_navigable
+		
+		$title = trim($element->plaintext);
+		syslog(1, "resolving: ". $title."in [".$toc_node->name."]\n");
+		if( isset($this->not_navigable[$title]) ){
+			$referred_toc = $this->not_navigable[$title];
+			syslog(1, "  referred_doc=".$referred_toc->name." \n");
+			$reffered_srl = $referred_toc->document_srl;
+
+			$new_link = $this->get_document_link($reffered_srl);
+
+			if(!$new_link) return $changed;
+
+			debug_syslog(1, " replace link for ".$toc_node->name."\n");
+			debug_syslog(1, "    from:  ".$element->href."\n");
+			debug_syslog(1, "      to:  ".$new_link."\n");
+
+			$element->href = $new_link;
+			return true;
+
+		}else{
+			syslog(1, " key: ". $title." is not in not_navigable\n");
+		}
+		
+		return $changed;
+
+	}
+
+	function resolve_full_link($toc_node, $element, $changed)
+	{
 		//assumes that $element href is a relative archive link
 		$link  = $element->href;
 
 		debug_syslog(1, "link=|".$element->href."| resolve toc_node.relpath=[".$toc_node->relpath."]\n");
 
 		if( !isset($element->href)                    //no link
-		|| 0 == strcmp('', trim($element->href))  //empty link
 		|| startsWith($element->href, "#") )      //name link
 		{
 
 			return $changed;
 		}
+
 
 
 		if( startsWith($element->href, "./")
@@ -522,9 +567,9 @@ class ContentBuilderTocProcessor extends TocProcessor
 
 		set_time_limit(0);
 		try{
-				
+
 			$output = $oDocumentController->updateDocument($oDocument, $obj);
-				
+
 		}catch(Exception $w){
 			debug_syslog(1, "Exception: ".$w->getMessage()."\n");
 		}
@@ -676,7 +721,13 @@ class ContentBuilderTocProcessor extends TocProcessor
 		$oDocumentModel = $this->controller->getModel('document');
 		$oDocumentController = $this->controller->getController('document');
 
-		if( false != ($idx = strpos($toc_node->relpath, "#")) ){
+		if ( 0 == strcmp('', trim($toc_node->relpath)) ) //a not navigable node
+		{
+			$this->not_navigable[$toc_node->name] = $toc_node;
+			
+			syslog(1, "not navigable ".$toc_node->name."\n");
+		}		
+		else if( false != ($idx = strpos($toc_node->relpath, "#")) ){
 
 			$toc_node->rel_name = substr($toc_node->relpath, 1+$idx);
 			$toc_node->relpath = substr($toc_node->relpath, 0, $idx);
@@ -693,7 +744,7 @@ class ContentBuilderTocProcessor extends TocProcessor
 			}
 		}
 
-
+	
 
 
 		$obj = NULL;

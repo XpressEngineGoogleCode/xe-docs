@@ -46,6 +46,7 @@
   margin-right:2px;
   padding-bottom:20px;
   }
+  
 #foo{
   width:68%;
   height:800px;
@@ -64,11 +65,25 @@
 clear: both;
 }
 
+.tools{
+ 	with:200px; 
+
+    border-color:gray;
+    
+    border-width:2px;
+    
+    border-style:inset;
+
+}
+
 </style>
 
-<div id="selection-scroll" class="scroll-pane" >
+  <div class="treeUI" style='width:25px;display:block;' >
+      <p id='eselection-scroll' style="width:20px;text-align=center;" onclick="hidediv1('selection-scroll'); return false;" class="button"><span>-</span></p>
+  </div>
 
-	<div id="treeList" class="leftcontent" >
+<div id="selection-scroll" class="scroll-pane" >
+	<div id="treeList" class="leftcontent" style="background:silver; border-style:inset; border-width:1px;">
 	{@ $_pDepth = 0;}
 	{@ $divid=0; }
 	{@ $n=0; }
@@ -124,15 +139,15 @@ clear: both;
 	</li>
 	</ul>	
 		
-
     <!--@if($grant->write_document)-->
-    <div class="treeUI">
+    <div class="treeUI" style='float:right;'>
         <a href="{getUrl('act','dispXedocsModifyTree')}" class="button"><span>{$lang->cmd_modify}</span></a>
 	<!--
 	        <a href="#" class="button" onclick="doRecompileTree(); return false;"><span>{$lang->cmd_remake_cache}</span></a>
 	-->
     </div>
     <!--@end-->
+
 
 </div>
 

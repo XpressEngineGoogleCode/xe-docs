@@ -2,7 +2,6 @@
 
 
 
-
 class xedocsAdminView extends xedocs {
 
 	function init()
@@ -99,6 +98,11 @@ class xedocsAdminView extends xedocs {
 		$this->setTemplateFile('manual_insert');
 
 	}
+	
+	
+	function dispXedocsAdminCompileVersion(){
+		$this->setTemplateFile("compile_version_labels");
+	}
 
 	function dispXedocsAdminImportManual()
 	{
@@ -167,10 +171,10 @@ class xedocsAdminView extends xedocs {
 
 		try{
 			$tw = new TocWalker();
-				
+
 			$p = new ArrayTocProcessor();
-				
-				
+
+
 			foreach($config as $i => $man ){
 				debug_syslog(1, "Walking ".$man->name." count_roots= ".count($man->root)."\n");
 
@@ -179,7 +183,7 @@ class xedocsAdminView extends xedocs {
 				}
 
 			}
-				
+
 			debug_syslog(1, "There are ". count($p->nodes)." toc nodes\n");
 
 			return $p->nodes;
@@ -187,7 +191,7 @@ class xedocsAdminView extends xedocs {
 			$nodes = array();
 			$nodes[] = $w->getMessage();
 			debug_syslog(1, $w->getMessage());
-				
+
 		}
 		return $nodes;
 

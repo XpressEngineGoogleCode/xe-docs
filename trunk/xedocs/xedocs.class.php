@@ -1,10 +1,9 @@
 <?php
 
-$_debug_enable = false;
 
 function debug_syslog($level, $msg)
 {
-	//syslog($level, $msg)
+	//syslog($level, $msg);
 }
 
 function get_resource_contents($stream)
@@ -177,6 +176,7 @@ class TocTreeBuilder{
 		$content = "<h2>".$toc_node->name." </h2><ul>";
 
 		foreach($toc_node->children as $i => $child){
+			$content .= "<!-- child->relpath=".$child->relpath." name=".$child->name."-->\n";
 			$content .= "<li><a href=\"".$child->relpath."\" >". htmlspecialchars($child->name)." </a></li>";
 		}
 
