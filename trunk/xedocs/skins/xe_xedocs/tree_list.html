@@ -1,34 +1,7 @@
 <!--#include("header.html")-->
-
+<!--%import("js/show_hide_div.js")-->
 
  <script type="text/javascript">
-     function showdiv(id){
-
-
-       div = document.getElementById(id);
-       div.style.visibility="visible";
-       div.style.display="block";
-       var id = div.id;
-       div = document.getElementById('e'+id);
-
-       div.innerHTML = div.innerHTML.replace('+', '-');
-
-       div.onclick= function() { eval("hidediv('"+ id+ "');"); };
-
-     }
-
-
-     function hidediv(id){
-
-       div = document.getElementById(id);
-       div.style.visibility="hidden";
-       div.style.display="none";
-       var id = div.id;
-       div = document.getElementById('e'+id);
-       div.innerHTML = div.innerHTML.replace('-', '+');
-       div.onclick=function() { eval("showdiv('"+ id+ "');"); };
-
-     }
 
      function show_content(which)
      {
@@ -41,28 +14,25 @@
   float:left;
   width:100%;
   background:#fff;
-  border-right:2px solid silver;
-  border-bottom:2px solid gray;
-  margin-right:2px;
-  padding-bottom:20px;
+
   }
   
 #foo{
   width:68%;
-  height:800px;
+
   margin-left:2px;
   float:right;
 }
 
 .scroll-pane{
   width:30%;
-  height:800px;
   float:left;
-  overflow:auto;
+
 }
 
 .xedocstreenode {
 clear: both;
+type:none;
 }
 
 .tools{
@@ -78,16 +48,23 @@ clear: both;
 
 </style>
 
-  <div class="treeUI" style='width:25px;display:block;' >
+  <div class="treeUI" style='width:300px;display:block;' >
       <p id='eselection-scroll' style="width:20px;text-align=center;" onclick="hidediv1('selection-scroll'); return false;" class="button"><span>-</span></p>
+
+    <!--@if($grant->manager)-->
+    <p style="position:relative; top:-27px; left:25px;">
+        <a href="{getUrl('act','dispXedocsModifyTree')}" class="button"><span>{$lang->cmd_modify}</span></a>
+    </p>
+    <!--@end-->
+
   </div>
 
 <div id="selection-scroll" class="scroll-pane" >
-	<div id="treeList" class="leftcontent" style="background:silver; border-style:inset; border-width:1px;">
+	<div id="treeList" class="leftcontent" >
 	{@ $_pDepth = 0;}
 	{@ $divid=0; }
 	{@ $n=0; }
-			<ul class="xedocstree">
+	<ul class="xedocstree" type="none">
 	<!--@foreach($list as $key => $val)-->
 		{@ $n++; }
 		<!--@if($_pDepth > $val->depth)-->
@@ -100,32 +77,39 @@ clear: both;
 		
 			{@ $_pDepth = $val->depth}
 		<!--@end-->
-		<li class="xedocstreenode">
+		<li class="xedocstreenode" style="list-style-type:none">
 		<!--@if(!$val->childs)-->
-                 <a href="./?mid={$mid}&amp;document_srl={$val->document_srl}&amp;act=dispXedocsContent" onclick="show_content(this); return false;" >{$val->title} </a>
+                 <a href="./?mid={$mid}&amp;document_srl={$val->document_srl}&amp;act=dispXedocsTreeIndex" 
+                 onmouseout="this.style.color='black'" onmouseover="this.style.color='blue'" >{$val->title} </a>
                  {@ $_pDepth = $val->depth}
 		<!--@end-->
 		<!--   $_pDepth={$_pDepth}  $val->depth={$val->depth} -->
 			
 			<!--@if($val->childs)-->
 				<!--@if($n==1)-->
-					<div id="e{$divid}" onclick="hidediv('{$divid}');" style='display:inline; margin:0.5px; width:10px;  '>-
+					<div id="e{$divid}" onclick="hidediv('{$divid}');" onmouseover="this.style.color='blue'"
+						onmouseout="this.style.color='black'" onmouseout="this.style.color='black'"
+						 style='cursor:pointer; display:inline; margin:0.5px; width:10px;  '>-
 	                </div>
-					<a href="./?mid={$mid}&amp;document_srl={$val->document_srl}&amp;act=dispXedocsContent" onclick="show_content(this); return false;" >{$val->title}</a>
+					<a href="./?mid={$mid}&amp;document_srl={$val->document_srl}&amp;act=dispXedocsTreeIndex"
+					onmouseout="this.style.color='black'" onmouseover="this.style.color='blue'" >{$val->title}</a>
 					
 	                <div id="{$divid}"  >
               
               		 <!--@else-->
-	                <div id="e{$divid}" onclick="showdiv('{$divid}');" style='display:inline; margin:0.5px; width:10px;  '>+
+	                <div id="e{$divid}" onclick="showdiv('{$divid}');"  onmouseover="this.style.color='blue'" 
+	                	  onmouseout="this.style.color='black'"
+	                      style='cursor:pointer; display:inline; margin:0.5px; width:10px;  '>+
 		                </div>					
 						
-	                <a href="./?mid={$mid}&amp;document_srl={$val->document_srl}&amp;act=dispXedocsContent" onclick="show_content(this); return false;" >{$val->title}</a>
+	                <a href="./?mid={$mid}&amp;document_srl={$val->document_srl}&amp;act=dispXedocsTreeIndex" 
+	                 onmouseout="this.style.color='black'" onmouseover="this.style.color='blue'" >{$val->title}</a>
 					
 	                <div id="{$divid}" style="visibility:hidden; display:none;" >
                <!--@end-->
 			
 				{@$_pDepth++; $divid++;}
-				<ul class="xedocstree">
+				<ul class="xedocstree" type="none">
 			<!--@else-->
 			</li>
 			<!--@end-->
@@ -139,20 +123,34 @@ clear: both;
 	</li>
 	</ul>	
 		
-    <!--@if($grant->write_document)-->
-    <div class="treeUI" style='float:right;'>
-        <a href="{getUrl('act','dispXedocsModifyTree')}" class="button"><span>{$lang->cmd_modify}</span></a>
-	<!--
-	        <a href="#" class="button" onclick="doRecompileTree(); return false;"><span>{$lang->cmd_remake_cache}</span></a>
-	-->
-    </div>
-    <!--@end-->
 
 
 </div>
 
-<div id="rightcontent" style='margin:2px; color:red;' >
-Click on node in content tree to see contents.
+
+    <!--@if(!$has_page)-->
+		<div id="rightcontent" style='margin:2px; color:red;' >
+		    Click on node in content tree to see contents.
+		</div>
+	<!--@else-->
+<!--#include("breadcrumbs.html")-->
+		<div id="rightcontent" style='margin-left:10px; padding-left:10px;' >
+		    {$page_content}
+
+
+		<div class="wikiReadFooter" style="width:70%; float:right;">
+			<div class="wikiNavigation" >
+			<!--@if($oDocumentPrev)-->
+				<a href="./?document_srl={$oDocumentPrev->document_srl}&act=dispXedocsTreeIndex" class="wikiPrev">&laquo; {$oDocumentPrev->getTitle()}</a>
+			<!--@end-->
+			<!--@if($oDocumentNext)-->
+				<a href="./?document_srl={$oDocumentNext->document_srl}&act=dispXedocsTreeIndex" class="wikiNext">{$oDocumentNext->getTitle()} &raquo;</a>
+			<!--@end-->
+			</div>
+		<div>
+		</div>
+
+	<!--@end-->
 </div>
 
 <!--#include("footer.html")-->

@@ -54,9 +54,10 @@
 
         function hidediv1(id){
 
-            document.getElementById('rightcontent').style.width="150%";
-            document.getElementById('rightcontent').style.position="absolute";
-            document.getElementById('rightcontent').style.left="-620px";
+            document.getElementById('rightcontent').style.width="100%";
+            
+            //document.getElementById('rightcontent').style.position="absolute";
+            //document.getElementById('rightcontent').style.left="-620px";
             
           div = document.getElementById(id);
           div.style.visibility="hidden";

@@ -10,10 +10,10 @@
         XE Default Skin
     </description>
 	<description xml:lang="en">
-        This is default skin of Wiki
+        This is default skin of XeDocs
     </description>
 	<description xml:lang="vi">
-        Skin mặc định của Wiki
+        Skin mặc định của XeDocs
     </description>
     <description xml:lang="zh-CN">
         XE维基默认皮肤。
@@ -25,7 +25,7 @@
         XEデフォルトスキン
     </description>
     <version>0.1</version>
-    <date>2009-01-31</date>
+    <date>2011-01-31</date>
     <author email_address="haneul0318@gmail.com" link="http://seungyeop.kr">
         <name xml:lang="ko">haneul</name>
 		<name xml:lang="vi">haneul</name>

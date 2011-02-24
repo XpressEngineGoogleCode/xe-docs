@@ -59,7 +59,7 @@ class xedocsView extends xedocs {
 		Context::set('entry',$entry);
 		$output = $oDocumentModel->getHistories($document_srl, 10, $page);
 		if(!$output->toBool() || !$output->data) {
-				
+
 			Context::set('histories', array());
 		}
 		else {
@@ -87,7 +87,7 @@ class xedocsView extends xedocs {
 		Context::set('oDocument', $oDocument);
 		$history_srl = Context::get('history_srl');
 		if($history_srl) {
-				
+
 			$output = $oDocumentModel->getHistory($history_srl);
 			if($output && $output->content != null){
 
@@ -146,16 +146,55 @@ class xedocsView extends xedocs {
 		debug_syslog(1, "dispXedocsTreeIndex\n");
 		$oXedocsModel = &getModel('xedocs');
 		$value = $oXedocsModel->readXedocsTreeCache($this->module_srl);
-		//$value = array();		
 		Context::set('list', $value);
 		$this->setTemplateFile('tree_list');
 
+		$document_srl = Context::get('document_srl');
+		if (!isset($document_srl) )
+		{
+			$oModuleModel = &getModel('module');
+			$module_info = $oModuleModel->getModuleInfoByModuleSrl($this->module_srl);
+			if(!isset($module_info->first_node_srl)){
+				syslog(1, "dispXedocsTreeIndex: we have no document_srl\n");
+
+				foreach( $value as $i=>$obj){
+					$document_srl = $obj->document_srl;
+					break;
+				}
+				//Context::set('has_page', false);
+				//return;
+			}else{
+				$document_srl = $module_info->first_node_srl;
+			}
+		}
+		Context::set('has_page', true);
+		syslog(1, "dispXedocsTreeIndex: document_srl=".$document_srl."\n");
+		$oDocumentModel = &getModel("document");
+		$oDocument = $oDocumentModel->getDocument($document_srl);
+		$content = $oDocument->getContent(false);
+		$oDocument->add('content', $content);
+			
+		$module_srl=$oDocument->get('module_srl');
+		$parents = $oXedocsModel->getParents($document_srl, $module_srl);
+		Context::set("parents", $parents);
+		//Context::set("oDocument", $oDocument);
+		Context::set("page_content", $content);
+			
+			
+		list($prev_document_srl, $next_document_srl) = $oXedocsModel->getPrevNextDocument($this->module_srl, $document_srl);
+		if($prev_document_srl){
+			Context::set('oDocumentPrev', $oDocumentModel->getDocument($prev_document_srl));
+		}
+		if($next_document_srl){
+			Context::set('oDocumentNext', $oDocumentModel->getDocument($next_document_srl));
+		}
+			
 	}
 
 	function dispXedocsModifyTree()
 	{
 		if(!$this->grant->write_document) {
-				
+
 			return new Object(-1,'msg_not_permitted');
 		}
 
@@ -168,20 +207,20 @@ class xedocsView extends xedocs {
 		$module_srl = $this->module_info->module_srl;
 		$visit_log = $_SESSION['xedocs_visit_log'];
 		if(! $visit_log) {
-				
+
 			$visit_log =   $_SESSION['xedocs_visit_log'] = array();
 		}
 		if(!$visit_log[$module_srl]
 		|| !is_array($visit_log[$module_srl])) {
-				
+
 			$visit_log[$module_srl] = array();
 		}
 		else {
-				
+
 			foreach($visit_log[$module_srl] as $key => $value){
 
 				if($value == $entry){
-						
+
 					unset($visit_log[$module_srl][$key]);
 				}
 			}
@@ -220,7 +259,7 @@ class xedocsView extends xedocs {
 		if($document_srl) {
 			$oDocument = $oDocumentModel->getDocument($document_srl);
 
-				
+
 			if($oDocument->isExists()) {
 
 				if($oDocument->get('module_srl')!=$this->module_info->module_srl ){
@@ -230,7 +269,7 @@ class xedocsView extends xedocs {
 				if($this->grant->manager) $oDocument->setGrant();
 
 				if(!$entry) {
-						
+
 					$entry = $oDocument->getTitleText();
 					Context::set('entry', $entry);
 				}
@@ -238,7 +277,7 @@ class xedocsView extends xedocs {
 
 				$history_srl = Context::get('history_srl');
 				if($history_srl) {
-						
+
 					$output = $oDocumentModel->getHistory($history_srl);
 					if($output && $output->content != null){
 
@@ -273,7 +312,7 @@ class xedocsView extends xedocs {
 		if($oDocument->isExists()) {
 
 			Context::addBrowserTitle($oDocument->getTitleText());
-				
+
 
 			if(!$oDocument->isSecret() || $oDocument->isGranted()){
 				$oDocument->updateReadedCount();
@@ -282,14 +321,14 @@ class xedocsView extends xedocs {
 			if($oDocument->isSecret() && !$oDocument->isGranted()){
 				$oDocument->add('content',Context::getLang('thisissecret'));
 			}
-			
+				
 			$module_srl=$oDocument->get('module_srl');
 			$parents = $oXedocsModel->getParents($document_srl, $module_srl);
 			$p_count = count($parents);
 			Context::set('p_count1',$p_count);
-			
+				
 			Context::set('parents',$parents);
-			
+				
 			$this->setTemplateFile('view_document');
 
 			// set contributors
@@ -299,7 +338,7 @@ class xedocsView extends xedocs {
 				Context::set('contributors', $contributors);
 			}
 
-				
+
 			if($this->module_info->use_comment != 'N'){
 				$oDocument->add('allow_comment','Y');
 			}
@@ -310,7 +349,7 @@ class xedocsView extends xedocs {
 			$p_count = count($parents);
 			Context::set('p_count2',$p_count);
 			Context::set('parents',$parents);
-			
+				
 			$this->setTemplateFile('create_document');
 		}
 
@@ -349,7 +388,7 @@ class xedocsView extends xedocs {
 
 		if( Context::get('document_srl')
 		&& $oSourceComment->get('document_srl') != Context::get('document_srl')) {
-				
+
 			return $this->dispXedocsMessage('msg_invalid_request');
 		}
 

@@ -104,7 +104,7 @@
 .wikiList th{ border:0; border-bottom:1px solid; padding:8px 6px 7px 6px; *padding:8px 6px 6px 6px; white-space:nowrap; text-align:center; line-height:normal; font-weight:normal;}
 .wikiList th.title{ width:100%;}
 .wikiList th a .sort{ vertical-align:middle; margin:0 5px;}
-.wikiList td{ border:0; border-bottom:1px solid; padding:8px 6px 7px 6px; *padding:8px 6px 6px 6px; white-space:nowrap; text-align:center; line-height:normal; vertical-align:top;}
+.wikiList td{ border:0; border-bottom:1px solid; padding:3px 6px 2px 6px; *padding:8px 6px 6px 6px; white-space:nowrap; text-align:center; line-height:normal; vertical-align:top;}
 .wikiList td.notice{ font-size:11px; font-weight:bold;}
 .wikiList td.num{ font:9px Tahoma;}
 .wikiList td.check{ font:11px Tahoma;}
@@ -204,10 +204,10 @@
 
 .wikiReadFooter .wikiNavigation { *zoom:1; margin-top:15px;border-top:1px solid #ccc !important; padding:10px; border-bottom:1px solid #ccc !important;}
 .wikiReadFooter .wikiNavigation:after { content:""; display:block; clear:both;}
-.wikiReadFooter .wikiNavigation .wikiPrev { float:left;}
+.wikiReadFooter .wikiNavigation .wikiPrev { float:left; }
 .wikiReadFooter .wikiNavigation .wikiNext { float:right;}
 .wikiReadFooter .wikiNavigation .wikiPrev ,
-.wikiReadFooter .wikiNavigation .wikiNext { color:#666; font-weight:bold; font-size:14px; text-decoration:none;}
+.wikiReadFooter .wikiNavigation .wikiNext { color:green; font-weight:bold; font-size:14px; text-decoration:none;}
 .wikiReadFooter .wikiNavigation .wikiPrev:hover ,
 .wikiReadFooter .wikiNavigation .wikiNext:hover { text-decoration:underline;}
 
@@ -316,6 +316,7 @@
 .feedbackList .item .itemContent .option li{ background-image:url(../img/white/lineVr9.gif);}
 .feedbackList .item .itemContent .option li a{ color:#666;}
 .feedbackList .item .itemContent .delete{ background-image:url(../img/common/buttonDelete.gif);}
+.feedbackList .item .itemContent .compile{ background-image:url(../img/common/iconAdd.gif);}
 .feedbackList .item .itemAside img.profile{ border-color:#eee;}
 .feedbackList .item .itemAside .meta{ color:#adadad;}
 .feedbackList .item .itemAside .vote *{ color:#8b8b8b;}

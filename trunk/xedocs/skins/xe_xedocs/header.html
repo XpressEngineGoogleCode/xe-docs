@@ -12,7 +12,7 @@
 {$module_info->header_text}
 
 <div class="wiki">
-    <div class="wikiHeader" style='color="red";'>
+    <div class="wikiHeader" style='color=green; display:none;'>
 		<!--@if($module_info->title)-->
 		<div class="wikiTitle">
 			<h2 class="wikiTitleText">
@@ -39,10 +39,12 @@
         <form action="{getUrl('act','dispXedocsContent','entry','','document_srl','')}" method="get" class="wikiSearchForm">
             <input type="hidden" name="mid" value="{$mid}" />
             <input type="hidden" name="vid" value="{$vid}" />
+            <!-- 
             <input type="text" class="inputText" name="entry" />
             <span class="buttonOfficial">
             	<input type="submit" value="{$lang->cmd_move}" />
             </span>
+             -->
             <!--@if($grant->manager)-->
             <span class="buttonOfficial"><input type="button" onclick="location.href='{getUrl('act','dispXedocsAdminInsertManual')}';return false;" value="{$lang->cmd_setup}" /></span>
             <!--@end-->
@@ -53,20 +55,6 @@
     <!--@if($oDocument && $oDocument->isExists())-->
 	<div class="wikiRead">
         <div class="wikiReadHeader">
-            <div class="titleArea">
-                <h3 class="title"><a href="{$oDocument->getPermanentUrl()}">{$oDocument->getTitle()}</a></h3>
-                <span class="sum">
-                    <span class="read">{$lang->readed_count} <span class="num">{$oDocument->get('readed_count')}</span></span>
-                    <span class="vote">{$lang->voted_count} <span class="num">{$oDocument->get('voted_count')}</span></span>
-                    <span class="date">
-                        <!--@if($history)-->
-                        <strong>{zdate($history->regdate, 'Y.m.d')}</strong> {zdate($history->regdate, 'H:i:s')}
-                        <!--@else-->
-                        <strong>{$oDocument->getUpdate('Y.m.d')}</strong> {$oDocument->getUpdate('H:i:s')} 
-                        <!--@end-->
-                    </span>
-                </span>
-            </div>
 
     <!--@if($visit_log)-->
     <div class="visitLog">
@@ -122,9 +110,6 @@
 	<!--@elseif($entry)-->
     <div class="wikiRead">
         <div class="wikiReadHeader">
-            <div class="titleArea">
-                <h3 class="title">{$entry}</h3>
-            </div>
         </div>
     </div>
     <!--@if($visit_log)-->

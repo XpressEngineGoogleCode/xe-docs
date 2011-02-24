@@ -1,0 +1,13 @@
+
+
+       <div id="breadcrumbs" class="xedocsbreadcrumbs" style="background-color:silver; display:block; margin:1px">
+        
+         <!--@for($_i=count($parents)-1; $_i>=0; $_i--)-->
+  		
+         <a href="{$parents[$_i]->href}"> {$parents[$_i]->title} </a>
+         <!--@if($_i>0)-->
+         &nbsp -> &nbsp
+         <!--@end-->
+ 	<!--@end-->
+        
+        </div>

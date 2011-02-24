@@ -22,6 +22,9 @@ $lang->cmd_edit_page = "Edit Page";
 $lang->cmd_create = "Ceate Page";
 $lang->cmd_modify = "Change Toc Structure";
 $lang->cmd_move = "Go To ";
-$lang->cmd_setup = "Setup Module"
-
+$lang->cmd_setup = "Setup Module";
+$lang->cmd_compile = "Compile Versions";
+$lang->confirm_compile = "Compile Version Labels ?";
+$lang->module_count = "Module Count";
+$lang->manual_set_identifier = "Manual Set Identifier";
 ?>

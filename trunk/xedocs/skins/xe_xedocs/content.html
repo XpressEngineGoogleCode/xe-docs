@@ -13,18 +13,7 @@
 {$module_info->header_text}
 
 
-        <div id="breadcrumbs" class="xedocsbreadcrumbs" style="background-color:silver; display:block; margin:1px">
-        
-         <!--@for($_i=count($parents)-1; $_i>=0; $_i--)-->
-  		
-         <a href="{$parents[$_i]->href}"> {$parents[$_i]->title} </a>
-         <!--@if($_i>0)-->
-         &nbsp -> &nbsp
-         <!--@end-->
- 	<!--@end-->
-        
-        <div>
-
+ <!--include("breadcrumbs.html")-->
 
 
 <div class="wiki">
@@ -48,31 +37,7 @@
     <!--@if($oDocument && $oDocument->isExists())-->
     <div class="wikiRead">
         <div class="wikiReadHeader">
-            <div class="titleArea">
-     		 <div style='visibility:hidden;'>
-	        
-  
-                <h3 class="title"> 
-                   
-	                	
-	                <a href="{$oDocument->getPermanentUrl()}" style="display:none"> {$oDocument->getTitle()}</a>
-              
-                </h3>
-                
-                
-                <span class="sum">
-                    <span class="read">{$lang->readed_count} <span class="num">{$oDocument->get('readed_count')}</span></span>
-                    <span class="vote">{$lang->voted_count} <span class="num">{$oDocument->get('voted_count')}</span></span>
-                    <span class="date">
-                        <!--@if($history)-->
-                        <strong>{zdate($history->regdate, 'Y.m.d')}</strong> {zdate($history->regdate, 'H:i:s')}
-                        <!--@else-->
-                        <strong>{$oDocument->getUpdate('Y.m.d')}</strong> {$oDocument->getUpdate('H:i:s')} 
-                        <!--@end-->
-                    </span>
-                </span>
-            </div>
-	</div>
+
     <!--@if($visit_log)-->
     <div class="visitLog" >
         {@ $bFirst = true; }
@@ -127,9 +92,6 @@
     <!--@elseif($entry)-->
     <div class="wikiRead">
         <div class="wikiReadHeader">
-            <div class="titleArea">
-                <h3 class="title">{$entry}</h3>
-            </div>
         </div>
     </div>
     <!--@if($visit_log)-->

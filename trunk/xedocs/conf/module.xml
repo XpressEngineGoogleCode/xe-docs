@@ -35,11 +35,11 @@
 
     <actions>
 
-        <action name="dispXedocsContent" type="view" index="true" />
+        <action name="dispXedocsContent" type="view" />
         <action name="dispXedocsEditPage" type="view" />
         <action name="dispXedocsHistory" type="view" />
         <action name="dispXedocsTitleIndex" type="view" />
-        <action name="dispXedocsTreeIndex" type="view" />
+        <action name="dispXedocsTreeIndex" type="view" index="true" />
         <action name="dispXedocsModifyTree" type="view" />
         <action name="dispXedocsReplyComment" type="view" />
         <action name="dispXedocsModifyComment" type="view" />

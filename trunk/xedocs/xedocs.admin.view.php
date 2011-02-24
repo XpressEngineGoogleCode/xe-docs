@@ -100,9 +100,6 @@ class xedocsAdminView extends xedocs {
 	}
 	
 	
-	function dispXedocsAdminCompileVersion(){
-		$this->setTemplateFile("compile_version_labels");
-	}
 
 	function dispXedocsAdminImportManual()
 	{
@@ -118,28 +115,43 @@ class xedocsAdminView extends xedocs {
 		$layout_list = $oLayoutMode->getLayoutList();
 		Context::set('layout_list', $layout_list);
 
-		//////
-		$oModuleModel = &getModel('module');
-		$config = $oModuleModel->getModuleConfig('xedocs');
-
-		Context::set('config', $config);
-		$total = 0;
-		foreach( $config as $i => $value ){
-			debug_syslog(1, "->".$value->name."\n");
-			$total++;
-		}
-		$nodes =  $this->setup_nodes($config);
-
-		Context::set('total', $total);
-		Context::set('nodes', $nodes);
-
-		//////
 
 		$this->setTemplateFile('manual_import');
 
 	}
 
+	function dispXedocsAdminCompileVersion(){
 
+		$module_info = Context::get('module_info');
+		$oModuleModel = &getModel('module');
+		$module_info = $oModuleModel->getModuleInfoByModuleSrl($module_info->module_srl);
+		$oModuleModel->addModuleExtraVars($module_info);
+		
+		$args->sort_index = "module_srl";
+		$args->page = 1;
+		$args->list_count = 200;
+		$args->page_count = 10;
+		$args->s_module_category_srl = Context::get('module_category_srl');
+		
+		$output = executeQueryArray('xedocs.getManualList', $args);
+		ModuleModel::syncModuleToSite($output->data);
+		
+		$module_list = $output->data;
+		$module_count =0;
+		foreach($module_list as $module)
+		{
+			$module_count +=1;
+		}
+		
+		syslog(1, "module_count =".$module_count."\n");
+		syslog(1, "help_name =".$module_info->help_name."\n");
+		
+		Context::set('module_count',$module_count);	
+		Context::set('module_info',$module_info);
+		
+		$this->setTemplateFile("compile_version_labels");
+	}
+	
 
 	function dispXedocsAdminDeleteManual()
 	{
@@ -163,39 +175,6 @@ class xedocsAdminView extends xedocs {
 		$this->setTemplateFile('manual_delete');
 	}
 
-
-	function setup_nodes($config)
-	{
-		$nodes = array();
-		$nodes[] = "gigi";
-
-		try{
-			$tw = new TocWalker();
-
-			$p = new ArrayTocProcessor();
-
-
-			foreach($config as $i => $man ){
-				debug_syslog(1, "Walking ".$man->name." count_roots= ".count($man->root)."\n");
-
-				foreach( $man->root as $root){
-					$tw->walk($root, $p);
-				}
-
-			}
-
-			debug_syslog(1, "There are ". count($p->nodes)." toc nodes\n");
-
-			return $p->nodes;
-		} catch(Exception $w) {
-			$nodes = array();
-			$nodes[] = $w->getMessage();
-			debug_syslog(1, $w->getMessage());
-
-		}
-		return $nodes;
-
-	}
 }
 
 

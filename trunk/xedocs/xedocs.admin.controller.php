@@ -93,7 +93,14 @@ class xedocsAdminController extends xedocs {
 	}
 
 	function procXedocsAdminCompileVersion(){
-
+		$args->sort_index = "module_srl";
+		$args->page = Context::get('page');
+		$args->list_count = 20;
+		$args->page_count = 10;
+		$args->s_module_category_srl = Context::get('module_category_srl');
+		$output = executeQueryArray('xedocs.getManualList', $args);
+		ModuleModel::syncModuleToSite($output->data);
+		
 	}
 
 
@@ -114,7 +121,7 @@ class xedocsAdminController extends xedocs {
 
 		$module_name = $args->manual_name;
 		unset($args->manual_name);
-
+		
 		if($args->module_srl) {
 			$module_info = $oModuleModel->getModuleInfoByModuleSrl($args->module_srl);
 			if($module_info->module_srl != $args->module_srl) {
@@ -137,6 +144,7 @@ class xedocsAdminController extends xedocs {
 		$this->add('page',Context::get('page'));
 		$module_srl = $output->get('module_srl');
 
+		
 		debug_syslog(1, "module_srl=".$module_srl."\n");
 
 		$this->add('module_srl',$module_srl);
@@ -154,14 +162,11 @@ class xedocsAdminController extends xedocs {
 
 		debug_syslog(1, "Importing archive: '".$args->help_archive_url."'\n");
 		//import archive contents
-		$toc = $this->import_help_archive( $args->help_archive_url,  $module_srl );
+		$output = $this->import_help_archive( $args->help_archive_url,  $module_srl );
 
 		debug_syslog(1, "Import complete , toc has ".count($toc->children)." childrens\n");
 
-		$oModuleModel = &getModel('module');
-
-		$config = $oModuleModel->getModuleConfig('xedocs');
-		$config = array();
+		
 
 		$man = new DocumetationManual();
 		$man->name = $args->help_name;
@@ -172,12 +177,19 @@ class xedocsAdminController extends xedocs {
 
 		$man->url = $args->help_archive_url;
 
-		$config[] =  $man;
-		$oModuleController = &getController('module');
-
-		$output = $oModuleController->insertModuleConfig('xedocs',$config);
-		debug_syslog(1, "config update complete - inserting content \n");
-
+		
+		
+		$update_args->{'first_node_srl'} = $output->first_node->document_srl;
+		$update_args->{'help_name'} = Context::get('help_name');
+		$update_args->{'help_archive_url'} = Context::get('help_archive_url');
+		
+		$update_args->{'help_meta'} = Context::get('help_meta');
+		$update_args->{'help_tags'} = Context::get('help_tags');
+			
+		$oModuleController->insertModuleExtraVars($module_srl, $update_args);
+		$msg_code = 'success_updated';
+		
+		syslog(1, "import complete - inserting content first_node_srl=".$output->first_node->document_srl."\n");
 
 		return $output;
 	}
@@ -197,9 +209,10 @@ class xedocsAdminController extends xedocs {
 			return false;
 		}
 
-		$this->build_content($toc, $builder, $module_srl);
-
-		return $toc;
+		$first_node = $this->build_content($toc, $builder, $module_srl);
+		$output->{'first_node'} = $first_node;
+		$output->{'toc'} = $toc;
+		return $output;
 
 	}
 
@@ -227,6 +240,7 @@ class xedocsAdminController extends xedocs {
 
 		$builder->remove_archive();
 
+		return $processor->get_first_node();
 	}
 
 	function getModel($name)
@@ -257,7 +271,7 @@ class ContentBuilderTocProcessor extends TocProcessor
 	var $not_navigable = array();
 	var $second_pass=false;
 	public $controller;
-
+    var $first_node;
 
 	function dump_node_paths()
 	{
@@ -304,7 +318,7 @@ class ContentBuilderTocProcessor extends TocProcessor
 
 		if( !isset($document_srl) ) return false;
 
-		return "./?module_srl=".$this->module_srl."&document_srl=".$document_srl."&act=dispXedocsContents";
+		return "./?module_srl=".$this->module_srl."&document_srl=".$document_srl;
 	}
 
 	function resolve_links($toc_node)
@@ -440,10 +454,10 @@ class ContentBuilderTocProcessor extends TocProcessor
 		//empty links may be resoved in $not_navigable
 		
 		$title = trim($element->plaintext);
-		syslog(1, "resolving: ". $title."in [".$toc_node->name."]\n");
+		debug_syslog(1, "resolving: ". $title."in [".$toc_node->name."]\n");
 		if( isset($this->not_navigable[$title]) ){
 			$referred_toc = $this->not_navigable[$title];
-			syslog(1, "  referred_doc=".$referred_toc->name." \n");
+			debug_syslog(1, "  referred_doc=".$referred_toc->name." \n");
 			$reffered_srl = $referred_toc->document_srl;
 
 			$new_link = $this->get_document_link($reffered_srl);
@@ -458,7 +472,7 @@ class ContentBuilderTocProcessor extends TocProcessor
 			return true;
 
 		}else{
-			syslog(1, " key: ". $title." is not in not_navigable\n");
+			debug_syslog(1, " key: ". $title." is not in not_navigable\n");
 		}
 		
 		return $changed;
@@ -705,7 +719,10 @@ class ContentBuilderTocProcessor extends TocProcessor
 
 	}
 
-
+	function get_first_node(){
+		return $this->first_node;
+	}
+	
 	function insert_document($toc_node)
 	{
 
@@ -713,6 +730,11 @@ class ContentBuilderTocProcessor extends TocProcessor
 		if( 0 == strcmp('home', $toc_node->name)) return;
 
 		set_time_limit(0);
+		
+		
+		if( !isset($this->first_node)){
+			$this->first_node = $toc_node;
+		}
 
 		//if relpath contains a # then it is a link to a name into a html
 		$idx = -1;
@@ -725,7 +747,7 @@ class ContentBuilderTocProcessor extends TocProcessor
 		{
 			$this->not_navigable[$toc_node->name] = $toc_node;
 			
-			syslog(1, "not navigable ".$toc_node->name."\n");
+			debug_syslog(1, "not navigable ".$toc_node->name."\n");
 		}		
 		else if( false != ($idx = strpos($toc_node->relpath, "#")) ){
 
