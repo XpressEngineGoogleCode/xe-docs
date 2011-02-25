@@ -5,7 +5,7 @@
     <version>0.1</version>
     <date>2010-11-26</date>
     <category>service</category>
-    <author email_address="cristian.romanescu@eaudeweb.ro" link="http://www.eaudeweb.ro/">
-        <name xml:lang="en">Eau De Web</name>
+    <author email_address="admin@arnia.ro" link="http://www.arnia.ro/">
+        <name xml:lang="en">Arnia</name>
     </author>
 </module>
