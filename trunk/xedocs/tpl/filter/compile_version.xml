@@ -2,6 +2,8 @@
 
     <form>
         <node target="module_srl" required="true" />
+        <node target="help_name" required="true" />
+        
     </form>
 
     <response callback_func="completeDeleteManual">

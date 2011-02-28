@@ -169,6 +169,7 @@ class xedocsView extends xedocs {
 		}
 		Context::set('has_page', true);
 		syslog(1, "dispXedocsTreeIndex: document_srl=".$document_srl."\n");
+		
 		$oDocumentModel = &getModel("document");
 		$oDocument = $oDocumentModel->getDocument($document_srl);
 		$content = $oDocument->getContent(false);
@@ -180,7 +181,10 @@ class xedocsView extends xedocs {
 		//Context::set("oDocument", $oDocument);
 		Context::set("page_content", $content);
 			
-			
+		$versions = $oXedocsModel->get_versions($module_srl, $oDocument);
+		//Context::set("version_labels", trim($versions) );
+		Context::set("version_labels", $this->format_versions(trim($versions)));
+		
 		list($prev_document_srl, $next_document_srl) = $oXedocsModel->getPrevNextDocument($this->module_srl, $document_srl);
 		if($prev_document_srl){
 			Context::set('oDocumentPrev', $oDocumentModel->getDocument($prev_document_srl));
@@ -191,6 +195,38 @@ class xedocsView extends xedocs {
 			
 	}
 
+	function get_document_link($document_srl)
+	{
+
+		if( !isset($document_srl) ) return false;
+
+		return "./?module_srl=".$this->module_srl."&document_srl=".$document_srl;
+	}
+	
+	
+	function format_versions($versions)
+	{
+		if( !isset($versions) || 0 == strcmp('', $versions)){
+			return "";
+		}
+	
+		$result = "";
+
+		$varr = explode("|", $versions);
+		foreach($varr as $v){
+			$values = explode("->", $v);
+			$label = $values[0];
+			$doc_srl =  $values[1];
+			
+			$result .= "<a href='".$this->get_document_link($doc_srl)."'> ".$label." </a> &nbsp";
+			
+		}
+		
+		return $result;	
+		
+	
+	}
+	
 	function dispXedocsModifyTree()
 	{
 		if(!$this->grant->write_document) {

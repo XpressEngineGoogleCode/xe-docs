@@ -7,7 +7,7 @@ $lang->admin_import_arch_label = " Manual Archive Url: ";
 $lang->cmd_import = "Import";
 $lang->manual_ids_count = "Total number of configured manuals";
 $lang->admin_import_manual_collection_name = "Manual Set";
-$lang->admin_import_manual_meta = "Comments";
+$lang->admin_import_manual_version = "Version Label";
 $lang->admin_import_manual_tags = "Tags";
 $lang->admin_import_manual_mid ="Module Id";
 $lang->admin_manual_modules_list_head = "Manage Documentation";
@@ -27,4 +27,5 @@ $lang->cmd_compile = "Compile Versions";
 $lang->confirm_compile = "Compile Version Labels ?";
 $lang->module_count = "Module Count";
 $lang->manual_set_identifier = "Manual Set Identifier";
+$lang->manual_set = "Manual Set";
 ?>

@@ -267,7 +267,8 @@ class xedocsModel extends xedocs {
 		}
 	}
 
-	function getNode($list, $doc_srl){
+	function getNode($list, $doc_srl)
+	{
 		foreach($list as $node => $ns){
 			foreach($ns as $n =>$val){
 
@@ -285,5 +286,199 @@ class xedocsModel extends xedocs {
 		}
 	}
 
+	
+	
+	
+	function getModuleList()
+	{
+		$args->sort_index = "module_srl";
+		$args->page = 1;
+		$args->list_count = 200;
+		$args->page_count = 10;
+		$args->s_module_category_srl = Context::get('module_category_srl');
+		
+		$output = executeQueryArray('xedocs.getManualList', $args);
+		ModuleModel::syncModuleToSite($output->data);
+		return  $output->data;
+		
+	}
+	
+	function getModulesWithSet($set_id, $module_list)
+	{
+		$oModuleModel = &getModel('module');
+		
+		$modulel_set = array();
+		foreach($module_list as $module)
+		{
+			$module_srls=array();
+			$module_srls[] =  $module->module_srl;
+			
+			$extra_vars = $oModuleModel->getModuleExtraVars($module_srls);
+			
+			if( 0 == strcmp($set_id, $extra_vars[$module->module_srl]->help_name)) 
+			{
+				$module_set[] = $module;
+			}
+			
+		}
+		return $module_set;
+	}
+	
+	/* given a manual set identifier as string compute a list of module_srl
+	 * 
+	 * */
+	
+	function getModuleSet($set_id)
+	{	
+		$module_list = $this->getModuleList();
+		
+		$module_set = $this->getModulesWithSet($set_id, $module_list);
+		$manual_set = array();
+		foreach($module_set as $module){
+			$manual_set[] = $module->module_srl;
+		}
+		return $manual_set;	
+	}
+	
+	function getModuleMidSet($set_id)
+	{	
+		$module_list = $this->getModuleList();
+		
+		$module_set = $this->getModulesWithSet($set_id, $module_list);
+		$mid_set = array();
+		foreach($module_set as $module){
+			$mid_set[] = $module->mid;
+		}
+		return $mid_set;	
+	}
+	
+	
+	
+	
+	function getManualVersions($manual_set)
+	{
+		$oModuleModel = &getModel('module');
+		$extra_vars = $oModuleModel->getModuleExtraVars($manual_set);
+		
+		$manual_versions = array();
+		foreach($manual_set as $module_srl)
+		{
+			$manual_versions[] =  $extra_vars[$module_srl]->version_label;
+		}
+		debug_syslog(1, "manual_versions:".print_r($manual_versions, true)."\n");
+		return $manual_versions;
+	}
+
+	
+	function test_extraversions()
+	{
+		$manual_srl = 53758;
+		$docs = $this->getDocumentList($manual_srl);	
+		foreach($docs as $doc){
+			$versions = $this->get_versions($manual_srl, $doc);
+			debug_syslog(1, "get_versions for ".$doc->document_srl. " : ". $versions);
+			
+			$this->add_version($manual_srl, $doc, "3.1", 1024);
+			
+			$versions = $this->get_versions($manual_srl, $doc);
+			debug_syslog(1, "get_versions for ".$doc->document_srl. " : ". $versions);
+			
+			$this->add_version($manual_srl, $doc, "3.1", 1024);
+			
+			$versions = $this->get_versions($manual_srl, $doc);
+			debug_syslog(1, "get_versions for ".$doc->document_srl. " : ". $versions);
+			
+			$this->clear_version($manual_srl, $doc);
+			
+			$versions = $this->get_versions($manual_srl, $doc);
+			debug_syslog(1, "get_versions for ".$doc->document_srl. " : ". $versions);
+			
+			break;
+		}
+	}
+	
+	
+	function add_version($module_srl, $doc, $version, $version_doc_srl)
+	{
+		
+		$document_versions = $this->get_versions($module_srl, $doc);
+		
+		$insert = (0 == strcmp('', trim($document_versions)));
+		
+		debug_syslog(1, "add_version document_srl=".$doc->document_srl." title |".$doc->getTitle()."|\n");
+		debug_syslog(1, "            version=".$version." version_doc_srl=".$version_doc_srl."\n");
+		
+		$args->document_srl = $doc->document_srl;
+		$args->module_srl = $module_srl;
+		
+		$args->eid = "version_labels";
+		
+		if(0 != strcmp('', trim($document_versions))){
+			$args->value = $document_versions."|".$version."->".$version_doc_srl;
+		}else{
+			$args->value = "".$version."->".$version_doc_srl;
+		}
+		
+		if($insert){
+			$output = executeQuery('xedocs.insertDocumentExtraVars', $args);
+			//debug_syslog(1, "add: insert: ".print_r($output, true));
+		}else{
+			$output = executeQuery('xedocs.updateDocumentExtraVars', $args);
+			//debug_syslog(1, "add: update: ".print_r($output, true));
+		}
+		
+	}
+	
+	
+	function get_versions($module_srl, $doc)
+	{
+		$args->{'document_srl'} = $doc->document_srl;
+		$args->{'module_srl'} = $module_srl;
+		$args->{'eid'} = "version_labels";
+		
+		$output =  executeQuery('xedocs.getDocumentExtraVars', $args);
+		
+		//debug_syslog(1, "get_versios: ".print_r($output, true));
+		if (isset($output->data)){
+			//debug_syslog(1, "get_versios value: ".print_r($output->data->value, true));
+			return $output->data->value;
+		}
+		
+		return "";
+				
+	}
+	
+	function clear_version($module_srl, $doc)
+	{
+		
+		$args->document_srl = $doc->document_srl;
+		$args->module_srl = $module_srl;
+		
+		$args->eid = "version_labels";
+		
+		$output =  executeQuery('xedocs.deleteDocumentExtraVars', $args);
+		
+		//debug_syslog(1, "delete_versios: ".print_r($output, true));
+		
+	}
+	
+	function getDocumentList($module_srl)
+	{
+		
+		$oDocumentModel = &getModel('document');
+		$obj->module_srl = $module_srl;
+		$obj->sort_index = 'update_order';
+
+		$obj->search_keyword = "";
+		$obj->search_target = "";
+		$obj->page = 1;
+		$obj->list_count = 50000;
+		
+		
+		$output = $oDocumentModel->getDocumentList($obj);
+		
+		return $output->data;
+	}
+	
 }
 ?>

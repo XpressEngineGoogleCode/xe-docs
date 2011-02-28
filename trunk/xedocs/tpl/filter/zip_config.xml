@@ -2,7 +2,7 @@
     <form>
         <node target="help_archive_url" required="true" />
         <node target="help_name" required="true" />
-        <node target="help_meta" required="false" />
+        <node target="version_label" required="true" />
         <node target="help_tags" required="false" />
         <node target="mid" required="true" maxlength="40" filter="alpha_number" />
         <node target="browser_title" required="true" maxlength="250" />

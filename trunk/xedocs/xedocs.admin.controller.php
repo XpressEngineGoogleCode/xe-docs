@@ -93,16 +93,90 @@ class xedocsAdminController extends xedocs {
 	}
 
 	function procXedocsAdminCompileVersion(){
-		$args->sort_index = "module_srl";
-		$args->page = Context::get('page');
-		$args->list_count = 20;
-		$args->page_count = 10;
-		$args->s_module_category_srl = Context::get('module_category_srl');
-		$output = executeQueryArray('xedocs.getManualList', $args);
-		ModuleModel::syncModuleToSite($output->data);
+
+		debug_syslog(1, "procXedocsAdminCompileVersion\n");
+		set_time_limit(0);
+
+		$oXedocsModel = &getModel('xedocs'); 
 		
+		$help_name = Context::get('help_name');
+		$module_srl = Context::get('module_srl');
+
+		debug_syslog(1, "module_srl='".$module_srl."'\n");
+		debug_syslog(1, "help_name='".$help_name."'\n");
+		
+		
+		
+		$manual_set = $oXedocsModel->getModuleSet($help_name);
+		$manual_versions = $oXedocsModel->getManualVersions($manual_set);
+		
+		$documents = array();
+		foreach($manual_set as $manual_srl){
+			$docs = $oXedocsModel->getDocumentList($manual_srl);
+			$documents[] = $docs;
+		}
+		$oDocumentModel = &getModel('document');
+		$count = count($documents);
+		debug_syslog(1, "Clear versions\n");
+		//clear versions 
+		for($i=0; $i<$count; $i+=1){
+			$doc_set = $documents[$i];
+			$crt_module_srl = $manual_set[$i];
+			debug_syslog(1, "module_srl:".$crt_module_srl." has ".count($doc_set)." documents\n");
+			
+			foreach($doc_set as $doc){
+				$oXedocsModel->clear_version($crt_module_srl, $doc);
+			}
+		}
+		debug_syslog(1, "Clear versions complete\n");
+		for( $i=0; $i<$count; $i+=1){
+			
+			$crt_docs = $documents[$i];
+			$crt_module_srl = $manual_set[$i];
+			
+			$crt_version = $manual_versions[$i];
+			debug_syslog(1, "idx=".$i." crt_version=". $crt_version."\n");
+			
+			foreach($crt_docs as $doc){
+				$oXedocsModel->add_version($crt_module_srl, $doc, $crt_version, $doc->document_srl);
+			}
+			
+			for( $j = 0; $j<$count; $j+=1)
+			{
+				if ( $i== $j ){ //skip same manual
+					continue;
+				}
+				$other_docs = $documents[$j];
+				$other_version = $manual_versions[$j];
+				debug_syslog(1, "idx=".$i." other_version=". $other_version."\n");
+				foreach($crt_docs as $crt_doc){
+					$other_doc_srl = $this->has_document($crt_doc, $other_docs); 
+					if( 0 != $other_doc_srl ){
+						debug_syslog(1, "other_doc_srl=".$other_doc_srl."\n");
+						$oXedocsModel->add_version($crt_module_srl, $crt_doc, $other_version, $other_doc_srl);
+					}
+				}
+			}
+		}
+		debug_syslog(1, "compile versions complete");
 	}
 
+	function has_document($crt_doc, $other_docs)
+	{
+		$title = trim($crt_doc->getTitle());
+		foreach($other_docs as $other){
+			//debug_syslog(1, "|".$title."| vs |". trim($other->getTitle())."|\n" );
+			if (0 == strcmp($title, trim($other->getTitle()))){
+				//debug_syslog(1, "ok->".$other->document_srl."\n");
+				return $other->document_srl;
+			}
+		}
+		//debug_syslog(1, "ng has nodoc\n");
+		return 0;
+	}
+	
+	
+	
 
 	function procXedocsAdminImportArchive()
 	{
@@ -153,7 +227,7 @@ class xedocsAdminController extends xedocs {
 		////////////
 		debug_syslog(1, "procXedocsAdminImportArchive import archive \n");
 
-		$args = Context::gets('help_archive_url','help_name', 'help_meta', 'help_tags');
+		$args = Context::gets('help_archive_url','help_name', 'help_version', 'help_tags');
 
 		if( !$this->is_good_archive_url($args->help_archive_url) ) {
 			debug_syslog(1, "Bad archive srl\n");
@@ -183,7 +257,7 @@ class xedocsAdminController extends xedocs {
 		$update_args->{'help_name'} = Context::get('help_name');
 		$update_args->{'help_archive_url'} = Context::get('help_archive_url');
 		
-		$update_args->{'help_meta'} = Context::get('help_meta');
+		$update_args->{'version_label'} = Context::get('version_label');
 		$update_args->{'help_tags'} = Context::get('help_tags');
 			
 		$oModuleController->insertModuleExtraVars($module_srl, $update_args);
@@ -377,12 +451,23 @@ class ContentBuilderTocProcessor extends TocProcessor
 			$this->attach_image($toc_node, $element);
 		}
 
+		foreach( $dom->find('link') as $link){
+			if ( isset($link->type) 
+				 && 0 == strcmp('text/css', $link->type ) 
+				&& 0 == strcmp('../nhelp.css', $link->href) )
+			{
+				$link->href='modules/xedocs/styles/nhelp.css';
+			}
+		}
+		
 		$new_content = "".$dom;
 
 		debug_syslog(1, "updating document_srl=".$toc_node->document_srl." content with new links ...\n");
 
+		
 		$this->update_document_content($toc_node, $new_content);
 		debug_syslog(1, "document updated with new links \n");
+		
 	}
 
 	function attach_image($toc_node, $element)

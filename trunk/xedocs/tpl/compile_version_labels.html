@@ -5,6 +5,8 @@
 <form action="./" method="get" onsubmit="return procFilter(this, compile_version)">
 <input type="hidden" name="page" value="{$page}" />
 <input type="hidden" name="module_srl" value="{$module_info->module_srl}" />
+<input type="hidden" name="help_name" value="{$module_info->help_name}" />
+
 
     <h4 class="xeAdmin">{$lang->confirm_compile}</h4>
     <table cellspacing="0" class="rowTable">
@@ -25,6 +27,14 @@
     <tr>
         <th scope="row"><div>{$lang->module_count}</div></th>
         <td>{$module_count}</td>
+    </tr>
+    <tr>
+        <th scope="row"><div>{$lang->manual_set}</div></th>
+        <td>
+        <!--@foreach($manual_set as $man)-->
+        {$man} &nbsp
+        <!--@end-->
+        <td>
     </tr>
     
     <tr>

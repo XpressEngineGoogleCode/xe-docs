@@ -133,8 +133,11 @@ type:none;
 		    Click on node in content tree to see contents.
 		</div>
 	<!--@else-->
-<!--#include("breadcrumbs.html")-->
+
+	<!--#include("breadcrumbs.html")-->
+
 		<div id="rightcontent" style='margin-left:10px; padding-left:10px;' >
+			<div id="versions" > {$version_labels} </div>
 		    {$page_content}
 
 
