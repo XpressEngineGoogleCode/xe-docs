@@ -79,8 +79,14 @@ type:none;
 		<!--@end-->
 		<li class="xedocstreenode" style="list-style-type:none">
 		<!--@if(!$val->childs)-->
+		<!-- 
                  <a href="./?mid={$mid}&amp;document_srl={$val->document_srl}&amp;act=dispXedocsTreeIndex" 
                  onmouseout="this.style.color='black'" onmouseover="this.style.color='blue'" >{$val->title} </a>
+         -->         
+                 <a href="{getSiteUrl($site_module_info->domain, '','mid',$mid,'document_srl',$val->document_srl)}"
+                 onmouseout="this.style.color='black'" onmouseover="this.style.color='blue'" >
+                 {$val->title}</a>
+                 
                  {@ $_pDepth = $val->depth}
 		<!--@end-->
 		<!--   $_pDepth={$_pDepth}  $val->depth={$val->depth} -->
@@ -91,8 +97,14 @@ type:none;
 						onmouseout="this.style.color='black'" onmouseout="this.style.color='black'"
 						 style='cursor:pointer; display:inline; margin:0.5px; width:10px;  '>-
 	                </div>
+	                <!--
 					<a href="./?mid={$mid}&amp;document_srl={$val->document_srl}&amp;act=dispXedocsTreeIndex"
 					onmouseout="this.style.color='black'" onmouseover="this.style.color='blue'" >{$val->title}</a>
+					-->
+					
+					<a href="{getSiteUrl($site_module_info->domain, '','mid',$mid,'document_srl',$val->document_srl)}"
+                    onmouseout="this.style.color='black'" onmouseover="this.style.color='blue'" >
+                    {$val->title}</a>
 					
 	                <div id="{$divid}"  >
               
@@ -101,10 +113,14 @@ type:none;
 	                	  onmouseout="this.style.color='black'"
 	                      style='cursor:pointer; display:inline; margin:0.5px; width:10px;  '>+
 		                </div>					
-						
+						<!--
 	                <a href="./?mid={$mid}&amp;document_srl={$val->document_srl}&amp;act=dispXedocsTreeIndex" 
 	                 onmouseout="this.style.color='black'" onmouseover="this.style.color='blue'" >{$val->title}</a>
-					
+					-->
+					<a href="{getSiteUrl($site_module_info->domain, '','mid',$mid,'document_srl',$val->document_srl)}"
+                    onmouseout="this.style.color='black'" onmouseover="this.style.color='blue'" >
+                    {$val->title}</a>
+                    					
 	                <div id="{$divid}" style="visibility:hidden; display:none;" >
                <!--@end-->
 			
@@ -144,10 +160,21 @@ type:none;
 		<div class="wikiReadFooter" style="width:70%; float:right;">
 			<div class="wikiNavigation" >
 			<!--@if($oDocumentPrev)-->
+				<!--
 				<a href="./?document_srl={$oDocumentPrev->document_srl}&act=dispXedocsTreeIndex" class="wikiPrev">&laquo; {$oDocumentPrev->getTitle()}</a>
+				-->
+					<a href="{getSiteUrl($site_module_info->domain, '','mid',$mid,'document_srl',$oDocumentPrev->document_srl)}" class="wikiPrev"
+                     >
+                    {$oDocumentPrev->getTitle()}</a>
+                    				
 			<!--@end-->
 			<!--@if($oDocumentNext)-->
+			    <!--
 				<a href="./?document_srl={$oDocumentNext->document_srl}&act=dispXedocsTreeIndex" class="wikiNext">{$oDocumentNext->getTitle()} &raquo;</a>
+				-->
+				<a href="{getSiteUrl($site_module_info->domain, '','mid',$mid,'document_srl',$oDocumentNext->document_srl)}"
+                    class="wikiNext" >
+                    {$oDocumentNext->getTitle()}</a>
 			<!--@end-->
 			</div>
 		<div>

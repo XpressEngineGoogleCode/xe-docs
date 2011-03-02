@@ -86,8 +86,8 @@ class xedocsController extends xedocs {
 
 		$entry = $oDocumentModel->getAlias($output->get('document_srl'));
 
-		if($entry) {
-			$site_module_info = Context::get('site_module_info');
+		$site_module_info = Context::get('site_module_info');
+		if($entry) {			
 			$url = getSiteUrl($site_module_info->document,'','mid',$this->module_info->mid,'entry',$entry);
 		} else {
 			$url = getSiteUrl($site_module_info->document,'','document_srl',$output->get('document_srl'));

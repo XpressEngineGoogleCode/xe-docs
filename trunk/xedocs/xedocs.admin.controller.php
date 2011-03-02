@@ -392,7 +392,13 @@ class ContentBuilderTocProcessor extends TocProcessor
 
 		if( !isset($document_srl) ) return false;
 
-		return "./?module_srl=".$this->module_srl."&document_srl=".$document_srl;
+		$oDocumentModel = $this->controller->getModel('document');
+		$site_module_info = Context::get('site_module_info');
+		
+		$url = getSiteUrl($site_module_info->document,'','document_srl',$document_srl);
+		
+		return $url;
+		
 	}
 
 	function resolve_links($toc_node)

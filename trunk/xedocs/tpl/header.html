@@ -8,9 +8,11 @@
 <div class="header4">
     <!--@if($module_info->mid)-->
     <h4 class="xeAdmin">{$module_info->mid} <!--@if($module_info->is_default=='Y')--><span class="bracket">({$lang->is_default})</span><!--@end--> <span class="vr">|</span> 
-          <!--   <a href="{getSiteUrl($module_info->domain,'','mid',$module_info->mid)}" onclick="window.open(this.href); return false;" class="view">View Manual</a>
-          -->
+             <a href="{getSiteUrl($module_info->domain,'','mid',$module_info->mid)}" onclick="window.open(this.href); return false;" class="view">View Manual</a>
+
+          <!--
           <a href="./?mid={$module_info->mid}&act=dispXedocsTreeIndex" onclick="window.open(this.href); return false;" > View Manual </a>"
+          -->
           </h4>
     <!--@end-->
 

@@ -199,8 +199,15 @@ class xedocsView extends xedocs {
 	{
 
 		if( !isset($document_srl) ) return false;
-
-		return "./?module_srl=".$this->module_srl."&document_srl=".$document_srl;
+		
+		$oDocumentModel = &getModel('document');
+		$site_module_info = Context::get('site_module_info');
+		
+		$url = getSiteUrl($site_module_info->document,'','document_srl',$document_srl);
+		
+		return $url;
+		
+		//return "./?module_srl=".$this->module_srl."&document_srl=".$document_srl;
 	}
 	
 	
