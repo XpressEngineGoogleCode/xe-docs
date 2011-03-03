@@ -217,10 +217,12 @@ class xedocsModel extends xedocs {
 		$site_module_info = Context::get('site_module_info');
 		
 		$oDocumentModel = &getModel('document');
+		$oModuleModel = &getModel('module');
 		$site_module_info = Context::get('site_module_info');
 		
 		foreach($parents as $parent){
-			$url = getSiteUrl($site_module_info->document, '', 'document_srl',$parent->document_srl);
+			$module_info = $oModuleModel->getModuleInfoByDocumentSrl($parent->document_srl);
+			$url = getSiteUrl($site_module_info->document, '', 'mid', $module_info->mid, 'document_srl',$parent->document_srl);
 			$parent->{'href'} = $url;
 		}
 	}

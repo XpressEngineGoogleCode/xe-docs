@@ -394,8 +394,11 @@ class ContentBuilderTocProcessor extends TocProcessor
 
 		$oDocumentModel = $this->controller->getModel('document');
 		$site_module_info = Context::get('site_module_info');
+		$oModuleModel = $this->controller->getModel('module');
 		
-		$url = getSiteUrl($site_module_info->document,'','document_srl',$document_srl);
+		$module_info = $oModuleModel->getModuleInfoByDocumentSrl($document_srl);
+		
+		$url = getSiteUrl($site_module_info->document,'','mid', $module_info->mid, 'document_srl',$document_srl);
 		
 		return $url;
 		
