@@ -201,13 +201,17 @@ class xedocsView extends xedocs {
 		if( !isset($document_srl) ) return false;
 		
 		$oDocumentModel = &getModel('document');
-		$site_module_info = Context::get('site_module_info');
+		$oModuleModel = &getModel('module');
+
+		$module_info = $oModuleModel->getModuleInfoByDocumentSrl($document_srl);
 		
-		$url = getSiteUrl($site_module_info->document,'','document_srl',$document_srl);
+		$site_module_info = Context::get('site_module_info');
+
+		$url = getSiteUrl($site_module_info->document,'','mid', $module_info->mid, 'document_srl',$document_srl);
+		
 		
 		return $url;
 		
-		//return "./?module_srl=".$this->module_srl."&document_srl=".$document_srl;
 	}
 	
 	
@@ -220,13 +224,25 @@ class xedocsView extends xedocs {
 		$result = "";
 
 		$varr = explode("|", $versions);
+		$labels = array();
+		$sversions = array();
 		foreach($varr as $v){
 			$values = explode("->", $v);
+			
 			$label = $values[0];
-			$doc_srl =  $values[1];
-			
-			$result .= "<a href='".$this->get_document_link($doc_srl)."'> ".$label." </a> &nbsp";
-			
+			$doc_srl = $values[1];
+			$labels[] = $label; 
+			$sversions[$label] = $doc_srl;
+			//$result .= "<a href='".$this->get_document_link($doc_srl)."'> ".$label." </a> &nbsp";
+		}
+		
+		sort($labels);
+		//debug_syslog(1,"Sorted versions: ".print_r($labels, true)."\n");
+		
+		foreach($labels as  $l)
+		{
+			$doc_srl = $sversions[$l];
+			$result .= "<a href='".$this->get_document_link($doc_srl)."'> ".$l." </a> &nbsp";
 		}
 		
 		return $result;	
