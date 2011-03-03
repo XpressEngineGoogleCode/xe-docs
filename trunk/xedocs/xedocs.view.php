@@ -150,10 +150,11 @@ class xedocsView extends xedocs {
 		$this->setTemplateFile('tree_list');
 
 		$document_srl = Context::get('document_srl');
+		$oModuleModel = &getModel('module');
+		$module_info = $oModuleModel->getModuleInfoByModuleSrl($this->module_srl);
+		Context::set("module_info", $module_info);
 		if (!isset($document_srl) )
 		{
-			$oModuleModel = &getModel('module');
-			$module_info = $oModuleModel->getModuleInfoByModuleSrl($this->module_srl);
 			if(!isset($module_info->first_node_srl)){
 				syslog(1, "dispXedocsTreeIndex: we have no document_srl\n");
 

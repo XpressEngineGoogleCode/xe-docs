@@ -98,6 +98,50 @@
         </td>
     </tr>
     <tr>
+    
+<tr class="row2">
+    <th scope='col'><div>{$lang->admin_import_manual_collection_name}</div></th>
+	  <td><input type="text" name = "help_name" id="help_name" class="inputTypeText w400" value="{htmlspecialchars($module_info->help_name)}" />
+	  <p>{$lang->about_manual_collection}</p>
+	  </td>
+</tr>
+
+
+<tr >   
+    <th scope="col"><div>{$lang->admin_import_manual_tags}</div></th>
+	  <td><input type="text" name = "help_tags" id="help_tags" class="inputTypeText w400" value="{htmlspecialchars($module_info->help_tags)}" />
+	  </td>
+
+</tr>
+
+
+
+
+<tr class="row2">
+
+    <th scope='col'><div>{$lang->admin_import_manual_version}</div></th>
+	  <td><input type="text" name = "version_label" id="version_label" class="inputTypeText w400" value="{htmlspecialchars($module_info->version_label)}" /> 
+	  <p>{$lang->about_manual_version}</p> 
+	  </td>
+</tr>
+
+<tr>
+    <th scope="col"><div>{$lang->manual_default_toc_location}</div></th>
+    
+    
+	  <td>
+	        <select name="toc_location">
+                <option value="Right" <!--@if($module_info->toc_location=='Right')-->selected="selected"<!--@end--> >{$lang->right}</option>
+                <option value="Left" <!--@if($module_info->toc_location!='Right')-->selected="selected"<!--@end--> >{$lang->left}</option>
+            </select>
+ 	     	<p>{$lang->about_manual_default_toc_location}</p>
+	  </td>
+	  
+</tr>    
+    
+    
+    
+    
         <th colspan="2" class="button">
             <span class="button black strong"><input type="submit" value="{$lang->cmd_registration}" accesskey="s" /></span>
             <span class="button"><input type="button" value="{$lang->cmd_back}" onclick="history.back(); return false;" /></span>

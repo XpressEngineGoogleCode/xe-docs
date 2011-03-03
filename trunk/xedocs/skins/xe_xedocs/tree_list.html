@@ -10,12 +10,34 @@
    </script>
 
 <style type="text/css">
-.leftcontent {
+<!--@if($module_info->toc_location!='Right') -->
+.leftcontent 
+{
   float:left;
   width:100%;
   background:#fff;
+  
+}
+.scroll-pane{
+  width:30%;
+  float:left;
 
-  }
+}
+
+<!--@else-->
+.leftcontent 
+{
+  float:right;
+  width:100%;
+  background:#fff;
+}
+.scroll-pane{
+  width:30%;
+  float:right;
+
+}
+
+<!--@end-->
   
 #foo{
   width:68%;
@@ -24,11 +46,6 @@
   float:right;
 }
 
-.scroll-pane{
-  width:30%;
-  float:left;
-
-}
 
 .xedocstreenode {
 clear: both;
@@ -49,7 +66,9 @@ type:none;
 </style>
 
   <div class="treeUI" style='width:300px;display:block;' >
-      <p id='eselection-scroll' style="width:20px;text-align=center;" onclick="hidediv1('selection-scroll'); return false;" class="button"><span>-</span></p>
+      <p id='eselection-scroll' style="width:20px;text-align=center;" onclick="hidediv1('selection-scroll'); return false;" 
+    	  onmouseout="this.style.color='black'" onmouseover="this.style.color='blue'"
+      class="button"><span>-</span></p>
 
     <!--@if($grant->manager)-->
     <p style="position:relative; top:-27px; left:25px;">
@@ -156,8 +175,11 @@ type:none;
 			<div id="versions" > {$version_labels} </div>
 		    {$page_content}
 
-
-		<div class="wikiReadFooter" style="width:70%; float:right;">
+<!--@if($module_info->toc_location=='Left')-->
+		<div id='footer_links' class="wikiReadFooter" style="width:70%; float:right;">
+<!--@else-->
+		<div id='footer_links' class="wikiReadFooter" style="width:70%; float:left;">
+<!--@end-->
 			<div class="wikiNavigation" >
 			<!--@if($oDocumentPrev)-->
 				<!--

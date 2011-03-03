@@ -40,6 +40,7 @@
           div.style.display="block";
           div.style.width='30%';
           var id = div.id;
+          document.getElementById('footer_links').style.width="70%";
           document.getElementById('rightcontent').style.width="";
           document.getElementById('rightcontent').style.position="";
           document.getElementById('rightcontent').style.left="";
@@ -54,7 +55,8 @@
 
         function hidediv1(id){
 
-            document.getElementById('rightcontent').style.width="100%";
+            document.getElementById('rightcontent').style.width="99%";
+            document.getElementById('footer_links').style.width="99%";
             
             //document.getElementById('rightcontent').style.position="absolute";
             //document.getElementById('rightcontent').style.left="-620px";

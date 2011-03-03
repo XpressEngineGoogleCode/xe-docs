@@ -37,6 +37,7 @@ class xedocsAdminController extends xedocs {
 		$oModuleModel = &getModel('module');
 			
 		$args = Context::getRequestVars();
+		debug_syslog(1, "procXedocsAdminInsertManual args: ".print_r($args, true)."\n");	
 		$args->module = 'xedocs';
 		$args->mid = $args->manual_name;
 		if($args->use_comment!='N'){
