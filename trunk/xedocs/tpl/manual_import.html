@@ -140,8 +140,8 @@
     
 	  <td>
 	        <select name="toc_location">
-                <option value="Left" <!--@if($module_info->toc_location=='L')-->selected="selected"<!--@end--> >{$lang->left}</option>
-                <option value="Right" <!--@if($module_info->toc_location!='L')-->selected="selected"<!--@end--> >{$lang->right}</option>
+                <option value="Right" <!--@if($module_info->toc_location=='Right')-->selected="selected"<!--@end--> >{$lang->right}</option>
+                <option value="Left" <!--@if($module_info->toc_location!='Right')-->selected="selected"<!--@end--> >{$lang->left}</option>
             </select>
  	     	<p>{$lang->about_manual_default_toc_location}</p>
 	  </td>
