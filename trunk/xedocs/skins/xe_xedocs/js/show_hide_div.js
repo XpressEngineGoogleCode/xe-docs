@@ -55,8 +55,8 @@
 
         function hidediv1(id){
 
-            document.getElementById('rightcontent').style.width="99%";
-            document.getElementById('footer_links').style.width="99%";
+            document.getElementById('rightcontent').style.width="98%";
+            document.getElementById('footer_links').style.width="98%";
             
             //document.getElementById('rightcontent').style.position="absolute";
             //document.getElementById('rightcontent').style.left="-620px";

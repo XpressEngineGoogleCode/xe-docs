@@ -168,6 +168,7 @@ class xedocsView extends xedocs {
 				$document_srl = $module_info->first_node_srl;
 			}
 		}
+		
 		Context::set('has_page', true);
 		syslog(1, "dispXedocsTreeIndex: document_srl=".$document_srl."\n");
 		
@@ -175,10 +176,14 @@ class xedocsView extends xedocs {
 		$oDocument = $oDocumentModel->getDocument($document_srl);
 		$content = $oDocument->getContent(false);
 		$oDocument->add('content', $content);
-			
+		debug_syslog(1, "added content\n");
 		$module_srl=$oDocument->get('module_srl');
 		$parents = $oXedocsModel->getParents($document_srl, $module_srl);
 		Context::set("parents", $parents);
+		debug_syslog(1, "added parents\n");
+		$children = $oXedocsModel->getChildren($document_srl, $module_srl);
+		Context::set("children", $children);
+		debug_syslog(1, "added childres\n");
 		//Context::set("oDocument", $oDocument);
 		Context::set("page_content", $content);
 			
@@ -193,7 +198,7 @@ class xedocsView extends xedocs {
 		if($next_document_srl){
 			Context::set('oDocumentNext', $oDocumentModel->getDocument($next_document_srl));
 		}
-			
+		debug_syslog(1, "-----------tree complete \n");
 	}
 
 	function get_document_link($document_srl)

@@ -50,6 +50,7 @@
 .xedocstreenode {
 clear: both;
 type:none;
+
 }
 
 .tools{
@@ -80,103 +81,49 @@ type:none;
 
 <div id="selection-scroll" class="scroll-pane" >
 	<div id="treeList" class="leftcontent" >
-	{@ $_pDepth = 0;}
-	{@ $divid=0; }
-	{@ $n=0; }
-	<ul class="xedocstree" type="none">
-	<!--@foreach($list as $key => $val)-->
-		{@ $n++; }
-		<!--@if($_pDepth > $val->depth)-->
-			<!--@for($i=$val->depth; $i<$_pDepth; $i++)-->
-				
-				</ul>
-				</li>
-				
-			<!--@end-->
+	
+	<ul>
+         <!--@for($_i=count($parents)-1; $_i>=0; $_i--)-->
+  		
+         <li class="xedocstreenode" style="list-style-type:none;">
+         	 <a href="{$parents[$_i]->href}"onmouseout="this.style.color='black'" onmouseover="this.style.color='blue'"><img src="modules/xedocs/skins/xe_xedocs/img/up-arrow.png"/> {$parents[$_i]->title} </a></li>
+        
+ 		<!--@end-->
 		
-			{@ $_pDepth = $val->depth}
-		<!--@end-->
-		<li class="xedocstreenode" style="list-style-type:none">
-		<!--@if(!$val->childs)-->
-		<!-- 
-                 <a href="./?mid={$mid}&amp;document_srl={$val->document_srl}&amp;act=dispXedocsTreeIndex" 
-                 onmouseout="this.style.color='black'" onmouseover="this.style.color='blue'" >{$val->title} </a>
-         -->         
-                 <a href="{getSiteUrl($site_module_info->domain, '','mid',$mid,'document_srl',$val->document_srl)}"
-                 onmouseout="this.style.color='black'" onmouseover="this.style.color='blue'" >
-                 {$val->title}</a>
-                 
-                 {@ $_pDepth = $val->depth}
-		<!--@end-->
-		<!--   $_pDepth={$_pDepth}  $val->depth={$val->depth} -->
-			
-			<!--@if($val->childs)-->
-				<!--@if($n==1)-->
-					<div id="e{$divid}" onclick="hidediv('{$divid}');" onmouseover="this.style.color='blue'"
-						onmouseout="this.style.color='black'" onmouseout="this.style.color='black'"
-						 style='cursor:pointer; display:inline; margin:0.5px; width:10px;  '>-
-	                </div>
-	                <!--
-					<a href="./?mid={$mid}&amp;document_srl={$val->document_srl}&amp;act=dispXedocsTreeIndex"
-					onmouseout="this.style.color='black'" onmouseover="this.style.color='blue'" >{$val->title}</a>
-					-->
-					
-					<a href="{getSiteUrl($site_module_info->domain, '','mid',$mid,'document_srl',$val->document_srl)}"
-                    onmouseout="this.style.color='black'" onmouseover="this.style.color='blue'" >
-                    {$val->title}</a>
-					
-	                <div id="{$divid}"  >
-              
-              		 <!--@else-->
-	                <div id="e{$divid}" onclick="showdiv('{$divid}');"  onmouseover="this.style.color='blue'" 
-	                	  onmouseout="this.style.color='black'"
-	                      style='cursor:pointer; display:inline; margin:0.5px; width:10px;  '>+
-		                </div>					
-						<!--
-	                <a href="./?mid={$mid}&amp;document_srl={$val->document_srl}&amp;act=dispXedocsTreeIndex" 
-	                 onmouseout="this.style.color='black'" onmouseover="this.style.color='blue'" >{$val->title}</a>
-					-->
-					<a href="{getSiteUrl($site_module_info->domain, '','mid',$mid,'document_srl',$val->document_srl)}"
-                    onmouseout="this.style.color='black'" onmouseover="this.style.color='blue'" >
-                    {$val->title}</a>
-                    					
-	                <div id="{$divid}" style="visibility:hidden; display:none;" >
-               <!--@end-->
-			
-				{@$_pDepth++; $divid++;}
-				<ul class="xedocstree" type="none">
-			<!--@else-->
-			</li>
-			<!--@end-->
-		<!--@end-->
-		<!--@for($i=0;$i<$_pDepth;$i++)-->
-				</ul>
-         	  </div>
-          	  
-	    <!--@end-->
-				
-	</li>
-	</ul>	
-		
+         <!--@for($_i=0; $_i<count($children); $_i++)-->
+  		
+         
+         <li class="xedocstreenode" style="list-style-type:none;">
+         	<a href="{$children[$_i]->href}"onmouseout="this.style.color='black'" onmouseover="this.style.color='blue'"><img src="modules/xedocs/skins/xe_xedocs/img/down-to-right-arrow.png"/> {$children[$_i]->title} </a></li>
+       	<!--@end-->
 
+        
+	    
+	</ul>
+
+
+        
+         
+
+	</div>
 
 </div>
 
 
     <!--@if(!$has_page)-->
-		<div id="rightcontent" style='margin:2px; color:red;' >
+		<div id="rightcontent" style='margin:2px; color:red; margin-right:20px;' >
 		    Click on node in content tree to see contents.
 		</div>
 	<!--@else-->
 
 	<!--#include("breadcrumbs.html")-->
 
-		<div id="rightcontent" style='margin-left:10px; padding-left:10px;' >
+		<div id="rightcontent" style='margin-left:10px; padding-left:10px; margin-right:20px;' >
 			<div id="versions" > {$version_labels} </div>
 		    {$page_content}
 
 <!--@if($module_info->toc_location=='Left')-->
-		<div id='footer_links' class="wikiReadFooter" style="width:70%; float:right;">
+		<div id='footer_links' class="wikiReadFooter" style="width:70%; float:right; ">
 <!--@else-->
 		<div id='footer_links' class="wikiReadFooter" style="width:70%; float:left;">
 <!--@end-->
