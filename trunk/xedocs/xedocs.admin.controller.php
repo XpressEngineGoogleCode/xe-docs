@@ -35,7 +35,12 @@ class xedocsAdminController extends xedocs {
 
 		$oModuleController = &getController('module');
 		$oModuleModel = &getModel('module');
-			
+		
+		$toc_location = Context::get('toc_location'); 
+		if( !isset($toc_location) ){
+			Context::set('toc_location', "Left"); //set default
+		}
+		
 		$args = Context::getRequestVars();
 		debug_syslog(1, "procXedocsAdminInsertManual args: ".print_r($args, true)."\n");	
 		$args->module = 'xedocs';
@@ -105,8 +110,6 @@ class xedocsAdminController extends xedocs {
 
 		debug_syslog(1, "module_srl='".$module_srl."'\n");
 		debug_syslog(1, "help_name='".$help_name."'\n");
-		
-		
 		
 		$manual_set = $oXedocsModel->getModuleSet($help_name);
 		$manual_versions = $oXedocsModel->getManualVersions($manual_set);
@@ -241,8 +244,6 @@ class xedocsAdminController extends xedocs {
 
 		debug_syslog(1, "Import complete , toc has ".count($toc->children)." childrens\n");
 
-		
-
 		$man = new DocumetationManual();
 		$man->name = $args->help_name;
 
@@ -251,8 +252,6 @@ class xedocsAdminController extends xedocs {
 		}
 
 		$man->url = $args->help_archive_url;
-
-		
 		
 		$update_args->{'first_node_srl'} = $output->first_node->document_srl;
 		$update_args->{'help_name'} = Context::get('help_name');
@@ -260,7 +259,15 @@ class xedocsAdminController extends xedocs {
 		
 		$update_args->{'version_label'} = Context::get('version_label');
 		$update_args->{'help_tags'} = Context::get('help_tags');
-			
+
+		$toc_location = Context::get('toc_location');
+		
+		if( !isset($toc_location) ){
+			$toc_location = "Left"; //set default
+		}
+		
+		$update_args->{'toc_location'} = $toc_location;
+		
 		$oModuleController->insertModuleExtraVars($module_srl, $update_args);
 		$msg_code = 'success_updated';
 		
