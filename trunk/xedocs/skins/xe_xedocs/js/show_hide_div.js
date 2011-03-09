@@ -41,6 +41,8 @@
           div.style.width='30%';
           var id = div.id;
           document.getElementById('footer_links').style.width="70%";
+          document.getElementById('comments').style.width="70%";
+          
           document.getElementById('rightcontent').style.width="";
           document.getElementById('rightcontent').style.position="";
           document.getElementById('rightcontent').style.left="";
@@ -57,9 +59,7 @@
 
             document.getElementById('rightcontent').style.width="98%";
             document.getElementById('footer_links').style.width="98%";
-            
-            //document.getElementById('rightcontent').style.position="absolute";
-            //document.getElementById('rightcontent').style.left="-620px";
+            document.getElementById('comments').style.width="98%";
             
           div = document.getElementById(id);
           div.style.visibility="hidden";

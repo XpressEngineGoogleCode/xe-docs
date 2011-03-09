@@ -143,7 +143,6 @@ class xedocsView extends xedocs {
 
 	function dispXedocsTreeIndex()
 	{
-		debug_syslog(1, "dispXedocsTreeIndex\n");
 		$oXedocsModel = &getModel('xedocs');
 		$value = $oXedocsModel->readXedocsTreeCache($this->module_srl);
 		Context::set('list', $value);
@@ -153,11 +152,11 @@ class xedocsView extends xedocs {
 		$oModuleModel = &getModel('module');
 		$module_info = $oModuleModel->getModuleInfoByModuleSrl($this->module_srl);
 		Context::set("module_info", $module_info);
+
 		if (!isset($document_srl) )
 		{
-			if(!isset($module_info->first_node_srl)){
-				syslog(1, "dispXedocsTreeIndex: we have no document_srl\n");
-
+			if(!isset($module_info->first_node_srl))
+			{
 				foreach( $value as $i=>$obj){
 					$document_srl = $obj->document_srl;
 					break;
@@ -174,17 +173,18 @@ class xedocsView extends xedocs {
 		
 		$oDocumentModel = &getModel("document");
 		$oDocument = $oDocumentModel->getDocument($document_srl);
+		
+		Context::set('oDocument', $oDocument);
+
 		$content = $oDocument->getContent(false);
 		$oDocument->add('content', $content);
-		debug_syslog(1, "added content\n");
+		
 		$module_srl=$oDocument->get('module_srl');
 		$parents = $oXedocsModel->getParents($document_srl, $module_srl);
 		Context::set("parents", $parents);
-		debug_syslog(1, "added parents\n");
+		
 		$children = $oXedocsModel->getChildren($document_srl, $module_srl);
 		Context::set("children", $children);
-		debug_syslog(1, "added childres\n");
-		//Context::set("oDocument", $oDocument);
 		Context::set("page_content", $content);
 			
 		$versions = $oXedocsModel->get_versions($module_srl, $oDocument);
@@ -198,7 +198,8 @@ class xedocsView extends xedocs {
 		if($next_document_srl){
 			Context::set('oDocumentNext', $oDocumentModel->getDocument($next_document_srl));
 		}
-		debug_syslog(1, "-----------tree complete \n");
+
+		Context::addJsFilter($this->module_path.'tpl/filter', 'insert_comment.xml');
 	}
 
 	function get_document_link($document_srl)

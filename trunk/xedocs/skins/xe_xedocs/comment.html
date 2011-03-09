@@ -1,18 +1,22 @@
-<!--@if($oDocument->getCommentCount())-->
-<hr class="hr" />
-<div class="feedbackList" id="reply">
+<!--@if(!$oDocument->getCommentCount())-->
+No Comments
+<!--@else-->
 
-	<h3 class="feedbackHeader">
+<div class="feedbackList" id="reply">
+<!-- 
+	<h3 class="feedbackHeader" style='visibility:hidden'>
 		<!--@if($grant->write_comment && $oDocument->allowComment()) -->
 			{$lang->comment} <em>'{$oDocument->getCommentcount()}'</em>
 		<!--@end-->
 	</h3>
-	
+ -->
+ 	
 	<div class="replyList">
 
 		{@ $_comment_list = $oDocument->getComments() }
 		<!--@foreach($_comment_list as $key => $comment)-->
 				<div class="item <!--@if($comment->get('depth'))-->itemReply<!--@end-->" id="comment_{$comment->comment_srl}">
+					
 					<div class="indent" <!--@if($comment->get('depth'))--> style="margin-left:{($comment->get('depth'))*15}px" <!--@end-->>
 					
 					<div class="itemAside">
@@ -31,7 +35,7 @@
 						<!--@end-->
 						</h4>
 	
-						<p class="meta">
+						<p class="meta" style='visibility:hidden'>
 							{$comment->getRegdate('Y.m.d')}
 							{$comment->getRegdate('H:i:s')}
 						<!--@if($grant->manager || $module_info->display_ip_address!='N')-->
@@ -40,7 +44,7 @@
 						</p>
 						
 						<!--@if($comment->get('voted_count')!=0 || $comment->get('blamed_count') != 0)-->
-						<dl class="vote">
+						<dl class="vote" style='visibility:hidden'>
 							<dt class="love"><span>{$lang->cmd_vote}</span></dt>
 							<dd>{$comment->get('voted_count')?$comment->get('voted_count'):0}</dd>
 							<dt class="hate"><span>{$lang->cmd_vote_down}</span></dt>
@@ -64,6 +68,7 @@
 							</dl>
 						</form>
 					<!--@else-->
+					
 					{$comment->getContent(false)}
 
 					<!--@if($comment->hasUploadedFIles())-->
@@ -86,7 +91,7 @@
 					<!--@end-->
 						<li><a href="{getUrl('act','dispXedocsReplyComment','comment_srl',$comment->comment_srl)}">{$lang->cmd_reply}</a></li> 
 					<!--@if($comment->isGranted() || !$comment->get('member_srl'))-->
-						<li><a href="{getUrl('act','dispXedocsModifyComment','comment_srl',$comment->comment_srl)}">{$lang->cmd_modify}</a></li> 
+						<li><a href="{getUrl('act','dispXedocsModifyComment','comment_srl',$comment->comment_srl)}">{$lang->cmd_modify_comment}</a></li> 
 						<li><a href="{getUrl('act','dispXedocsDeleteComment','comment_srl',$comment->comment_srl)}">{$lang->cmd_delete}</a></li>
 					<!--@end-->
 					</ul>

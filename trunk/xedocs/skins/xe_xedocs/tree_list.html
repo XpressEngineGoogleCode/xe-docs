@@ -66,18 +66,22 @@ type:none;
 
 </style>
 
-  <div class="treeUI" style='width:300px;display:block;' >
-      <p id='eselection-scroll' style="width:20px;text-align=center;" onclick="hidediv1('selection-scroll'); return false;" 
-    	  onmouseout="this.style.color='black'" onmouseover="this.style.color='blue'"
-      class="button"><span>-</span></p>
 
-    <!--@if($grant->manager)-->
-    <p style="position:relative; top:-27px; left:25px;">
-        <a href="{getUrl('act','dispXedocsModifyTree')}" class="button"><span>{$lang->cmd_modify}</span></a>
-    </p>
-    <!--@end-->
 
-  </div>
+ <div class="treeUI" style='width:300px;display:block;' >
+     <p id='eselection-scroll' style="text-align=center;" onclick="hidediv1('selection-scroll'); return false;" 
+   	  onmouseout="this.style.color='black'" onmouseover="this.style.color='blue'"
+     class="button"><span>-</span></p>
+
+
+
+   <!--@if($grant->manager)-->
+   <p style="position:relative; top:-27px; left:25px;">
+       <a href="{getUrl('act','dispXedocsModifyTree')}" class="button"><span>{$lang->cmd_modify}</span></a>
+   </p>
+   <!--@end-->
+
+ </div>
 
 <div id="selection-scroll" class="scroll-pane" >
 	<div id="treeList" class="leftcontent" >
@@ -96,60 +100,108 @@ type:none;
          <li class="xedocstreenode" style="list-style-type:none;">
          	<a href="{$children[$_i]->href}"onmouseout="this.style.color='black'" onmouseover="this.style.color='blue'"><img src="img/down-to-right-arrow.png"/> {$children[$_i]->title} </a></li>
        	<!--@end-->
-
-        
 	    
 	</ul>
-
-
-        
-         
 
 	</div>
 
 </div>
 
 
-    <!--@if(!$has_page)-->
-		<div id="rightcontent" style='margin:2px; color:red; margin-right:20px;' >
-		    Click on node in content tree to see contents.
-		</div>
-	<!--@else-->
+<!--@if(!$has_page)-->
+	<div id="rightcontent" style='margin:2px; color:red; margin-right:20px;' >
+	    Click on node in content tree to see contents.
+	</div>
+<!--@else-->
 
 	<!--#include("breadcrumbs.html")-->
-
-		<div id="rightcontent" style='margin-left:10px; padding-left:10px; margin-right:20px;' >
-			<div id="versions" > {$version_labels} </div>
-		    {$page_content}
-
-<!--@if($module_info->toc_location=='Left')-->
-		<div id='footer_links' class="wikiReadFooter" style="width:70%; float:right; ">
-<!--@else-->
+	
+	<div id="rightcontent" style='margin-left:10px; padding-left:10px; margin-right:20px;' >
+		<div id="versions" > {$version_labels} </div>
+	    {$page_content}
+	
+	<!--@if($module_info->toc_location=='Left')-->
+		<div id='footer_links' class="wikiReadFooter" style="width:70%; float:right;">
+	<!--@else-->
 		<div id='footer_links' class="wikiReadFooter" style="width:70%; float:left;">
-<!--@end-->
+	<!--@end-->
 			<div class="wikiNavigation" >
+			
 			<!--@if($oDocumentPrev)-->
-				<!--
-				<a href="./?document_srl={$oDocumentPrev->document_srl}&act=dispXedocsTreeIndex" class="wikiPrev">&laquo; {$oDocumentPrev->getTitle()}</a>
-				-->
-					<a href="{getSiteUrl($site_module_info->domain, '','mid',$mid,'document_srl',$oDocumentPrev->document_srl)}" class="wikiPrev"
-                     >
-                    {$oDocumentPrev->getTitle()}</a>
-                    				
+					<a href="{getSiteUrl($site_module_info->domain, '','mid',$mid,'document_srl',$oDocumentPrev->document_srl)}" class="wikiPrev">
+                    {$oDocumentPrev->getTitle()}</a>                   				
 			<!--@end-->
+			
 			<!--@if($oDocumentNext)-->
-			    <!--
-				<a href="./?document_srl={$oDocumentNext->document_srl}&act=dispXedocsTreeIndex" class="wikiNext">{$oDocumentNext->getTitle()} &raquo;</a>
-				-->
-				<a href="{getSiteUrl($site_module_info->domain, '','mid',$mid,'document_srl',$oDocumentNext->document_srl)}"
-                    class="wikiNext" >
+				<a href="{getSiteUrl($site_module_info->domain, '','mid',$mid,'document_srl',$oDocumentNext->document_srl)}" class="wikiNext" >
                     {$oDocumentNext->getTitle()}</a>
 			<!--@end-->
-			</div>
-		<div>
-		</div>
+			
+			</div> <!--end of div wikiNavigation-->
+		</div> <!-- end of footer_links-->
+    </div> <!--end of div right content-->
+<!--@end-->
 
-	<!--@end-->
+<!--@if($module_info->toc_location=='Left')-->
+<div id="ecomments" onclick="hidediv('comments'); return false;" style=" float:right; position:relative; top:10px; width:70%"
+   	  onmouseout="this.style.color='black'" onmouseover="this.style.color='blue'">- Comments</div>
+   	  
+<div id="comments" style=' float:right; position:relative; top:10px; width:70%;' >
+<!--@else-->
+<div id="ecomments" onclick="showdiv('comments'); return false;" style=" float:left; position:relative; top:10px; width:70%"
+   	  onmouseout="this.style.color='black'" onmouseover="this.style.color='blue'">- Comments</div>
+   	  
+<div id="comments" style=' float:left; position:relative; top:10px; width:70%; ' >
+<!--@end-->
+
+<!--@if($oDocument->allowComment())-->
+    <a name="comment"></a>
+    <!-- comment include start -->
+    <!--#include("comment.html")-->
+    <!-- comment included -->
+
+	
+    <!--@if($grant->write_comment && $oDocument->isEnableComment() )-->
+    	
+    	<div id="eadd_comments" onclick="showdiv('add_comments'); return false;" 
+   	  onmouseout="this.style.color='black'" onmouseover="this.style.color='blue'">+ Comment Editor</div>
+   	  
+        <div id="add_comments"; style="visibility:hidden;">
+        <form action="./" method="post" onsubmit="return procFilter(this, insert_comment)" class="wikiEditor" >
+        <input type="hidden" name="mid" value="{$mid}" />
+        <input type="hidden" name="document_srl" value="{$oDocument->document_srl}" />
+        <input type="hidden" name="comment_srl" value="" />
+        <input type="hidden" name="content" value="" />
+            <div class="wikiWrite commentEditor">
+                <div class="editor">{$oDocument->getCommentEditor()}</div>
+
+                <div class="editorOption">
+                <!--@if(!$is_logged)-->
+                   <input type="text" name="nick_name" class="inputText userName" value="{$lang->writer}" onfocus="this.value=''" />
+				   <input type="password" name="password" class="inputText userPw" value="{$lang->password}" onfocus="this.value=''" />
+				   <input type="text" name="email_address" class="inputText emailAddress" value="{$lang->email_address}" onfocus="this.value=''" />
+				   <input type="text" name="homepage" class="inputText homePage" value="{$lang->homepage}" onfocus="this.value=''" />
+                <!--@end-->
+
+				<!--@if($is_logged)-->
+					<input type="checkbox" name="notify_message" value="Y" id="notify_message" class="inputCheck" />
+					<label for="notify_message">{$lang->notify}</label>
+				<!--@end-->
+					<input type="checkbox" name="is_secret" value="Y" id="is_secret" class="inputCheck" />
+					<label for="is_secret">{$lang->secret}</label>
+                </div>
+        
+                <div class="wikiNavigation">
+                    <span class="buttonOfficial"><input type="submit" value="{$lang->cmd_comment_registration}" accesskey="s" /></span>
+                </div>
+
+            </div>
+
+        </form>
+        </div>
+    <!--@end-->
+<!--@end-->
+
 </div>
 
 <!--#include("footer.html")-->

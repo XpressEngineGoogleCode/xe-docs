@@ -57,16 +57,12 @@ class xedocsModel extends xedocs {
 
 		$oXedocsController = &getController('xedocs');
 
-		debug_syslog(1, "readXedocsTreeCache module_srl=".$module_srl." \n");
-
 		if(!$module_srl) {
 			return new Object(-1,'msg_invalid_request');
 		}
 
 		$dat_file = $this->getDatCacheFilename($module_srl);
 			
-		debug_syslog(1, "readXedocsTreeCache getDatCacheFilename=".$dat_file." \n");
-
 		if(!file_exists($dat_file)) {
 			$oXedocsController->recompileTree($module_srl);
 		}

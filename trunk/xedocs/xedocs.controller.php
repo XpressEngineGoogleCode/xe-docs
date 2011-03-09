@@ -125,6 +125,8 @@ class xedocsController extends xedocs {
 
 	function procXedocsInsertComment() {
 
+		debug_syslog(1, "procXedocsInsertComment\n");
+		
 		if(!$this->grant->write_comment){
 			return new Object(-1, 'msg_not_permitted');
 		}
