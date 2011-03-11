@@ -406,7 +406,14 @@ class ContentBuilderTocProcessor extends TocProcessor
 		
 		$module_info = $oModuleModel->getModuleInfoByDocumentSrl($document_srl);
 		
-		$url = getSiteUrl($site_module_info->document,'','mid', $module_info->mid, 'document_srl',$document_srl);
+		$entry = $oDocumentModel->getAlias($document_srl);
+		if($entry){
+			
+			$url = getSiteUrl($site_module_info->document,'','mid',$module_info->mid,'entry',$entry);
+			
+		}else{
+			$url = getSiteUrl($site_module_info->document,'','mid', $module_info->mid, 'document_srl',$document_srl);
+		}
 		
 		return $url;
 		

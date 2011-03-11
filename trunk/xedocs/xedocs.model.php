@@ -218,7 +218,17 @@ class xedocsModel extends xedocs {
 
 		foreach($nodes as $node){
 			$module_info = $oModuleModel->getModuleInfoByDocumentSrl($node->document_srl);
-			$url = getSiteUrl($site_module_info->document, '', 'mid', $module_info->mid, 'document_srl',$node->document_srl);
+			
+			$entry = $oDocumentModel->getAlias($node->document_srl);
+			
+			if( $entry ){
+				
+				$url = getSiteUrl($site_module_info->document,'','mid',$module_info->mid,'entry',$entry);
+				
+			}else
+			{
+				$url = getSiteUrl($site_module_info->document, '', 'mid', $module_info->mid, 'document_srl',$node->document_srl);
+			}
 			$node->{'href'} = $url;
 		}
 	}

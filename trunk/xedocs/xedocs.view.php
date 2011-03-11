@@ -169,7 +169,7 @@ class xedocsView extends xedocs {
 		}
 		
 		Context::set('has_page', true);
-		syslog(1, "dispXedocsTreeIndex: document_srl=".$document_srl."\n");
+		debug_syslog(1, "dispXedocsTreeIndex: document_srl=".$document_srl."\n");
 		
 		$oDocumentModel = &getModel("document");
 		$oDocument = $oDocumentModel->getDocument($document_srl);
@@ -189,7 +189,8 @@ class xedocsView extends xedocs {
 			
 		$versions = $oXedocsModel->get_versions($module_srl, $oDocument);
 		//Context::set("version_labels", trim($versions) );
-		Context::set("version_labels", $this->format_versions(trim($versions)));
+		$version_labels = $this->format_versions(trim($versions), $document_srl);
+		Context::set("version_labels",  $version_labels );
 		
 		list($prev_document_srl, $next_document_srl) = $oXedocsModel->getPrevNextDocument($this->module_srl, $document_srl);
 		if($prev_document_srl){
@@ -199,6 +200,42 @@ class xedocsView extends xedocs {
 			Context::set('oDocumentNext', $oDocumentModel->getDocument($next_document_srl));
 		}
 
+		
+	}
+	
+	
+	function dispXedocsCommentEditor()
+	{
+		debug_syslog(1, "dispXedocsCommentEditor\n");
+		$document_srl = Context::get('document_srl');
+		$oModuleModel = &getModel('module');
+		$module_info = $oModuleModel->getModuleInfoByModuleSrl($this->module_srl);
+		Context::set("module_info", $module_info);
+
+		if (!isset($document_srl) )
+		{
+			if(!isset($module_info->first_node_srl))
+			{
+				foreach( $value as $i=>$obj){
+					$document_srl = $obj->document_srl;
+					break;
+				}
+				//Context::set('has_page', false);
+				//return;
+			}else{
+				$document_srl = $module_info->first_node_srl;
+			}
+		}
+		
+		Context::set('has_page', true);
+		debug_syslog(1, "dispXedocsCommentEditor: document_srl=".$document_srl."\n");
+		
+		$oDocumentModel = &getModel("document");
+		$oDocument = $oDocumentModel->getDocument($document_srl);
+		
+		Context::set('oDocument', $oDocument);
+		
+		$this->setTemplateFile('comment_editor');
 		Context::addJsFilter($this->module_path.'tpl/filter', 'insert_comment.xml');
 	}
 
@@ -214,21 +251,30 @@ class xedocsView extends xedocs {
 		
 		$site_module_info = Context::get('site_module_info');
 
-		$url = getSiteUrl($site_module_info->document,'','mid', $module_info->mid, 'document_srl',$document_srl);
+		$entry = $oDocumentModel->getAlias($document_srl);
 		
+		if($entry){
+			
+			 $url = getSiteUrl($site_module_info->document,'','mid',$module_info->mid,'entry',$entry);
+			 
+		}else{
+			
 		
+			$url = getSiteUrl($site_module_info->document,'','mid', $module_info->mid, 'document_srl',$document_srl);
+		}
+	
 		return $url;
 		
 	}
 	
 	
-	function format_versions($versions)
+	function format_versions($versions, $document_srl)
 	{
 		if( !isset($versions) || 0 == strcmp('', $versions)){
 			return "";
 		}
 	
-		$result = "";
+		$result = array();
 
 		$varr = explode("|", $versions);
 		$labels = array();
@@ -249,11 +295,24 @@ class xedocsView extends xedocs {
 		foreach($labels as  $l)
 		{
 			$doc_srl = $sversions[$l];
-			$result .= "<a href='".$this->get_document_link($doc_srl)."'> ".$l." </a> &nbsp";
+			
+			$obj = null;
+			
+			$obj->{'is_current_version'}= $doc_srl == $document_srl;
+			
+			$obj->{'doc_srl'} = $doc_srl;
+			$obj->{'vlabel'} = $l;
+			
+			if( $doc_srl != $document_srl ){
+				$obj->{'href'} = $this->get_document_link($doc_srl);
+			}else{
+				$obj->{'href'} = "";
+			}
+			
+			$result[] = $obj;
 		}
-		
+		//debug_syslog(1,"Result versions: ".print_r($result, true)."\n");
 		return $result;	
-		
 	
 	}
 	

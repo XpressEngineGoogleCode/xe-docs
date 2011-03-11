@@ -3,9 +3,10 @@
 
  <script type="text/javascript">
 
-     function show_content(which)
-     {
-          document.getElementById('rightcontent').innerHTML = '<'+'object id="foo" name="foo" type="text/html" data="'+which.href+'"><\/object>';
+
+     function show_comment_editor(which){
+    	 document.getElementById('comment_editor').innerHTML = '<'+'object id="foo" name="foo" type="text/html" data="'+which.href+'"><\/object>';
+    	 document.getElementById('show_comments').style.visibility='hidden';
      }
    </script>
 
@@ -41,7 +42,7 @@
   
 #foo{
   width:68%;
-
+  height:600px;
   margin-left:2px;
   float:right;
 }
@@ -117,7 +118,18 @@ type:none;
 	<!--#include("breadcrumbs.html")-->
 	
 	<div id="rightcontent" style='margin-left:10px; padding-left:10px; margin-right:20px;' >
-		<div id="versions" > {$version_labels} </div>
+		<div id="versions" > 
+		<!--@foreach($version_labels as $value)-->
+		
+			<!--@if($value->is_current_version)-->
+				<em>{$value->vlabel}</em>
+			<!--@else-->
+				<a href='{$value->href}'> {$value->vlabel} </a>
+			<!--@end-->
+		
+		<!--@end-->
+
+		</div>
 	    {$page_content}
 	
 	<!--@if($module_info->toc_location=='Left')-->
@@ -143,63 +155,26 @@ type:none;
 <!--@end-->
 
 <!--@if($module_info->toc_location=='Left')-->
-<div id="ecomments" onclick="hidediv('comments'); return false;" style=" float:right; position:relative; top:10px; width:70%"
-   	  onmouseout="this.style.color='black'" onmouseover="this.style.color='blue'">- Comments</div>
    	  
 <div id="comments" style=' float:right; position:relative; top:10px; width:70%;' >
 <!--@else-->
-<div id="ecomments" onclick="showdiv('comments'); return false;" style=" float:left; position:relative; top:10px; width:70%"
-   	  onmouseout="this.style.color='black'" onmouseover="this.style.color='blue'">- Comments</div>
    	  
 <div id="comments" style=' float:left; position:relative; top:10px; width:70%; ' >
 <!--@end-->
 
 <!--@if($oDocument->allowComment())-->
-    <a name="comment"></a>
-    <!-- comment include start -->
-    <!--#include("comment.html")-->
-    <!-- comment included -->
 
 	
     <!--@if($grant->write_comment && $oDocument->isEnableComment() )-->
-    	
-    	<div id="eadd_comments" onclick="showdiv('add_comments'); return false;" 
-   	  onmouseout="this.style.color='black'" onmouseover="this.style.color='blue'">+ Comment Editor</div>
+     <a id="show_comments" onclick="show_comment_editor(this); return false;" href="{getSiteUrl($site_module_info->domain, '','mid',$mid,'document_srl',$document_srl, 'act', 'dispXedocsCommentEditor')}"
+   	  onmouseout="this.style.color='black'" onmouseover="this.style.color='blue'">Show Comments</div>
    	  
-        <div id="add_comments"; style="visibility:hidden;">
-        <form action="./" method="post" onsubmit="return procFilter(this, insert_comment)" class="wikiEditor" >
-        <input type="hidden" name="mid" value="{$mid}" />
-        <input type="hidden" name="document_srl" value="{$oDocument->document_srl}" />
-        <input type="hidden" name="comment_srl" value="" />
-        <input type="hidden" name="content" value="" />
-            <div class="wikiWrite commentEditor">
-                <div class="editor">{$oDocument->getCommentEditor()}</div>
+    <div id="comment_editor">
 
-                <div class="editorOption">
-                <!--@if(!$is_logged)-->
-                   <input type="text" name="nick_name" class="inputText userName" value="{$lang->writer}" onfocus="this.value=''" />
-				   <input type="password" name="password" class="inputText userPw" value="{$lang->password}" onfocus="this.value=''" />
-				   <input type="text" name="email_address" class="inputText emailAddress" value="{$lang->email_address}" onfocus="this.value=''" />
-				   <input type="text" name="homepage" class="inputText homePage" value="{$lang->homepage}" onfocus="this.value=''" />
-                <!--@end-->
-
-				<!--@if($is_logged)-->
-					<input type="checkbox" name="notify_message" value="Y" id="notify_message" class="inputCheck" />
-					<label for="notify_message">{$lang->notify}</label>
-				<!--@end-->
-					<input type="checkbox" name="is_secret" value="Y" id="is_secret" class="inputCheck" />
-					<label for="is_secret">{$lang->secret}</label>
-                </div>
-        
-                <div class="wikiNavigation">
-                    <span class="buttonOfficial"><input type="submit" value="{$lang->cmd_comment_registration}" accesskey="s" /></span>
-                </div>
-
-            </div>
-
-        </form>
-        </div>
+    <div>
     <!--@end-->
+    
+    
 <!--@end-->
 
 </div>
