@@ -3,86 +3,34 @@
 
 <script type="text/javascript">
 	function show_comment_editor(which){
-		document.getElementById('comment_editor').innerHTML = '<'+'object id="foo" name="foo" type="text/html" data="'+which.href+'"><\/object>';
+		document.getElementById('comment_editor').innerHTML = '<'+'object id="addComment" id="foo" name="foo" type="text/html" data="'+which.href+'"><\/object>';
 		document.getElementById('show_comments').style.visibility='hidden';
 	}
 </script>
-<style type="text/css">
-	<!--@if($module_info->toc_location!='Right') -->
-		.leftcontent 
-		{
-		  float:left;
-		  width:100%;
-		  background:#fff;
-		  
-		}
-		.scroll-pane{
-		  width:30%;
-		  float:left;
 
-		}
-	<!--@else-->
-.leftcontent {
-	float:right;
-	width:100%;
-	background:#fff;
-}
-.scroll-pane {
-	width:30%;
-	float:right;
-}
-
-<!--@end-->
-#foo {
-	width:68%;
-	height:600px;
-	margin-left:2px;
-	float:right;
-}
-.xedocstreenode {
-	clear: both;
-	type:none;
-}
-.tools {
- 	with:200px; 
-    border-color:gray;
-    border-width:2px;
-    border-style:inset;
-}
-</style>
-
-
-
- <div class="treeUI" style='width:300px;display:block;' >
-     <p id='eselection-scroll' style="text-align=center;" onclick="hidediv1('selection-scroll'); return false;" 
-   	  onmouseout="this.style.color='black'" onmouseover="this.style.color='blue'"
-     class="button"><span>-</span></p>
- </div>
-
-<div id="selection-scroll" class="scroll-pane" >
-	<div id="treeList" class="leftcontent" >
-	
+<div id="treeList" >
 	<ul>
-         <!--@for($_i=count($parents)-1; $_i>=0; $_i--)-->
-  		
-         <li class="xedocstreenode" style="list-style-type:none;">
-         	 <a href="{$parents[$_i]->href}"onmouseout="this.style.color='black'" onmouseover="this.style.color='blue'"><img src="img/up-arrow.png"/> {$parents[$_i]->title} </a></li>
-        
+        <!--@for($_i=count($parents)-1; $_i>=0; $_i--)-->
+			<li class="xedocsparentnode" style="list-style-type:none;">
+				<a href="{$parents[$_i]->href}">
+					<!--@if($_i == count($parents)-1)-->
+						<img src="img/icon_root.png"/ alt="+" title="">
+					<!--@else-->
+						<img src="img/icon_arrow.png"/ alt="+" title="">
+					<!--@end-->
+					{$parents[$_i]->title}
+				</a>
+			</li>
  		<!--@end-->
 		
-         <!--@for($_i=0; $_i<count($children); $_i++)-->
-  		
-         
-         <li class="xedocstreenode" style="list-style-type:none;">
-         	<a href="{$children[$_i]->href}"onmouseout="this.style.color='black'" onmouseover="this.style.color='blue'"><img src="img/down-to-right-arrow.png"/> {$children[$_i]->title} </a></li>
+        <!--@for($_i=0; $_i<count($children); $_i++)-->
+        <li class="xedocstreenode" style="list-style-type:none;">
+			<a href="{$children[$_i]->href}"><img src="img/down-to-right-arrow.png" alt="-" title=""/> {$children[$_i]->title} </a>
+		</li>
        	<!--@end-->
 	    
 	</ul>
-
-	</div>
-
 </div>
-
 
 <!--@if(!$has_page)-->
 	<div id="rightcontent" style='margin:2px; color:red; margin-right:20px;' >
@@ -90,68 +38,63 @@
 	</div>
 <!--@else-->
 
+<div id="showHideTree" onclick="hidediv1('treeList'); return false;" alt="Close Tree" title="Close tree"></div>
+
+<div id="rightContainer">
+
 	<!--#include("breadcrumbs.html")-->
 	
-	<div id="rightcontent" style='margin-left:10px; padding-left:10px; margin-right:20px;' >
-		<div id="versions" >
-		  
-		<!--@foreach($version_labels as $value)-->
-		
-			<!--@if($value->is_current_version)-->
-				<em>{$value->vlabel}</em> &nbsp
-			<!--@else-->
-				<a href='{$value->href}'> {$value->vlabel} </a> &nbsp
+	<div id="rightcontent">
+		<div id="versions" > 	
+			<!--@foreach($version_labels as $value)-->
+			
+				<!--@if($value->is_current_version)-->
+					<em>{$value->vlabel}</em>
+				<!--@else-->
+					<a href='{$value->href}'> {$value->vlabel} </a>
+				<!--@end-->
+			
 			<!--@end-->
-		
-		<!--@end-->
-
 		</div>
 	    {$page_content}
 	
 	<!--@if($module_info->toc_location=='Left')-->
-		<div id='footer_links' class="wikiReadFooter" style="width:70%; float:right;">
+		<div id='footer_links' class="wikiReadFooter">
 	<!--@else-->
-		<div id='footer_links' class="wikiReadFooter" style="width:70%; float:left;">
 	<!--@end-->
 			<div class="wikiNavigation" >
 			
 			<!--@if($oDocumentPrev)-->
-					<a href="{getSiteUrl($site_module_info->domain, '','mid',$mid,'document_srl',$oDocumentPrev->document_srl)}" class="wikiPrev">
-                    {$oDocumentPrev->getTitle()}</a>                   				
+				<p class="wikiPrev">
+					<span>Previous document:</span>
+					<a href="{getSiteUrl($site_module_info->domain, '','mid',$mid,'document_srl',$oDocumentPrev->document_srl)}">{$oDocumentPrev->getTitle()}</a>                   				
+				</p>
 			<!--@end-->
 			
 			<!--@if($oDocumentNext)-->
-				<a href="{getSiteUrl($site_module_info->domain, '','mid',$mid,'document_srl',$oDocumentNext->document_srl)}" class="wikiNext" >
-                    {$oDocumentNext->getTitle()}</a>
+				<p class="wikiNext">
+					<span>Next document:</span>
+					<a href="{getSiteUrl($site_module_info->domain, '','mid',$mid,'document_srl',$oDocumentNext->document_srl)}">{$oDocumentNext->getTitle()}</a>
+				</p>
 			<!--@end-->
 			
 			</div> <!--end of div wikiNavigation-->
 		</div> <!-- end of footer_links-->
-    </div> <!--end of div right content-->
-<!--@end-->
+	</div> <!--end of div right content-->
+	<!--@end-->
 
-<!--@if($module_info->toc_location=='Left')-->
-   	  
-<div id="comments" style=' float:right; position:relative; top:10px; width:70%;' >
-<!--@else-->
-   	  
-<div id="comments" style=' float:left; position:relative; top:10px; width:70%; ' >
-<!--@end-->
-
-<!--@if($oDocument->allowComment())-->
-
+	<!--@if($module_info->toc_location=='Left')-->
+		<div id="comments">
+   	<!--@else-->
+	<!--@end-->
 	
-    <!--@if($grant->write_comment && $oDocument->isEnableComment() )-->
-     <a id="show_comments" onclick="show_comment_editor(this); return false;" href="{getSiteUrl($site_module_info->domain, '','mid',$mid,'document_srl',$document_srl, 'act', 'dispXedocsCommentEditor')}"
-   	  onmouseout="this.style.color='black'" onmouseover="this.style.color='blue'">Show Comments</div>
-   	  
-    <div id="comment_editor">
-
-    <div>
-    <!--@end-->
-    
-    
-<!--@end-->
+	<!--@if($oDocument->allowComment())-->
+		<!--@if($grant->write_comment && $oDocument->isEnableComment() )-->
+			<a id="show_comments" onclick="show_comment_editor(this); return false;" href="{getSiteUrl($site_module_info->domain, '', 'mid', $mid, 'document_srl', $document_srl, 'act', 'dispXedocsCommentEditor')}">Show Comments</div>
+			<div id="comment_editor">
+			</div>
+		<!--@end-->
+	<!--@end-->
 
 </div>
 
