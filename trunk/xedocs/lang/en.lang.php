@@ -37,4 +37,5 @@ $lang->module_count = "Module Count";
 $lang->manual_set_identifier = "Manual Set Identifier";
 $lang->manual_set = "Manual Set";
 $lang->cmd_modify_comment = "Modify";
+$lang->top_of_page = "Go to Top";
 ?>
