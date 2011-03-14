@@ -93,13 +93,14 @@
 	<!--#include("breadcrumbs.html")-->
 	
 	<div id="rightcontent" style='margin-left:10px; padding-left:10px; margin-right:20px;' >
-		<div id="versions" > 
+		<div id="versions" >
+		  
 		<!--@foreach($version_labels as $value)-->
 		
 			<!--@if($value->is_current_version)-->
-				<em>{$value->vlabel}</em>
+				<em>{$value->vlabel}</em> &nbsp
 			<!--@else-->
-				<a href='{$value->href}'> {$value->vlabel} </a>
+				<a href='{$value->href}'> {$value->vlabel} </a> &nbsp
 			<!--@end-->
 		
 		<!--@end-->
