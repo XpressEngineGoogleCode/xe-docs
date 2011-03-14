@@ -5,27 +5,20 @@
 	clear: both;
 }
 
+a {
+	color: #1780ab;
+}
+
+a:hover {
+	color: #000;
+}
+
 /* Board Reset */
-.wiki{ font-family:Tahoma, Sans-serif; line-height:normal; font-size:12px;}
-.wiki .inputText,
-.wiki textarea,
-.wiki select{ border:1px solid;}
-.wiki label{ cursor:pointer;}
-.wiki img{ border:0;}
-.wiki .document_popup_menu,
-.wiki .comment_popup_menu{ text-align:right; font-size:11px;}
-.wiki .document_popup_menu{ margin:1em 0;}
-.wiki .comment_popup_menu{ margin:1em 0;}
-.wiki .document_popup_menu a,
-.wiki .comment_popup_menu a{ text-decoration:underline;}
-.wiki .hr{ display:none;}
-.wiki{ background:#fff; color:#333;}
-.wiki .inputText,
-.wiki textarea,
-.wiki select{ background:#fff; color:#333; border-top-color:#a6a6a6; border-left-color:#a6a6a6; border-right-color:#d8d8d8; border-bottom-color:#d8d8d8;}
-.wiki .document_popup_menu a,
-.wiki .comment_popup_menu a{ color:#8b8b8b;}
-.wiki .wikiNavigation{ border-color:#bababa;}
+.wiki{
+	font-family: Arial, Tahoma, Sans-serif;
+	line-height:normal;
+	font-size:12px;
+}
 
 /* Board Header */
 .wikiHeader *{ margin:0 0 20px 0; padding:0;}
@@ -153,13 +146,6 @@
 .wikiList td .category{ color:#888; background-image:url(../img/white/lineVr9.gif);}
 .wikiList td .by{ color:#ccc;}
 
-/* Board Navigation */
-.wiki .wikiNavigation{ padding:30px 0; margin:-1px 0 0 0; text-align:center; border-top:1px solid; *zoom:1; _zoom:0;}
-.wiki .wikiNavigation:after{ content:""; display:block; float:none; clear:both;}
-.wiki .wikiNavigation .pagination{ padding:5px 0;}
-.wiki .wikiNavigation .buttonLeft{ float:left; text-align:left;}
-.wiki .wikiNavigation .buttonRight{ float:right; text-align:right;}
-
 /* Search Form */
 .xeDocsSearchForm { 
 	margin:0;
@@ -188,14 +174,17 @@
 .wikiReadBody .xe_content{ overflow:hidden; }
 .wikiReadBody .xe_content a { text-decoration:underline; }
 
-.wikiReadFooter .wikiNavigation { *zoom:1; margin-top:15px;border-top:1px solid #ccc !important; padding:10px; border-bottom:1px solid #ccc !important;}
-.wikiReadFooter .wikiNavigation:after { content:""; display:block; clear:both;}
-.wikiReadFooter .wikiNavigation .wikiPrev { float:left; }
-.wikiReadFooter .wikiNavigation .wikiNext { float:right;}
-.wikiReadFooter .wikiNavigation .wikiPrev ,
-.wikiReadFooter .wikiNavigation .wikiNext { color:green; font-weight:bold; font-size:14px; text-decoration:none;}
-.wikiReadFooter .wikiNavigation .wikiPrev:hover ,
-.wikiReadFooter .wikiNavigation .wikiNext:hover { text-decoration:underline;}
+.wikiNavigation {
+	margin: 20px 0 0 0;
+	padding: 5px 0;
+	border-top: 1px dotted #dfdfdf !important;
+	border-bottom: 1px dotted #dfdfdf !important;
+}
+.wikiNavigation:after { content:""; display:block; clear:both;}
+.wikiNavigation .wikiPrev { float:left; }
+.wikiNavigation .wikiNext { float:right;}
+.wikiNavigation .wikiPrev ,
+.wikiNavigation .wikiNext { color:green; font-weight:bold;}
 
 .wikiReadFooter .memberSignature { border:1px solid; padding:10px; margin:1em 0; overflow:hidden; *zoom:1; clear:both; -moz-border-radius:5px; -webkit-border-radius:5px;}
 .wikiReadFooter .memberSignature img.profile { margin:0 1em 0 0; border:1px solid;}
@@ -427,11 +416,30 @@ a.buttonOfficial a{ _vertical-align:top;}
 #tree div.treeUI,
 #treeList div.treeUI { position:absolute; right:0; top:20px; }
 
-#treeList { position:relative; padding-top:20px; }
-#treeList ul { margin:0 0 0 20px; padding:0; }
-#treeList ul li { margin:5px 0; padding:0 0 0 0px; }
-#treeList ul li a { color:#000; text-decoration:none; }
-#treeList ul li a:hover { text-decoration:underline; }
+#treeList {
+	position:relative;
+	padding: 10px 0;
+}
+#treeList ul {
+	margin:0 0 0 10px;
+	padding:0;
+}
+#treeList ul li {
+	margin:5px 0;
+	padding: 0;
+}
+#treeList ul li a {
+	text-decoration:none;
+}
+#treeList ul li a:hover { color: #000; }
+#treeList ul li img {
+	vertical-align: middle;
+	margin: 0 5px 0 0;
+}
+
+.xedocsparentnode {
+	font-weight: bold;
+}
 
 .visitLog { padding-top:5px; padding-bottom:5px; border-bottom: 1px solid #dcdcdc; text-align: right;}
 .visitLog a { color:#AAA; text-decoration:underline; }
@@ -561,4 +569,61 @@ h1, .h1, h2, h3, #xe h4, h5, h6, #xe p, ul, ol, #content li, .widgetTree, .widge
 
 #adminActions {
 	float: right;
+}
+
+#treeList {
+	float: left;
+	width: 280px;
+}
+
+#showHideTree {
+	float: left;
+	width: 13px;
+	overflow: hidden;
+	height: 41px;
+	background: url('../img/open_close_button.png') 0 0 no-repeat;
+	cursor: pointer;
+	position: absolute;
+	margin: 10px 0 0 0;
+	left: 267px;
+}
+
+#rightContainer {
+	width: auto;
+	border-left: 1px solid #dfdfdf;
+	overflow: hidden;
+	padding: 0 15px;
+}
+
+#breadcrumbs {
+	padding: 5px 0 5px 10px;
+	font-size: 13px;
+	border-bottom: 1px dotted #dfdfdf;
+}
+
+#comments {
+	margin: 10px 0 10px;
+	padding: 5px 0;
+}
+
+#footer {
+	text-align: right;
+	padding: 10px;
+	border-top: 1px solid #dfdfdf;
+	border-bottom: 1px solid #dfdfdf;
+	background: #f8f8f8;
+}
+
+#topOfPage {
+	padding: 0 0 0 14px;
+	background: url('../img/icon_arrow_top.png') 0 0 no-repeat;
+}
+
+#comment_editor {
+	
+}
+
+#addComment {
+	width: 100%;
+	height: 350px;
 }
