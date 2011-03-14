@@ -1,6 +1,10 @@
 @charset "utf-8";
 /* NHN > UIT Center > Open UI Tech. Team > Jeong Chan Myeong(dece24@nhncorp.com) */
 
+.cleared {
+	clear: both;
+}
+
 /* Board Reset */
 .wiki{ font-family:Tahoma, Sans-serif; line-height:normal; font-size:12px;}
 .wiki .inputText,
@@ -43,12 +47,19 @@
 .wikiHeader .wikiDescription{ background:#f8f8f8; }
 
 /* Board Information */
-.wikiInformation{width:100%; padding:15px 0; font-size:1em; line-height:normal; *zoom:1;}
-.wikiInformation *{ margin:0; padding:0;}
+.wikiInformation{
+	background: url('../img/header_bg.gif') 0 0 repeat-x;
+	height: 77px;
+	overflow: hidden;
+}
+.wikiInformationPadding {
+	padding: 23px 10px 10px 10px;
+}
+.wikiReadPadding {
+	padding: 5px 15px;
+}
+
 .wikiInformation a{ text-decoration:none;}
-.wikiInformation a:hover,
-.wikiInformation a:active,
-.wikiInformation a:focus{ text-decoration:underline;} 
 .wikiInformation:after{ content:""; display:block; float:none; clear:both;}
 .wikiInformation ul{ overflow:hidden;}
 .wikiInformation .infoSum{ float:left; font-size:16px; font-weight:bold;}
@@ -150,53 +161,28 @@
 .wiki .wikiNavigation .buttonRight{ float:right; text-align:right;}
 
 /* Search Form */
-.wikiSearchForm{ position:relative; float:right; margin:0; padding:1px 0; line-height:normal;}
-.wikiSearchForm.footer { clear:both; float:none; margin:20px 0; text-align:center; }
-.wikiSearchForm *{ margin:0; padding:0;}
-.wikiSearchForm fieldset{ border:0; clear:both; text-align:center;}
-.wikiSearchForm fieldset:after{ content:""; display:block; float:none; clear:both;}
-.wikiSearchForm fieldset *{ vertical-align:top;}
-.wikiSearchForm legend{ position:absolute; width:0; height:0; overflow:hidden; font:0/0 Sans-serif; visibility:hidden;}
-.wikiSearchForm select{ font-size:12px; height:23px; border:1px solid;}
-.wikiSearchForm .inputText{ width:140px; height:15px; padding:4px 4px 2px 4px; font-size:12px; *margin:-1px 0;}
-
-.wikiSearchForm .infoEtc{ position:absolute; top:7px; right:0;}
-.wikiSearchForm .infoEtc li{ display:inline;}
-.wikiSearchForm .infoEtc li a{ display:inline-block; height:11px; background-repeat:no-repeat; overflow:hidden;}
-.wikiSearchForm .infoEtc li a span{ position:absolute; width:0; height:0; overflow:hidden; font-size:0; line-height:0; visibility:hidden;}
-.wikiSearchForm .infoEtc li.contributors a{ width:12px; background-position:0 0;}
-.wikiSearchForm .infoEtc li.tag a{ width:42px; background-position:-11px 0;}
-.wikiSearchForm .infoEtc li a{ background-image:url(../img/common/buttonContributorsTaglist.gif);}
+.xeDocsSearchForm { 
+	margin:0;
+	float: left;
+	line-height: 36px;
+}
+.xeDocsInputText {
+	padding:6px;
+	border-radius: 4px;
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+	border: 1px solid #dfdfdf;
+	vertical-align: middle;
+}
+.xeDocsSearchButton {
+	vertical-align: middle;
+}
 
 /* Board Read */
-.wikiReadHeader{ *zoom:1;}
-.wikiReadHeader a{ text-decoration:none;}
-.wikiReadHeader a:hover,
-.wikiReadHeader a:active,
-.wikiReadHeader a:focus{ text-decoration:underline;}
-.wikiReadHeader:after{ content:""; display:block; float:none; clear:both;}
-.wikiReadHeader *{ margin:0; padding:0;}
-.wikiReadHeader .titleArea{ *zoom:1; padding:7px 0; border-top:1px solid; border-bottom:1px solid;}
-.wikiReadHeader .titleArea:after{ content:""; display:block; clear:both;}
-.wikiReadHeader .titleArea .title{ float:left; font-size:16px; margin-right:10px;}
-.wikiReadHeader .titleArea .category{ float:left; padding-left:10px; margin-top:4px; font-size:12px; background-repeat:no-repeat; background-position:left center;}
-.wikiReadHeader .titleArea .sum{ float:right; white-space:nowrap; margin-top:2px;}
-.wikiReadHeader .titleArea .sum .read,
-.wikiReadHeader .titleArea .sum .vote{ font-size:11px; margin-right:5px;}
-.wikiReadHeader .titleArea .sum .num{ font-size:9px;}
-.wikiReadHeader .titleArea .sum .date{ padding-left:10px; font-size:9px; background-repeat:no-repeat; background-position:left center;}
-.wikiReadHeader .authorArea{ *zoom:1; padding:10px 0;}
-.wikiReadHeader .authorArea:after{ content:""; display:block; clear:both;}
-.wikiReadHeader .authorArea .author{ float:left; margin-right:10px;}
-.wikiReadHeader .authorArea .ipAddress{ float:left; font-size:9px; margin-top:3px;}
-.wikiReadHeader .authorArea .permaLink{ float:right; font-size:9px; margin-top:3px;}
-.wikiReadHeader a{ color:#262626;}
-.wikiReadHeader .titleArea{ border-top-color:#bababa; border-bottom-color:#dcdcdc;}
-.wikiReadHeader .titleArea .category{ color:#4d4d4d; background-image:url(../img/white/lineVr9.gif);}
-.wikiReadHeader .titleArea .num{ color:#adadad;}
-.wikiReadHeader .titleArea .date{ color:#adadad; background-image:url(../img/white/lineVr9.gif);}
-.wikiReadHeader .authorArea .ipAddress{ color:#adadad;}
-.wikiReadHeader .authorArea .permaLink{ color:#adadad;}
+.wikiRead {
+	background: #f4f4f4;
+	border-bottom: 1px solid #dfdfdf;
+}
 
 .wikiReadBody{ overflow:hidden; *zoom:1;}
 .wikiReadBody .xe_content{ overflow:hidden; }
@@ -454,4 +440,125 @@ a.buttonOfficial a{ _vertical-align:top;}
 
 h1, .h1, h2, h3, #xe h4, h5, h6, #xe p, ul, ol, #content li, .widgetTree, .widgetTree li, .video_thumb, .heading_menu, .description, table, table.col4 tr, table.col4 td, .category, .left, #xe .gap1, .contents-table li, .contents-table, .cubrid-tweets, .cubrid-tweets ul, .cubrid-tweets li, .rrt-author-img, .code, #slider-nav span, #xe dl, #xe dd, #footer, #footer_left_container, .app, .applogo, #xe .summary, #footer div, div.important, #cubrid-share {
 	float:none;
+}
+
+.xeDocsHeaderButton {
+	border-radius: 20px;
+	-moz-border-radius: 20px;
+	-webkit-border-radius: 20px;
+	background: #fff;
+	background-image: -webkit-gradient(
+		linear,
+		left bottom,
+		left top,
+		color-stop(0, rgb(228,228,228)),
+		color-stop(1, rgb(255,255,255))
+	);
+	background-image: -moz-linear-gradient(
+		center bottom,
+		rgb(228,228,228) 0%,
+		rgb(255,255,255) 100%
+	);
+	border: 3px solid #7e7e7e;
+	line-height: 30px;
+	padding: 10px 4px;
+	margin: 5px;
+}
+
+.xeDocsHeaderButton span {
+	font-family: Arial;
+	padding: 10px;
+	color: #000;
+	font-size: 13px;
+	font-weight: bold;
+}
+
+.xeDocsHeaderButton:hover {
+	background-image: -webkit-gradient(
+		linear,
+		left bottom,
+		left top,
+		color-stop(0, rgb(255,255,255)),
+		color-stop(1, rgb(228,228,228))
+	);
+	background-image: -moz-linear-gradient(
+		center bottom,
+		rgb(255,255,255) 0%,
+		rgb(228,228,228) 100%
+	);
+	
+}
+
+#manual_index span {
+	background: url('../img/icon_manual_index.png') 10px 0 no-repeat;
+	padding: 1px 15px 2px 36px;
+}
+
+#table_of_contents span {
+	background: url('../img/icon_table_of_contents.png') 10px 2px no-repeat;
+	padding: 1px 15px 2px 36px;
+}
+
+.xeDocsHeaderButtonConfig {
+	border-radius: 20px;
+	-moz-border-radius: 20px;
+	-webkit-border-radius: 20px;
+	background: #c40000;
+	background-image: -webkit-gradient(
+		linear,
+		left bottom,
+		left top,
+		color-stop(0, rgb(160,0,0)),
+		color-stop(1, rgb(196,0,0))
+	);
+	background-image: -moz-linear-gradient(
+		center bottom,
+		rgb(160,0,0) 0%,
+		rgb(196,0,0) 100%
+	);
+	border: 3px solid #831818;
+	line-height: 30px;
+	padding: 10px 4px;
+	margin: 5px;
+}
+
+.xeDocsHeaderButtonConfig:hover {
+	background-image: -webkit-gradient(
+		linear,
+		left bottom,
+		left top,
+		color-stop(0, rgb(196,0,0)),
+		color-stop(1, rgb(160,0,0))
+	);
+	background-image: -moz-linear-gradient(
+		center bottom,
+		rgb(196,0,0) 0%,
+		rgb(160,0,0) 100%
+	);
+}
+
+.xeDocsHeaderButtonConfig span {
+	font-family: Arial;
+	padding: 10px;
+	color: #fff;
+	font-size: 13px;
+	font-weight: bold;
+}
+
+.xeDocsHeaderButtonConfig:hover a {
+	text-decoration: none;
+}
+
+#config span {
+	background: url('../img/icon_configure.png') 10px 0 no-repeat;
+	padding: 1px 15px 2px 36px;
+}
+
+#toc_structure span {
+	background: url('../img/icon_change_toc_structure.png') 10px 0 no-repeat;
+	padding: 1px 15px 2px 36px;
+}
+
+#adminActions {
+	float: right;
 }

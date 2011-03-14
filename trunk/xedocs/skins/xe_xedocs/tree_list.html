@@ -1,70 +1,54 @@
 <!--#include("header.html")-->
 <!--%import("js/show_hide_div.js")-->
 
- <script type="text/javascript">
-
-
-     function show_comment_editor(which){
-    	 document.getElementById('comment_editor').innerHTML = '<'+'object id="foo" name="foo" type="text/html" data="'+which.href+'"><\/object>';
-    	 document.getElementById('show_comments').style.visibility='hidden';
-     }
-   </script>
-
+<script type="text/javascript">
+	function show_comment_editor(which){
+		document.getElementById('comment_editor').innerHTML = '<'+'object id="foo" name="foo" type="text/html" data="'+which.href+'"><\/object>';
+		document.getElementById('show_comments').style.visibility='hidden';
+	}
+</script>
 <style type="text/css">
-<!--@if($module_info->toc_location!='Right') -->
-.leftcontent 
-{
-  float:left;
-  width:100%;
-  background:#fff;
-  
-}
-.scroll-pane{
-  width:30%;
-  float:left;
+	<!--@if($module_info->toc_location!='Right') -->
+		.leftcontent 
+		{
+		  float:left;
+		  width:100%;
+		  background:#fff;
+		  
+		}
+		.scroll-pane{
+		  width:30%;
+		  float:left;
 
+		}
+	<!--@else-->
+.leftcontent {
+	float:right;
+	width:100%;
+	background:#fff;
 }
-
-<!--@else-->
-.leftcontent 
-{
-  float:right;
-  width:100%;
-  background:#fff;
-}
-.scroll-pane{
-  width:30%;
-  float:right;
-
+.scroll-pane {
+	width:30%;
+	float:right;
 }
 
 <!--@end-->
-  
-#foo{
-  width:68%;
-  height:600px;
-  margin-left:2px;
-  float:right;
+#foo {
+	width:68%;
+	height:600px;
+	margin-left:2px;
+	float:right;
 }
-
-
 .xedocstreenode {
-clear: both;
-type:none;
-
+	clear: both;
+	type:none;
 }
-
-.tools{
+.tools {
  	with:200px; 
-
     border-color:gray;
-    
     border-width:2px;
-    
     border-style:inset;
-
 }
-
 </style>
 
 
@@ -73,15 +57,6 @@ type:none;
      <p id='eselection-scroll' style="text-align=center;" onclick="hidediv1('selection-scroll'); return false;" 
    	  onmouseout="this.style.color='black'" onmouseover="this.style.color='blue'"
      class="button"><span>-</span></p>
-
-
-
-   <!--@if($grant->manager)-->
-   <p style="position:relative; top:-27px; left:25px;">
-       <a href="{getUrl('act','dispXedocsModifyTree')}" class="button"><span>{$lang->cmd_modify}</span></a>
-   </p>
-   <!--@end-->
-
  </div>
 
 <div id="selection-scroll" class="scroll-pane" >

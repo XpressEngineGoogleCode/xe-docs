@@ -1,28 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <skin version="0.2">
-    <title xml:lang="ko">XE Default Skin</title>
-	<title xml:lang="en">XE Default Skin</title>
-	<title xml:lang="vi">Skin mặc định XE Docs</title>
-    <title xml:lang="zh-CN">XE维基默认皮肤</title>
-    <title xml:lang="zh-TW">XE預設面板</title>
-    <title xml:lang="jp">XEデフォルトスキン</title>
+    <title xml:lang="ko">CUBRID manual skin</title>
+	<title xml:lang="en">CUBRID manual skin</title>
+	<title xml:lang="vi">CUBRID manual skin</title>
+    <title xml:lang="zh-CN">CUBRID manual skin</title>
+    <title xml:lang="zh-TW">CUBRID manual skin</title>
+    <title xml:lang="jp">CUBRID manual skin</title>
     <description xml:lang="ko">
-        XE Default Skin
+        CUBRID manual skin
     </description>
 	<description xml:lang="en">
-        This is default skin of XeDocs
+        CUBRID manual skin
     </description>
 	<description xml:lang="vi">
-        Skin mặc định của XeDocs
+        CUBRID manual skin
     </description>
     <description xml:lang="zh-CN">
-        XE维基默认皮肤。
+        CUBRID manual skin
     </description>
     <description xml:lang="zh-TW">
-        XE維基預設面板。
+        CUBRID manual skin
     </description>
     <description xml:lang="jp">
-        XEデフォルトスキン
+        CUBRID manual skin
     </description>
     <version>0.1</version>
     <date>2011-01-31</date>
