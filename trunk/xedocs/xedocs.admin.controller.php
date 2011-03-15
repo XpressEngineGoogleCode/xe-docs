@@ -340,7 +340,6 @@ class xedocsAdminController extends xedocs {
 }
 
 include 'simple_html_dom.php';
-include 'file/fileController.php';
 
 class ContentBuilderTocProcessor extends TocProcessor
 {
@@ -351,6 +350,7 @@ class ContentBuilderTocProcessor extends TocProcessor
 	var $docid;
 	var $node_paths = array();
 	var $not_navigable = array();
+	var $titles = array();
 	var $second_pass=false;
 	public $controller;
     var $first_node;
@@ -674,9 +674,39 @@ class ContentBuilderTocProcessor extends TocProcessor
 			return;
 		}
 		debug_syslog(1, "update_document_content 1 \n");
-
+		
 		$oDocumentController = $this->controller->getController('document');
 
+		$title_nodes = $this->titles[$toc_node->name];
+		$tnodes_count = count($title_nodes); 
+		if(1 ==  $tnodes_count)
+		{
+			$alias = $toc_node->name;
+			$oDocumentController->insertAlias($this->module_srl, $toc_node->document_srl, $alias);
+			syslog(1, "one node insert alias for ".$toc_node->document_srl." alias=".$alias."\n");
+			
+		}else if (1 < count($title_nodes) ) 
+		{
+			$ti = 0; 
+			foreach($title_nodes as $tnode )
+			{
+				$ti+=1;
+				if(isset($tnode->parent)){
+					if("home" == $tnode->parent->name){
+						$alias = "Introduction to Cubrid Manual-".$tnode->name;
+					}else{
+						$alias = trim($tnode->parent->name)."-".trim($tnode->name);
+					}
+				}else{
+					$alias = $tnode->name.$ti; 	
+				}
+				$oDocumentController->insertAlias($this->module_srl, $tnode->document_srl, $alias);
+				syslog(1, "multinode insert alias for ".$tnode->document_srl." alias=".$alias."\n");
+			}
+		}
+		
+		$this->titles[$toc_node->name] = array(); //mark as alias inerted
+		
 		debug_syslog(1, "update_document_content 2 \n");
 
 		$obj = NULL;
@@ -832,6 +862,28 @@ class ContentBuilderTocProcessor extends TocProcessor
 		return $this->first_node;
 	}
 	
+	function add_toc_title($toc_node)
+	{
+		$title = $toc_node->name;
+		$old_toc = $this->titles[$title];
+		
+		if(isset ($old_toc) ){
+			if( isset ($toc_node->document_srl) ){
+				
+				foreach($old_toc as $old ){ //skip same document_srl 
+					if($old->document_srl == $toc_node->document_srl){
+						return;
+					}
+				}
+			}
+			$this->titles[$title][] = $toc_node;
+			
+		}else{
+		
+			$this->titles[$title] = array($toc_node);
+		}
+	}
+	
 	function insert_document($toc_node)
 	{
 
@@ -852,6 +904,8 @@ class ContentBuilderTocProcessor extends TocProcessor
 		$oDocumentModel = $this->controller->getModel('document');
 		$oDocumentController = $this->controller->getController('document');
 
+		
+		
 		if ( 0 == strcmp('', trim($toc_node->relpath)) ) //a not navigable node
 		{
 			$this->not_navigable[$toc_node->name] = $toc_node;
@@ -869,14 +923,12 @@ class ContentBuilderTocProcessor extends TocProcessor
 			{
 				$orig_node = $this->nodepaths[$toc_node->relpath];
 				$toc_node->document_srl = $orig_node->document_srl;
-				$oDocumentController->insertAlias($this->module_srl, $toc_node->document_srl, $toc_node->name);
-
+				$this->add_toc_title($toc_node);
 				return $this->insert_tree_node($toc_node);
 			}
 		}
 
 	
-
 
 		$obj = NULL;
 		$obj->{'module_srl'} = $this->module_srl;
@@ -895,18 +947,19 @@ class ContentBuilderTocProcessor extends TocProcessor
 			$obj->title = 'Untitled';
 		}
 
-
+		
 		$output = $oDocumentController->insertDocument($obj);
-
+		
+	
 		$obj->{'document_srl'} = $output->get('document_srl');
 
 		$toc_node->document_srl = $obj->document_srl;
+		
+		$this->add_toc_title($toc_node);
 
 		if ( 0 != strcmp('', $toc_node->relpath ) ){
 			$this->node_paths[$toc_node->relpath] = $toc_node;
 		}
-
-		$oDocumentController->insertAlias($obj->module_srl, $obj->document_srl, $obj->title);
 
 		if(!$output->toBool()){
 			debug_syslog(1, "document insert false output\n");
