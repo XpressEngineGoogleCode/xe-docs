@@ -237,10 +237,12 @@ class xedocsAdminController extends xedocs {
 			debug_syslog(1, "Bad archive srl\n");
 			return ;
 		}
+		
+		$module_title = Context::get("browser_title");
 
 		debug_syslog(1, "Importing archive: '".$args->help_archive_url."'\n");
 		//import archive contents
-		$output = $this->import_help_archive( $args->help_archive_url,  $module_srl );
+		$output = $this->import_help_archive( $args->help_archive_url,  $module_srl , $module_title);
 
 		debug_syslog(1, "Import complete , toc has ".count($toc->children)." childrens\n");
 
@@ -277,7 +279,7 @@ class xedocsAdminController extends xedocs {
 	}
 
 
-	function import_help_archive($url, $module_srl)
+	function import_help_archive($url, $module_srl, $module_title)
 	{
 		debug_syslog(1, "import_help_archive: ".$url."\n");
 		$orphan = array();
@@ -291,23 +293,24 @@ class xedocsAdminController extends xedocs {
 			return false;
 		}
 
-		$first_node = $this->build_content($toc, $builder, $module_srl);
+		$first_node = $this->build_content($toc, $builder, $module_srl, $module_title);
 		$output->{'first_node'} = $first_node;
 		$output->{'toc'} = $toc;
 		return $output;
 
 	}
 
-	function build_content($toc, $builder, $module_srl)
+	function build_content($toc, $builder, $module_srl, $module_title)
 	{
 
-
+		debug_syslog(1, "build_content for module_title:".$module_title."\n");
 
 		$walker = new TocWalker();
 		$processor = new ContentBuilderTocProcessor();
 		$processor->set_builder($builder);
 		$processor->set_module_srl($module_srl);
 		$processor->controller = $this;
+		$processor->set_module_title($module_title);
 
 		debug_syslog(1, "build_content module_srl=".$module_srl."\n");
 
@@ -345,6 +348,7 @@ class ContentBuilderTocProcessor extends TocProcessor
 {
 	var $builder;
 	var $grant;
+	var $module_title;
 	var $module_srl;
 	var $msg_code;
 	var $docid;
@@ -355,6 +359,11 @@ class ContentBuilderTocProcessor extends TocProcessor
 	public $controller;
     var $first_node;
 
+    
+    function set_module_title($title)
+    {
+    	$this->module_title = $title;	
+    }
 	function dump_node_paths()
 	{
 		debug_syslog(1, "Node Paths\n");
@@ -484,12 +493,35 @@ class ContentBuilderTocProcessor extends TocProcessor
 			}
 		}
 		
+		$meta = array();
+		foreach($dom->find('meta') as $element ){
+
+			$attributes = $element->getAllAttributes();
+			foreach($attributes as $attr => $val){
+				$obj["name"] = $attr;				
+				$obj["value"] = $val;
+				syslog(1, " added meta: name=".$attr." value=".$val."\n");
+				$meta[] = $obj;
+			}
+		}
+		
 		$new_content = "".$dom;
+		
+		$toc_node->meta = $meta;
+		
+		//remove meta tags
+		$new_content = $this->removeTag($new_content, "<meta", ">");
+		$new_content = $this->removeHtmlTag($new_content, "</meta>");
+		
 
 		debug_syslog(1, "updating document_srl=".$toc_node->document_srl." content with new links ...\n");
 
 		
 		$this->update_document_content($toc_node, $new_content);
+		
+		$oXedocsModel = $this->controller->getModel('xedocs');
+		$oXedocsModel->add_meta($this->module_srl, $toc_node->document_srl, $meta );
+		
 		debug_syslog(1, "document updated with new links \n");
 		
 	}
@@ -824,8 +856,34 @@ class ContentBuilderTocProcessor extends TocProcessor
 		return $contents;
 	}
 
+	function removeTag($contents, $start, $end){
+		$s = strpos($contents, $start);
+		$e = stripos($contents, $end, $s+1);
+		if(FALSE === $s || FALSE === $e){
+			return $contents;
+		}
+		$lenght = $e-$s+strlen($end);
+		$sub = substr($contents, $s, $lenght);
+		$contents = str_replace($sub, "",$contents);
+		$contents = $this->removeTag($contents, $start, $end);
+		return $contents;
+	}
+	
+	function removeHtmlTag($contents,$tag)
+	{
 
+		$e = strpos($contents, $tag);
 
+		if(FALSE === $e){
+			return $contents;
+		}
+
+		$contents = str_replace($tag, "",$contents);
+		$contents = $this->removeHtmlTag($contents, $tag);
+
+		return $contents;
+	}
+	
 
 	function get_node_contents($toc_node)
 	{
@@ -839,8 +897,28 @@ class ContentBuilderTocProcessor extends TocProcessor
 			$contents = $this->builder->getContent($toc_node);
 
 		}
+		debug_syslog(1, "cleanup document contents \n");
 
-		return $this->removeJS($contents);
+		$contents = $this->removeJS($contents);
+		$contents = $this->removeHtmlTag($contents, "<head>");
+		$contents = $this->removeHtmlTag($contents, "</head>");
+
+		$contents = $this->removeHtmlTag($contents, "<body>");
+		$contents = $this->removeHtmlTag($contents, "</body>");
+			
+		$contents = $this->removeTag($contents, "<html", ">");
+		$contents = $this->removeHtmlTag($contents, "</html>");
+
+		$contents = $this->removeTag($contents, "<title", "<");
+		$contents = $this->removeHtmlTag($contents, "/title>");
+
+		$contents = $this->removeTag($contents, "<link", ">");
+		$contents = $this->removeHtmlTag($contents, "</link>");
+		
+		debug_syslog(1, "cleanup document contents complete \n");
+		
+		return $contents;
+		
 
 	}
 
@@ -934,8 +1012,9 @@ class ContentBuilderTocProcessor extends TocProcessor
 		$obj->{'module_srl'} = $this->module_srl;
 		$obj->{'allow_comment'} = 'Y';
 		$obj->{'nick_name'} = 'anonymous';
-		$obj->{'title'} = $toc_node->name;
+		$obj->{'title'} = $this->module_title ." - ". $toc_node->name;
 
+		debug_syslog(1, "insert_document title: |".$obj->{'title'}."|\n");
 
 		$contents = $this->get_node_contents($toc_node);
 

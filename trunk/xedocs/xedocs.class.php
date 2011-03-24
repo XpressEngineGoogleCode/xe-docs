@@ -281,13 +281,15 @@ class TocTreeBuilder{
 
 	function getTree($filename, $orphan_html)
 	{
-		debug_syslog(1, "TocTreeBuilder get tree\n");
+		debug_syslog(1, "TocTreeBuilder get tree .. \n");
 		$xml_name = "whxdata/whtdata0.xml";
 		$f = $this->getFile($filename, $xml_name);
-
-		//debug_syslog(1, "TocTreeBuilder base content: ".$f."\n");
+		
+		debug_syslog(1, "TocTreeBuilder get tree".$xml_name." from ".$filename."\n");
+		
 
 		$toc = $this->getTreeFromXml($filename, $f);
+		debug_syslog(1, "TocTreeBuilder get tree complete \n");
 
 		return $toc;
 	}

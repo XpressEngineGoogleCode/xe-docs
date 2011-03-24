@@ -188,9 +188,15 @@ class xedocsView extends xedocs {
 		Context::set("page_content", $content);
 			
 		$versions = $oXedocsModel->get_versions($module_srl, $oDocument);
-		//Context::set("version_labels", trim($versions) );
 		$version_labels = $this->format_versions(trim($versions), $document_srl);
 		Context::set("version_labels",  $version_labels );
+		
+		$meta = $oXedocsModel->get_meta($module_srl, $document_srl);
+		Context::set("meta", $meta);
+		
+		Context::setBrowserTitle($module_info->browser_title." - ".$oDocument->getTitle());
+		
+		debug_syslog(1, "dispXedocsTreeIndex: meta=".print_r($meta, true)."\n");
 		
 		list($prev_document_srl, $next_document_srl) = $oXedocsModel->getPrevNextDocument($this->module_srl, $document_srl);
 		if($prev_document_srl){

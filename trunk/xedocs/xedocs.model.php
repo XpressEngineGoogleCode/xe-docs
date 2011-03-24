@@ -541,6 +541,88 @@ class xedocsModel extends xedocs {
 
 		return $output->data;
 	}
+	
+	
+	function string_to_meta($metastring)
+	{
+		 
+		$meta = array();
+		$values = explode( "|", $metastring);
+		
+		foreach($values as $v)
+		{
+		
+			$m = explode( ",", $v);
+		
+			if(2 == count($m) ){
+				$obj = array();
+				$obj['name'] = $m[0];
+				$obj['value'] = $m[1];
+		
+				$meta[] = $obj;
+			}
+		}
+		
+		return $meta;
+	}
+	
+	
+	function meta_to_string($meta)
+	{
+		
+		$values = array();
+		foreach($meta as $val)
+		{
+			$values[] = implode(array($val['name'], $val['value']), ",");
+			 		
+		}
+		return implode($values, "|"); 
+	}
+	
+
+		
+	function add_meta($module_srl, $document_srl, $meta)
+	{
+		
+
+		if(0 != count($meta))
+		{
+			$args = null;
+			$args->document_srl = $document_srl;
+			$args->module_srl = $module_srl;
+			$args->eid = "meta";
+			
+			$args->value = $this->meta_to_string($meta);
+			debug_syslog(1, "add_meta value: ".$args->value ."\n");
+			$output = executeQuery('xedocs.insertDocumentExtraVars', $args);
+			debug_syslog(1, "add_meta result: ".print_r(0==$output->error, true)."\n");
+			return 0 == $output->error;
+			
+		}else{
+			debug_syslog(1, "no meta to add\n");
+		}
+		return false;
+	}
+	
+	function get_meta($module_srl, $document_srl)
+	{
+		$args = null;
+		$args->{'document_srl'} = $document_srl;
+		$args->{'module_srl'} = $module_srl;
+		$args->{'eid'} = "meta";
+
+		$output =  executeQuery('xedocs.getDocumentExtraVars', $args);
+
+		
+		if (isset($output->data)){
+			
+			syslog(1, "get_meta value: ".print_r($output->data->value, true));
+			return $this->string_to_meta($output->data->value);
+		}
+
+		return array();
+
+	}
 
 }
 ?>
