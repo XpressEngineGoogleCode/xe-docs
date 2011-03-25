@@ -1012,7 +1012,7 @@ class ContentBuilderTocProcessor extends TocProcessor
 		$obj->{'module_srl'} = $this->module_srl;
 		$obj->{'allow_comment'} = 'Y';
 		$obj->{'nick_name'} = 'anonymous';
-		$obj->{'title'} = $this->module_title ." - ". $toc_node->name;
+		$obj->{'title'} = $toc_node->name;
 
 		debug_syslog(1, "insert_document title: |".$obj->{'title'}."|\n");
 
