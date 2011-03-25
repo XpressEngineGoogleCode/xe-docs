@@ -47,12 +47,25 @@
     <!--@if($oDocument && $oDocument->isExists())-->
 	<div class="wikiRead">
         <div class="wikiReadPadding">
+
+		<form action="{getUrl()}" method="get">
+			<input type="hidden" name="vid" value="{$vid}" /><input type="hidden" name="mid" value="{$mid}" /><input type="hidden" name="act" value="IS" />
+			<input type="text" name="is_keyword" class="xeDocsInputText" value="{$is_keyword}" />
+			
+			
+			<input class="xeDocsSearchButton" src="img/icon_search.png"
+			type="image" value="{$lang->cmd_search}" />
+			
+		</form>
+	
+		<!--  
 			<form action="{getUrl('act','dispXedocsContent','entry','','document_srl','')}" method="get" class="xeDocsSearchForm">
 				<input type="hidden" name="mid" value="{$mid}" />
 				<input type="hidden" name="vid" value="{$vid}" />
 				<input class="xeDocsInputText" type="text" name="entry" />
 				<input class="xeDocsSearchButton" src="img/icon_search.png" type="image" value="{$lang->cmd_move}" alt="{$lang->cmd_move}" />
 			</form>
+	    -->
 
 			<!--@if($visit_log)-->
 			<div class="visitLog">
