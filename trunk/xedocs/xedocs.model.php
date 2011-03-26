@@ -432,34 +432,6 @@ class xedocsModel extends xedocs {
 	}
 
 
-	function test_extraversions()
-	{
-		$manual_srl = 53758;
-		$docs = $this->getDocumentList($manual_srl);
-		foreach($docs as $doc){
-			$versions = $this->get_versions($manual_srl, $doc);
-			debug_syslog(1, "get_versions for ".$doc->document_srl. " : ". $versions);
-				
-			$this->add_version($manual_srl, $doc, "3.1", 1024);
-				
-			$versions = $this->get_versions($manual_srl, $doc);
-			debug_syslog(1, "get_versions for ".$doc->document_srl. " : ". $versions);
-				
-			$this->add_version($manual_srl, $doc, "3.1", 1024);
-				
-			$versions = $this->get_versions($manual_srl, $doc);
-			debug_syslog(1, "get_versions for ".$doc->document_srl. " : ". $versions);
-				
-			$this->clear_version($manual_srl, $doc);
-				
-			$versions = $this->get_versions($manual_srl, $doc);
-			debug_syslog(1, "get_versions for ".$doc->document_srl. " : ". $versions);
-				
-			break;
-		}
-	}
-
-
 	function add_version($module_srl, $doc, $version, $version_doc_srl)
 	{
 
@@ -467,12 +439,20 @@ class xedocsModel extends xedocs {
 
 		$insert = (0 == strcmp('', trim($document_versions)));
 
-		debug_syslog(1, "add_version document_srl=".$doc->document_srl." title |".$doc->getTitle()."|\n");
+		debug_syslog(1, "add_version document_srl=".$doc->document_srl." existing versions: |".$document_versions."|\n");
+		
+		$oDocumentModel = &getModel('document');
+		
+		//document titles can be duplicated in tree therefore we need aliases
+		$doc_title = trim($oDocumentModel->getAlias($doc->document_srl)); 		
+		
+		debug_syslog(1, "add_version document_srl=".$doc->document_srl." title |".$doc_title."|\n");
 		debug_syslog(1, "            version=".$version." version_doc_srl=".$version_doc_srl."\n");
 
+		$args=null;
 		$args->document_srl = $doc->document_srl;
 		$args->module_srl = $module_srl;
-
+		$args->var_idx = 1;
 		$args->eid = "version_labels";
 
 		if(0 != strcmp('', trim($document_versions))){
@@ -483,10 +463,9 @@ class xedocsModel extends xedocs {
 
 		if($insert){
 			$output = executeQuery('xedocs.insertDocumentExtraVars', $args);
-			//debug_syslog(1, "add: insert: ".print_r($output, true));
+			
 		}else{
 			$output = executeQuery('xedocs.updateDocumentExtraVars', $args);
-			//debug_syslog(1, "add: update: ".print_r($output, true));
 		}
 
 	}
@@ -494,15 +473,16 @@ class xedocsModel extends xedocs {
 
 	function get_versions($module_srl, $doc)
 	{
-		$args->{'document_srl'} = $doc->document_srl;
-		$args->{'module_srl'} = $module_srl;
-		$args->{'eid'} = "version_labels";
-
+		$args=null;
+		$args->document_srl = $doc->document_srl;
+		$args->module_srl = $module_srl;
+		$args->eid = "version_labels";
+		$args->var_idx = 1;
+		
 		$output =  executeQuery('xedocs.getDocumentExtraVars', $args);
 
-		//debug_syslog(1, "get_versios: ".print_r($output, true));
 		if (isset($output->data)){
-			//debug_syslog(1, "get_versios value: ".print_r($output->data->value, true));
+			
 			return $output->data->value;
 		}
 
@@ -517,6 +497,7 @@ class xedocsModel extends xedocs {
 		$args->module_srl = $module_srl;
 
 		$args->eid = "version_labels";
+		$args->var_idx = 1;
 
 		$output =  executeQuery('xedocs.deleteDocumentExtraVars', $args);
 
@@ -591,11 +572,12 @@ class xedocsModel extends xedocs {
 			$args->document_srl = $document_srl;
 			$args->module_srl = $module_srl;
 			$args->eid = "meta";
+			$args->var_idx = 0;
 			
 			$args->value = $this->meta_to_string($meta);
-			debug_syslog(1, "add_meta value: ".$args->value ."\n");
+
 			$output = executeQuery('xedocs.insertDocumentExtraVars', $args);
-			debug_syslog(1, "add_meta result: ".print_r(0==$output->error, true)."\n");
+
 			return 0 == $output->error;
 			
 		}else{
@@ -607,16 +589,15 @@ class xedocsModel extends xedocs {
 	function get_meta($module_srl, $document_srl)
 	{
 		$args = null;
-		$args->{'document_srl'} = $document_srl;
-		$args->{'module_srl'} = $module_srl;
-		$args->{'eid'} = "meta";
-
+		$args->document_srl = $document_srl;
+		$args->module_srl = $module_srl;
+		$args->eid = "meta";
+		$args->var_idx = 0;
 		$output =  executeQuery('xedocs.getDocumentExtraVars', $args);
 
 		
 		if (isset($output->data)){
 			
-			syslog(1, "get_meta value: ".print_r($output->data->value, true));
 			return $this->string_to_meta($output->data->value);
 		}
 

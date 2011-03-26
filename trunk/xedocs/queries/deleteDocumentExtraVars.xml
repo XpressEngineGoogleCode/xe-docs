@@ -6,5 +6,6 @@
         <condition operation="equal" column="module_srl" var="module_srl" filter="number" />
         <condition operation="equal" column="document_srl" var="document_srl" filter="number" pipe="and" />
         <condition operation="equal" column="eid" var="eid" pipe="and" />
+        <condition operation="equal" column="var_idx" var="var_idx" pipe="and" />
     </conditions>
 </query>

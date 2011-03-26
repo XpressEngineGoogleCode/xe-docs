@@ -188,6 +188,7 @@ class xedocsView extends xedocs {
 		Context::set("page_content", $content);
 			
 		$versions = $oXedocsModel->get_versions($module_srl, $oDocument);
+		
 		$version_labels = $this->format_versions(trim($versions), $document_srl);
 		Context::set("version_labels",  $version_labels );
 		
@@ -196,14 +197,22 @@ class xedocsView extends xedocs {
 		
 		Context::setBrowserTitle($module_info->browser_title." - ".$oDocument->getTitle());
 		
-		debug_syslog(1, "dispXedocsTreeIndex: meta=".print_r($meta, true)."\n");
-		
 		list($prev_document_srl, $next_document_srl) = $oXedocsModel->getPrevNextDocument($this->module_srl, $document_srl);
+		
 		if($prev_document_srl){
+			
+			$oPrevDocEntry = $oDocumentModel->getAlias($prev_document_srl);
+			Context::set('oPrevDocEntry', $oPrevDocEntry);
 			Context::set('oDocumentPrev', $oDocumentModel->getDocument($prev_document_srl));
 		}
-		if($next_document_srl){
+		
+		if($next_document_srl)
+		{
+			$oNextDocEntry = $oDocumentModel->getAlias($next_document_srl);
+		
+			Context::set('oNextDocEntry', $oNextDocEntry);
 			Context::set('oDocumentNext', $oDocumentModel->getDocument($next_document_srl));
+			
 		}
 
 		

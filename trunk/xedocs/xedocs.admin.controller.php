@@ -154,10 +154,13 @@ class xedocsAdminController extends xedocs {
 				$other_version = $manual_versions[$j];
 				debug_syslog(1, "idx=".$i." other_version=". $other_version."\n");
 				foreach($crt_docs as $crt_doc){
-					$other_doc_srl = $this->has_document($crt_doc, $other_docs); 
-					if( 0 != $other_doc_srl ){
-						debug_syslog(1, "other_doc_srl=".$other_doc_srl."\n");
-						$oXedocsModel->add_version($crt_module_srl, $crt_doc, $other_version, $other_doc_srl);
+					 
+					$res = $this->has_document($crt_doc, $other_docs); 
+					if( $res->success ){
+						foreach($res->other_docs_srl as $ods){
+							debug_syslog(1, "adding other_doc_srl=".$ods."\n");
+							$oXedocsModel->add_version($crt_module_srl, $crt_doc, $other_version, $ods);
+						}
 					}
 				}
 			}
@@ -165,18 +168,53 @@ class xedocsAdminController extends xedocs {
 		debug_syslog(1, "compile versions complete");
 	}
 
-	function has_document($crt_doc, $other_docs)
+	function has_document($crt_doc, $other_docs )
 	{
-		$title = trim($crt_doc->getTitle());
-		foreach($other_docs as $other){
-			//debug_syslog(1, "|".$title."| vs |". trim($other->getTitle())."|\n" );
-			if (0 == strcmp($title, trim($other->getTitle()))){
-				//debug_syslog(1, "ok->".$other->document_srl."\n");
-				return $other->document_srl;
+		$oDocumentModel = &getModel('document');
+		
+		//document titles can be duplicated in tree therefore we need to compare alias
+		$crt_doc_entry = $oDocumentModel->getAlias($crt_doc->document_srl); 
+		
+		$args = null;
+		$args->alias_title = $crt_doc_entry;
+		  
+		$output =  executeQuery('xedocs.getAliasesByTitle', $args);
+		debug_syslog(1, "--> docs with alias=".$crt_doc_entry."\n");
+
+		$result = null;
+		$result->success = false;
+		if(isset($output->data))
+		{
+			$result->success = true;
+			$result->other_docs_srl = array();
+			
+			foreach($output->data as $val)
+			{
+				debug_syslog(1, "    other doc srl=".$val->document_srl." alias=".$val->alias_title."\n");
+				
+				$found = false;
+				foreach( $other_docs as $od ){
+					if($od->document_srl == $val->document_srl){
+						$found = true;
+						break;
+					}
+				}
+				
+				if($found)
+				{
+					$result->other_docs_srl[] = $val->document_srl;
+					debug_syslog(1, "found");		
+					
+				}else{
+					debug_syslog(1, "not found");
+				}
+				
 			}
+			 
 		}
-		//debug_syslog(1, "ng has nodoc\n");
-		return 0;
+		
+		return $result;
+		
 	}
 	
 	
@@ -314,15 +352,23 @@ class xedocsAdminController extends xedocs {
 
 		debug_syslog(1, "build_content module_srl=".$module_srl."\n");
 
+		debug_syslog(1, "inserting documents");
+
+		$processor->set_process_step(0); 
 		$walker->walk($toc, $processor);
-		debug_syslog(1, "first pass walk complete\n");
-		//$processor->dump_node_paths();
-
-		$processor->set_second_pass();
-
+		
+		
+		debug_syslog(1, "build aliases");
+		$processor->set_process_step(1); 
 		$walker->walk($toc, $processor);
-		syslog(1, "second pass walk complete\n");
 
+		debug_syslog(1, "resolving links");
+		$processor->set_process_step(2); 
+		$walker->walk($toc, $processor);
+		
+		syslog(1, "import complete\n");
+
+		//original archive not needed any more
 		$builder->remove_archive();
 
 		return $processor->get_first_node();
@@ -355,7 +401,7 @@ class ContentBuilderTocProcessor extends TocProcessor
 	var $node_paths = array();
 	var $not_navigable = array();
 	var $titles = array();
-	var $second_pass=false;
+	var $step = 0;
 	public $controller;
     var $first_node;
 
@@ -374,9 +420,9 @@ class ContentBuilderTocProcessor extends TocProcessor
 		debug_syslog(1, "----------------------------------\n");
 	}
 
-	function set_second_pass()
+	function set_process_step($step)
 	{
-		$this->second_pass = true;
+		$this->step = $step;
 		debug_syslog(1, "Total ".$this->docid." documents inserted\n");
 		$this->docid=0;
 	}
@@ -397,12 +443,25 @@ class ContentBuilderTocProcessor extends TocProcessor
 
 		$this->docid++;
 
-		if( !$this->second_pass ){
+		set_time_limit(0);
+		
+		if( 0 == $this->step ){
+			
 			$this->insert_document($toc_node);
-		}else{
+			
+		}else if ( 1== $this->step)
+		{ 
+			$this->insert_document_alias($toc_node);
+			
+		}else
+		{
 			$this->resolve_links($toc_node);
 		}
+		
 	}
+	
+	
+	
 
 	function get_document_link($document_srl)
 	{
@@ -416,6 +475,7 @@ class ContentBuilderTocProcessor extends TocProcessor
 		$module_info = $oModuleModel->getModuleInfoByDocumentSrl($document_srl);
 		
 		$entry = $oDocumentModel->getAlias($document_srl);
+		
 		if($entry){
 			
 			$url = getSiteUrl($site_module_info->document,'','mid',$module_info->mid,'entry',$entry);
@@ -581,6 +641,8 @@ class ContentBuilderTocProcessor extends TocProcessor
 
 	function resolve_single_link($toc_node, $element, $changed)
 	{
+ 		
+		
 		if( 0 == strcmp('', trim($element->href)))  //empty link
 		{
 			return $this->resolve_empty_link($toc_node, $element, $changed);
@@ -691,22 +753,8 @@ class ContentBuilderTocProcessor extends TocProcessor
 
 	}
 
-	function update_document_content($toc_node, $content)
+	function insert_document_alias($toc_node)
 	{
-		if(!isset($toc_node->document_srl)){
-			debug_syslog(1, "update_document_content 0 - no document_srl set \n");
-			return false;
-		}
-
-		$oDocumentModel = $this->controller->getModel('document');
-
-		$oDocument = $oDocumentModel->getDocument($toc_node->document_srl);
-		if(!isset($oDocument) || !$oDocument->toBool() ){
-			debug_syslog(1, "update_document_content cannot find $oDocument\n");
-			return;
-		}
-		debug_syslog(1, "update_document_content 1 \n");
-		
 		$oDocumentController = $this->controller->getController('document');
 
 		$title_nodes = $this->titles[$toc_node->name];
@@ -739,8 +787,25 @@ class ContentBuilderTocProcessor extends TocProcessor
 		
 		$this->titles[$toc_node->name] = array(); //mark as alias inerted
 		
-		debug_syslog(1, "update_document_content 2 \n");
+	}
+	
+	
+	function update_document_content($toc_node, $content)
+	{
+		if(!isset($toc_node->document_srl)){
+			debug_syslog(1, "update_document_content 0 - no document_srl set \n");
+			return false;
+		}
 
+		$oDocumentModel = $this->controller->getModel('document');
+
+		$oDocument = $oDocumentModel->getDocument($toc_node->document_srl);
+		if(!isset($oDocument) || !$oDocument->toBool() ){
+			debug_syslog(1, "update_document_content cannot find $oDocument\n");
+			return;
+		}
+		debug_syslog(1, "update_document_content 1 \n");
+	
 		$obj = NULL;
 		$obj->{'module_srl'} = $this->module_srl;
 		$obj->{'allow_comment'} = 'Y';
@@ -750,10 +815,13 @@ class ContentBuilderTocProcessor extends TocProcessor
 		$obj->{'document_srl'} = $toc_node->document_srl;
 		$obj->{'category_srl'} = $oDocument->get('category_srl');
 
-		set_time_limit(0);
+		
 		try{
-
+	
+			debug_syslog(1, "update_document_content 2 \n");
+			$oDocumentController = $this->controller->getController('document');
 			$output = $oDocumentController->updateDocument($oDocument, $obj);
+			debug_syslog(1, "update_document_content 3 \n");
 
 		}catch(Exception $w){
 			debug_syslog(1, "Exception: ".$w->getMessage()."\n");
@@ -1048,7 +1116,7 @@ class ContentBuilderTocProcessor extends TocProcessor
 
 		$msg_code = 'success_registed';
 
-		//$entry = $oDocumentModel->getAlias($output->get('document_srl'));
+
 
 		$output = $this->insert_tree_node($toc_node);
 
