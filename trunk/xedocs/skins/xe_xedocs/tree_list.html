@@ -46,6 +46,7 @@
 	
 	<div id="rightcontent">
 		<div id="versions" > 	
+			
 			<!--@foreach($version_labels as $value)-->
 			
 				<!--@if($value->is_current_version)-->
@@ -56,15 +57,6 @@
 			
 			<!--@end-->
 			
-                <!-- 
-                Original document meta values:  
-                
-                 <!--@foreach($meta as $value)-->
-                 		  
-                      	{htmlspecialchars($value["name"])}={htmlspecialchars($value["value"])}
-                      	
-                 <!--@end-->
-                -->
 
 			
 		</div>
@@ -79,14 +71,21 @@
 			<!--@if($oDocumentPrev)-->
 				<p class="wikiPrev">
 					<span>Previous document:</span>
-					<a href="{getSiteUrl($site_module_info->domain, '','mid',$mid,'document_srl',$oDocumentPrev->document_srl)}">{$oDocumentPrev->getTitle()}</a>                   				
+					
+					<a href="{getSiteUrl($site_module_info->domain, '','mid',$mid,'entry',$oPrevDocEntry)}">
+				  
+					{$oDocumentPrev->getTitle()}</a>                   				
 				</p>
 			<!--@end-->
 			
 			<!--@if($oDocumentNext)-->
 				<p class="wikiNext">
 					<span>Next document:</span>
-					<a href="{getSiteUrl($site_module_info->domain, '','mid',$mid,'document_srl',$oDocumentNext->document_srl)}">{$oDocumentNext->getTitle()}</a>
+					
+					
+					<a href="{getSiteUrl($site_module_info->domain, '','mid',$mid,'entry',$oNextDocEntry)}">
+				
+					{$oDocumentNext->getTitle()}</a>
 				</p>
 			<!--@end-->
 				<div class="cleared"></div>
