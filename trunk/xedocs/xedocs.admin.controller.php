@@ -168,6 +168,7 @@ class xedocsAdminController extends xedocs {
 		debug_syslog(1, "compile versions complete");
 	}
 
+	//TODO optimize with module srl
 	function has_document($crt_doc, $other_docs )
 	{
 		$oDocumentModel = &getModel('document');
@@ -405,6 +406,7 @@ class ContentBuilderTocProcessor extends TocProcessor
 	public $controller;
     var $first_node;
 
+    var $attached_images = array();
     
     function set_module_title($title)
     {
@@ -560,7 +562,7 @@ class ContentBuilderTocProcessor extends TocProcessor
 			foreach($attributes as $attr => $val){
 				$obj["name"] = $attr;				
 				$obj["value"] = $val;
-				syslog(1, " added meta: name=".$attr." value=".$val."\n");
+				debug_syslog(1, " added meta: name=".$attr." value=".$val."\n");
 				$meta[] = $obj;
 			}
 		}
@@ -586,6 +588,18 @@ class ContentBuilderTocProcessor extends TocProcessor
 		
 	}
 
+	
+	function get_simple_filename($name){
+		if(!isset($name)) return $name;
+		
+		$last_pos= strrpos($name, "/");
+		if( false === $last_pos){
+			return $name;
+		}
+		
+		return substr($name, $last_pos+1);
+	}
+	
 	function attach_image($toc_node, $element)
 	{
 			
@@ -595,10 +609,24 @@ class ContentBuilderTocProcessor extends TocProcessor
 
 			
 		$name = substr($src, strpos($src, "/")+1);
-		$extension = substr($src, strpos($src, "."));
+		$simple_name = $this->get_simple_filename($name);
+		
+		$link = $this->attached_images[$simple_name];
+		if(isset($link)){
+			//already uploaded , just use link
+			syslog(1, "file ".$simple_name." already uploaded to ".$link." reusing link\n");
+			
+			$element->src = $link;			
+			$element->alt = $simple_name;
+			$element->{'editor_component'} = 'image_link';
+			unlink($tempfilename);
+			return;
+		}
+				
+		
 
-		$file_info['name'] = $name;
-		debug_syslog(1, "file_info['name'] =".$file_info['name'] ."\n");
+		$file_info['name'] = $simple_name;
+		syslog(1, "file_info['name'] =".$file_info['name'] ."\n");
 
 		if( startsWith($src, '../')){
 			$path = substr( $src, 3 );
@@ -608,29 +636,55 @@ class ContentBuilderTocProcessor extends TocProcessor
 		debug_syslog(1, "geting image file from ".$path."\n");
 		$image_content = $this->builder->get_file_content($path);
 
-		$tmpfilename = tempnam(sys_get_temp_dir(), 'img').$extension;
+		$tmpfilename = tempnam(sys_get_temp_dir(), 'img_').$simple_name;
 		file_put_contents($tmpfilename, $image_content);
 
 		$file_info['tmp_name'] = $tmpfilename;
-		debug_syslog(1, "file_info['tmp_name']=".$file_info['tmp_name']."\n");
+		syslog(1, "file_info['tmp_name']=".$file_info['tmp_name']."\n");
 
 		$upload_target_srl = $toc_node->document_srl;
 		debug_syslog(1, "upload_target_srl=".$upload_target_srl." \n");
 		$oFileController = $this->controller->getController("file");
 
+		
 		$output = $oFileController->insertFile($file_info, $this->module_srl, $upload_target_srl, 0, true);
-
+		
 		if(!$output->toBool()) {
-			debug_syslog(1, "insert file failed"."\n");
 
-		}else{
+			syslog(1, "insert file failed"."\n");
 
-			$element->src = $output->get('uploaded_filename');
-			$element->alt = $name;
-			$element->{'editor_component'} = 'image_link';
 		}
-		//todo remove temp file
+		else
+		{
+			$element->{'editor_component'} = 'image_link';
+			
+			$link = $output->get('uploaded_filename');
+			if( !endsWith($link, $simple_name )){
+				syslog(1, "   file_info: ".print_r($file_info)."\n");
+				syslog(1, "bad upload : ".$link. " simple_name ".$simple_name."\n");
+				
+			}
+			$this->attached_images[$simple_name] = $link; //keeep track of already inserted images
+			
+			$element->src = $link;			
+			$element->alt = $simple_name;
+
+			//check upload
+			$file_srl = $output->get('file_srl');
+			if(isset($file_srl)){
+				$oFileModel = &getModel('file');
+				$uploaded_file = $oFileModel->getFile($file_srl);
+				if( 0 != strcmp($image_content, $uploaded_file)){ 	
+					syslog(1, "uploaded file difers: ".$name."\n");
+				}
+				debug_syslog(1, " file ".$name." uploaded ok to ".$output->get('uploaded_filename')."\n");
+			}else{
+				syslog(1, "file _srle not set\n");
+			}
+		}
+		
 		unlink($tmpfilename);
+		
 
 	}
 
@@ -763,7 +817,7 @@ class ContentBuilderTocProcessor extends TocProcessor
 		{
 			$alias = $toc_node->name;
 			$oDocumentController->insertAlias($this->module_srl, $toc_node->document_srl, $alias);
-			syslog(1, "one node insert alias for ".$toc_node->document_srl." alias=".$alias."\n");
+			//debug_syslog(1, "one node insert alias for ".$toc_node->document_srl." alias=".$alias."\n");
 			
 		}else if (1 < count($title_nodes) ) 
 		{
@@ -781,7 +835,7 @@ class ContentBuilderTocProcessor extends TocProcessor
 					$alias = $tnode->name.$ti; 	
 				}
 				$oDocumentController->insertAlias($this->module_srl, $tnode->document_srl, $alias);
-				syslog(1, "multinode insert alias for ".$tnode->document_srl." alias=".$alias."\n");
+				debug_syslog(1, "multinode insert alias for ".$tnode->document_srl." alias=".$alias."\n");
 			}
 		}
 		
