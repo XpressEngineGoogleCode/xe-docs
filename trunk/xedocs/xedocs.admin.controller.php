@@ -406,7 +406,6 @@ class ContentBuilderTocProcessor extends TocProcessor
 	public $controller;
     var $first_node;
 
-    var $attached_images = array();
     
     function set_module_title($title)
     {
@@ -611,20 +610,6 @@ class ContentBuilderTocProcessor extends TocProcessor
 		$name = substr($src, strpos($src, "/")+1);
 		$simple_name = $this->get_simple_filename($name);
 		
-		$link = $this->attached_images[$simple_name];
-		if(isset($link)){
-			//already uploaded , just use link
-			syslog(1, "file ".$simple_name." already uploaded to ".$link." reusing link\n");
-			
-			$element->src = $link;			
-			$element->alt = $simple_name;
-			$element->{'editor_component'} = 'image_link';
-			unlink($tempfilename);
-			return;
-		}
-				
-		
-
 		$file_info['name'] = $simple_name;
 		syslog(1, "file_info['name'] =".$file_info['name'] ."\n");
 
@@ -664,7 +649,6 @@ class ContentBuilderTocProcessor extends TocProcessor
 				syslog(1, "bad upload : ".$link. " simple_name ".$simple_name."\n");
 				
 			}
-			$this->attached_images[$simple_name] = $link; //keeep track of already inserted images
 			
 			$element->src = $link;			
 			$element->alt = $simple_name;
