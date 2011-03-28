@@ -1,0 +1,134 @@
+<!--%import("css/xedocs.css")-->
+
+<!--%import("css/robohelp.css")-->
+<!--%import("js/manual.js")-->
+<!--%import("js/xedocs.js")-->
+<!--%import("js/show_hide_div.js")-->
+
+<!--@if(!$module_info->colorset)-->
+    {@$module_info->colorset = "white"}
+<!--@end-->
+
+{$module_info->header_text}
+
+<div class="wiki">
+    <div class="wikiHeader" style='color=green; display:none;'>
+		<!--@if($module_info->title)-->
+		<div class="wikiTitle">
+			<h2 class="wikiTitleText">
+	      <a href="{getUrl('','mid',$mid,'listStyle',$listStyle)}">{$module_info->title}
+                <!--@if($module_info->sub_title)--> : <em>{$module_info->sub_title}</em><!--@end--></a></h2>
+		</div>
+		<!--@end-->
+
+		<!--@if($module_info->comment)-->
+		<p class="wikiDescription">{$module_info->comment}</p>
+		<!--@end-->
+    </div>
+
+    <div class="wikiInformation">
+		<div class="wikiInformationPadding">
+			<div class="infoView">
+				<!--span class="buttonOfficial"><a href="{getUrl('act','dispXedocsContent','entry','','document_srl','')}">Manual Title </a></span-->
+				<a class="xeDocsHeaderButton" id="manual_index" href="{getUrl('act','dispXedocsTreeIndex','entry','','document_srl','')}"><span>{$lang->cmd_view_document_list}</span></a>
+				<a class="xeDocsHeaderButton" id="table_of_contents" href="{getUrl('act','dispXedocsTitleIndex','entry','','document_srl','')}"><span>{$lang->cmd_view_document_tree}</span></a>
+			</div>
+
+			<!--@if($grant->manager)-->
+			<div id="adminActions">
+				<a class="xeDocsHeaderButtonConfig" id="toc_structure" href="{getUrl('act','dispXedocsModifyTree')}"><span>{$lang->cmd_modify}</span></a>
+				<a class="xeDocsHeaderButtonConfig" id="config" href="{getUrl('act','dispXedocsAdminInsertManual')}"><span>{$lang->cmd_setup}</span></a>
+			</div>
+			<!--@end-->
+		</div>
+    </div>
+   
+
+    <!--@if($oDocument && $oDocument->isExists())-->
+	<div class="wikiRead">
+        <div class="wikiReadPadding">
+
+		<form action="{getUrl()}" method="get">
+			<input type="hidden" name="vid" value="{$vid}" /><input type="hidden" name="mid" value="{$mid}" /><input type="hidden" name="act" value="IS" />
+			<input type="text" name="is_keyword" class="xeDocsInputText" value="{$is_keyword}" />
+			
+			
+			<input class="xeDocsSearchButton" src="img/icon_search.png"
+			type="image" value="{$lang->cmd_search}" />
+			
+		</form>
+	
+		<!--  
+			<form action="{getUrl('act','dispXedocsContent','entry','','document_srl','')}" method="get" class="xeDocsSearchForm">
+				<input type="hidden" name="mid" value="{$mid}" />
+				<input type="hidden" name="vid" value="{$vid}" />
+				<input class="xeDocsInputText" type="text" name="entry" />
+				<input class="xeDocsSearchButton" src="img/icon_search.png" type="image" value="{$lang->cmd_move}" alt="{$lang->cmd_move}" />
+			</form>
+	    -->
+
+			<!--@if($visit_log)-->
+			<div class="visitLog">
+				{@ $bFirst = true; }
+				<!--@foreach($visit_log as $_entry)-->
+					<!--@if(!$bFirst)--> > <!--@else-->{@ $bFirst = false; }<!--@end--> <a href="{getUrl('entry',$_entry,'document_srl','')}">{$_entry}</a>
+				<!--@end-->
+			</div>
+			<!--@end-->
+			
+			<div style='display: none;'>
+				<!--@if($history)-->
+					<a href="#" class="author member_{$history->member_srl}" onclick="return false;">{$history->nick_name}</a>
+				<!--@else-->
+					<!--@if(!$oDocument->getMemberSrl())-->
+						<!--@if($oDocument->isExistsHomepage())-->
+							<a href="{$oDocument->getHomepageUrl()}" onclick="window.open(this.href);return false;" class="author">{$oDocument->getNickName()}</a>
+						<!--@else-->
+							{$oDocument->getNickName()}
+						<!--@end-->
+					<!--@else-->
+						<a href="#popup_menu_area" class="member_{$oDocument->get('member_srl')} author" onclick="return false">{$oDocument->getNickName()}</a>
+					<!--@end-->
+				<!--@end-->
+
+				<span class="ipAddress"><!--@if($grant->manager || $module_info->display_ip_address!='N')-->{$oDocument->getIpaddress()}<!--@end--></span>
+			</div>
+			
+			<!--@if(!$history && ($oDocument->isExists()||$use_history != 'N'))-->
+			<div class="command" >
+				<!--@if($oDocument->isExists()&&$act!='dispXedocsEditPage'&&$grant->manager)-->
+					<a class="" href="{getUrl('act','dispXedocsEditPage','entry',$entry)}"><img src="img/icon_edit_page.png" alt="" title="{$lang->cmd_edit}" /></a>
+				<!--@end-->
+				<!--@if($oDocument->isExists()&&$grant->delete_document && $oDocument->get('title')!='Front Page')-->
+					<a class="" href="#" onclick="if(confirm('{$lang->confirm_delete}')) { doDeleteManual('{$oDocument->document_srl}'); }; return false;"><img src="img/icon_delete_page.png" alt="" title="{$lang->cmd_delete}" /></a>
+				<!--@end-->
+				<!--@if($use_history != 'N')-->
+					<a class="" href="{getUrl('act','dispXedocsHistory','document_srl',$oDocument->document_srl,'history_srl','')}"><img src="img/icon_history.png" alt="" title="{$lang->cmd_delete}" /></a>
+					<span class="buttonOfficial"><a href="{getUrl('act','dispXedocsHistory','document_srl',$oDocument->document_srl,'history_srl','')}">Histories</a></span>
+				<!--@end-->
+			</div>
+			<!--@else-->
+			<div class="command">
+				<!--@if($history)-->
+					{$lang->notice_old_revision}
+				<!--@end-->
+				<span class="buttonOfficial"><a href="{getUrl('act','','history_srl','')}">{$lang->cmd_back}</a></span>
+			</div>
+			<!--@end-->
+			<div class="cleared"></div>
+        </div>
+    </div>
+	<!--@elseif($entry)-->
+    <div class="wikiRead">
+        <div class="wikiReadHeader">
+        </div>
+    </div>
+    <!--@if($visit_log)-->
+    <div class="visitLog">
+        {@ $bFirst = true; }
+        <!--@foreach($visit_log as $_entry)-->
+            <!--@if(!$bFirst)--> > <!--@else-->{@ $bFirst = false; }<!--@end--> <a href="{getUrl('entry',$_entry)}">{$_entry}</a>
+        <!--@end-->
+    </div>
+    <!--@end-->
+    <!--@end-->
