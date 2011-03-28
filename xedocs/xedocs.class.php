@@ -3,7 +3,7 @@
 
 function debug_syslog($level, $msg)
 {
-	//syslog($level, $msg);
+	syslog($level, $msg);
 }
 
 function get_resource_contents($stream)
