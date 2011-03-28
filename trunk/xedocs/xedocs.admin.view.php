@@ -131,8 +131,8 @@ class xedocsAdminView extends xedocs {
 		$manual_set = &getModel('xedocs')->getModuleMidSet($module_info->help_name);
 		$module_count = count($manual_set);
 
-		syslog(1, "module_count =".$module_count."\n");
-		syslog(1, "help_name =".$module_info->help_name."\n");
+		debug_syslog(1, "module_count =".$module_count."\n");
+		debug_syslog(1, "help_name =".$module_info->help_name."\n");
 		
 		Context::set('module_count',$module_count);	
 		Context::set('module_info',$module_info);

@@ -611,7 +611,7 @@ class ContentBuilderTocProcessor extends TocProcessor
 		$simple_name = $this->get_simple_filename($name);
 		
 		$file_info['name'] = $simple_name;
-		syslog(1, "file_info['name'] =".$file_info['name'] ."\n");
+		debug_syslog(1, "file_info['name'] =".$file_info['name'] ."\n");
 
 		if( startsWith($src, '../')){
 			$path = substr( $src, 3 );
@@ -658,7 +658,7 @@ class ContentBuilderTocProcessor extends TocProcessor
 			if(isset($file_srl)){
 				$this->check_uploaded_file_content($name, $image_content , $link);
 			}else{
-				syslog(1, "file _srle not set\n");
+				debug_syslog(1, "file_srl not set\n");
 			}
 		}
 		
