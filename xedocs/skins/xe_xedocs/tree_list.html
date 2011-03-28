@@ -1,0 +1,112 @@
+<!--#include("header.html")-->
+<!--%import("js/show_hide_div.js")-->
+
+<script type="text/javascript">
+	function show_comment_editor(which){
+		document.getElementById('comment_editor').innerHTML = '<'+'object id="addComment" name="foo" type="text/html" style="visibility:visible;" data="'+which.href+'"><\/object>';
+		document.getElementById('show_comments').style.visibility='hidden';
+	}
+</script>
+
+<div id="treeList" >
+	<ul>
+        <!--@for($_i=count($parents)-1; $_i>=0; $_i--)-->
+			<li class="xedocsparentnode" style="list-style-type:none;">
+				<a href="{$parents[$_i]->href}">
+					<!--@if($_i == count($parents)-1)-->
+						<img src="img/icon_root.png"/ alt="+" title="">
+					<!--@else-->
+						<img src="img/icon_arrow.png"/ alt="+" title="">
+					<!--@end-->
+					{$parents[$_i]->title}
+				</a>
+			</li>
+ 		<!--@end-->
+		
+        <!--@for($_i=0; $_i<count($children); $_i++)-->
+        <li class="xedocstreenode" style="list-style-type:none;">
+			<a href="{$children[$_i]->href}"><img src="img/down-to-right-arrow.png" alt="-" title=""/> {$children[$_i]->title} </a>
+		</li>
+       	<!--@end-->
+	    
+	</ul>
+</div>
+
+<!--@if(!$has_page)-->
+	<div id="rightcontent" style='margin:2px; color:red; margin-right:20px;' >
+	    Click on node in content tree to see contents.
+	</div>
+<!--@else-->
+
+<div id="showHideTree" onclick="hidediv1('treeList'); return false;" alt="Close Tree" title="Close tree"></div>
+
+<div id="rightContainer">
+
+	<!--#include("breadcrumbs.html")-->
+	
+	<div id="rightcontent">
+		<div id="versions" > 	
+			
+			<!--@foreach($version_labels as $value)-->
+			
+				<!--@if($value->is_current_version)-->
+					<em>{$value->vlabel}</em>
+				<!--@else-->
+					<a href='{$value->href}'> {$value->vlabel} </a> &nbsp
+				<!--@end-->
+			
+			<!--@end-->
+			
+
+			
+		</div>
+	    {$page_content}
+	
+	<!--@if($module_info->toc_location=='Left')-->
+		<div id='footer_links' class="wikiReadFooter">
+	<!--@else-->
+	<!--@end-->
+			<div class="wikiNavigation" >
+			
+			<!--@if($oDocumentPrev)-->
+				<p class="wikiPrev">
+					<span>Previous document:</span>
+					
+					<a href="{getSiteUrl($site_module_info->domain, '','mid',$mid,'entry',$oPrevDocEntry)}">
+				  
+					{$oDocumentPrev->getTitle()}</a>                   				
+				</p>
+			<!--@end-->
+			
+			<!--@if($oDocumentNext)-->
+				<p class="wikiNext">
+					<span>Next document:</span>
+					
+					
+					<a href="{getSiteUrl($site_module_info->domain, '','mid',$mid,'entry',$oNextDocEntry)}">
+				
+					{$oDocumentNext->getTitle()}</a>
+				</p>
+			<!--@end-->
+				<div class="cleared"></div>
+			</div> <!--end of div wikiNavigation-->
+		</div> <!-- end of footer_links-->
+	</div> <!--end of div right content-->
+	<!--@end-->
+
+	<!--@if($module_info->toc_location=='Left')-->
+		<div id="comments">
+   	<!--@else-->
+	<!--@end-->
+	
+	<!--@if($oDocument->allowComment())-->
+		<!--@if($grant->write_comment && $oDocument->isEnableComment() )-->
+			<a id="show_comments" onclick="show_comment_editor(this); return false;" href="{getSiteUrl($site_module_info->domain, '', 'mid', $mid, 'document_srl', $document_srl, 'act', 'dispXedocsCommentEditor')}">Show Comments</div>
+			<div id="comment_editor">
+			</div>
+		<!--@end-->
+	<!--@end-->
+
+</div>
+
+<!--#include("footer.html")-->
