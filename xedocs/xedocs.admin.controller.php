@@ -656,12 +656,7 @@ class ContentBuilderTocProcessor extends TocProcessor
 			//check upload
 			$file_srl = $output->get('file_srl');
 			if(isset($file_srl)){
-				$oFileModel = &getModel('file');
-				$uploaded_file = $oFileModel->getFile($file_srl);
-				if( 0 != strcmp($image_content, $uploaded_file)){ 	
-					syslog(1, "uploaded file difers: ".$name."\n");
-				}
-				debug_syslog(1, " file ".$name." uploaded ok to ".$output->get('uploaded_filename')."\n");
+				$this->check_uploaded_file_content($name, $image_content , $link);
 			}else{
 				syslog(1, "file _srle not set\n");
 			}
@@ -672,6 +667,25 @@ class ContentBuilderTocProcessor extends TocProcessor
 
 	}
 
+	function check_uploaded_file_content($name, $image_content , $uploaded_filename)
+	{
+			debug_syslog(1, "check_uploaded_file_content uploaded file: ".$uploaded_filename."\n");
+				
+			
+			$uploaded_file_content = file_get_contents($uploaded_filename);
+				 
+			if( 0 != strcmp($image_content, $uploaded_file_content))
+			{ 	
+				debug_syslog(1, "uploaded file difers: ".$name."\n");
+				return false;
+			}
+			else{
+				debug_syslog(1, " file ".$name." uploaded ok to ".$uploaded_filename."\n");
+				return true;
+			}
+	}
+	
+	
 	function is_single_file_ref($link)
 	{
 		return false==strpos($link, '/');
