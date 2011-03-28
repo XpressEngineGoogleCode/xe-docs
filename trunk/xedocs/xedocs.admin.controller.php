@@ -625,7 +625,7 @@ class ContentBuilderTocProcessor extends TocProcessor
 		file_put_contents($tmpfilename, $image_content);
 
 		$file_info['tmp_name'] = $tmpfilename;
-		syslog(1, "file_info['tmp_name']=".$file_info['tmp_name']."\n");
+		debug_syslog(1, "file_info['tmp_name']=".$file_info['tmp_name']."\n");
 
 		$upload_target_srl = $toc_node->document_srl;
 		debug_syslog(1, "upload_target_srl=".$upload_target_srl." \n");
@@ -636,7 +636,7 @@ class ContentBuilderTocProcessor extends TocProcessor
 		
 		if(!$output->toBool()) {
 
-			syslog(1, "insert file failed"."\n");
+			debug_syslog(1, "insert file failed"."\n");
 
 		}
 		else
@@ -645,8 +645,8 @@ class ContentBuilderTocProcessor extends TocProcessor
 			
 			$link = $output->get('uploaded_filename');
 			if( !endsWith($link, $simple_name )){
-				syslog(1, "   file_info: ".print_r($file_info)."\n");
-				syslog(1, "bad upload : ".$link. " simple_name ".$simple_name."\n");
+				debug_syslog(1, "   file_info: ".print_r($file_info, true)."\n");
+				debug_syslog(1, "bad upload : ".$link. " simple_name ".$simple_name."\n");
 				
 			}
 			
