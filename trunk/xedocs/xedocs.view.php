@@ -71,19 +71,41 @@ class xedocsView extends xedocs {
 		Context::set('oDocument', $oDocument);
 		$this->setTemplateFile('histories');
 	}
+	
+	
+	function resolve_firstdocument(){
+			$oModuleModel = &getModel('module');
+			$module_info = $oModuleModel->getModuleInfoByModuleSrl($this->module_srl);
+			
+			return  $module_info->first_node_srl;
+	}
 
 	function dispXedocsEditPage()
 	{
 		if(!$this->grant->write_document){
 			return $this->dispXedocsMessage('msg_not_permitted');
 		}
+		
+		
+		
 
 		$oDocumentModel = &getModel('document');
 		$document_srl = Context::get('document_srl');
+		
+		if (!isset($document_srl) ) //resolve first document 
+		{
+			$document_srl = $this->resolve_firstdocument();
+		}
+		
+		
+		
 		$oDocument = $oDocumentModel->getDocument(0, $this->grant->manager);
 		$oDocument->setDocument($document_srl);
 		$oDocument->add('module_srl', $this->module_srl);
 		Context::set('document_srl',$document_srl);
+		
+		
+		
 		Context::set('oDocument', $oDocument);
 		$history_srl = Context::get('history_srl');
 		if($history_srl) {
@@ -161,8 +183,6 @@ class xedocsView extends xedocs {
 					$document_srl = $obj->document_srl;
 					break;
 				}
-				//Context::set('has_page', false);
-				//return;
 			}else{
 				$document_srl = $module_info->first_node_srl;
 			}
