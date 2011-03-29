@@ -138,7 +138,13 @@ class xedocsController extends xedocs {
 
 		$obj->module_srl = $this->module_srl;
 
-
+		//force links in new browser window
+		debug_syslog(1, "procXedocsInsertComment: content:".$obj->content."\n");
+		
+		$obj->content = str_replace('<a', '<a target="_blank" ', $obj->content);
+		
+		debug_syslog(1, "procXedocsInsertComment: new content:".$obj->content."\n");
+		
 		$oDocumentModel = &getModel('document');
 		$oDocument = $oDocumentModel->getDocument($obj->document_srl);
 
