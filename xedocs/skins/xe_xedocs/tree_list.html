@@ -9,6 +9,15 @@
 </script>
 
 <div id="treeList" >
+	<div id="searchBox">
+		<form action="{getUrl()}" method="get">
+			<label><span>{$lang->Search}</span>
+				<input type="hidden" name="vid" value="{$vid}" /><input type="hidden" name="mid" value="{$mid}" /><input type="hidden" name="act" value="IS" />
+				<input type="text" name="is_keyword" class="xeDocsInputText" value="{$is_keyword}" />
+				<input class="xeDocsSearchButton" src="img/icon_search.png" type="image" value="{$lang->cmd_search}" />			
+			</label>
+		</form>
+	</div>
 	<ul>
         <!--@for($_i=count($parents)-1; $_i>=0; $_i--)-->
 			<li class="xedocsparentnode" style="list-style-type:none;">
@@ -38,35 +47,36 @@
 	</div>
 <!--@else-->
 
-<div id="showHideTree" onclick="hidediv1('treeList');  return false;" alt="Close Tree" title="Close tree"></div>
+<div id="showHideTree" onclick="hidediv1('treeList'); return false;" alt="Close Tree" title="Close tree"></div>
 
 <div id="rightContainer">
 
 	<!--#include("breadcrumbs.html")-->
 	
-	<div id="rightcontent">
-		<div id="versions" > 	
-			
+	<div id="versions">
+		<p>{$lang->versions}
 			<!--@foreach($version_labels as $value)-->
 			
 				<!--@if($value->is_current_version)-->
-					<em>{$value->vlabel}</em>
+					<span>{$value->vlabel}</span>&nbsp;|&nbsp;
 				<!--@else-->
-					<a href='{$value->href}'> {$value->vlabel} </a> &nbsp
+					<a href='{$value->href}'> {$value->vlabel} </a>&nbsp;|&nbsp;
 				<!--@end-->
 			
 			<!--@end-->
-			
+		</p>
+	</div>
+	<div class="cleared"></div>
+	
+	<div id="rightcontent">
 
-			
-		</div>
 	    {$page_content}
 	
 	<!--@if($module_info->toc_location=='Left')-->
 		<div id='footer_links' class="wikiReadFooter">
 	<!--@else-->
 	<!--@end-->
-			<div class="wikiNavigation" >
+			<div class="manualNavigation" >
 			
 			<!--@if($oDocumentPrev)-->
 				<p class="wikiPrev">
@@ -89,7 +99,7 @@
 				</p>
 			<!--@end-->
 				<div class="cleared"></div>
-			</div> <!--end of div wikiNavigation-->
+			</div> <!--end of div manualNavigation-->
 		</div> <!-- end of footer_links-->
 	</div> <!--end of div right content-->
 	<!--@end-->
