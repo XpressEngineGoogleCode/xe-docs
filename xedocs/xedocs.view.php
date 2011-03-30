@@ -82,7 +82,7 @@ class xedocsView extends xedocs {
 
 	function dispXedocsEditPage()
 	{
-		if(!$this->grant->write_document){
+		if(!$this->grant->admin){
 			return $this->dispXedocsMessage('msg_not_permitted');
 		}
 		

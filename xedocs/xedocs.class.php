@@ -114,7 +114,7 @@ class TocTreeBuilder{
 	function download_archive($fname){
 		if( isset($this->archive)) return true;
 
-		$zipPath = tempnam(".", "manual");
+		$zipPath = tempnam(sys_get_temp_dir(), "manual");
 
 		$this->archive_filename = $zipPath;
 
@@ -136,7 +136,7 @@ class TocTreeBuilder{
 		try{
 
 			if( isset($this->archive)) {
-
+				
 				$this->archive->close();
 				unset($this->archive);
 
