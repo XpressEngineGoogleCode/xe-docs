@@ -11,7 +11,7 @@
 
 {$module_info->header_text}
 
-<div class="wiki">
+<div class="xeDocs">
     <div class="wikiHeader" style='color=green; display:none;'>
 		<!--@if($module_info->title)-->
 		<div class="wikiTitle">
@@ -26,37 +26,53 @@
 		<!--@end-->
     </div>
 
+	<div id="header">
+		<a href="http://www.cubrid.org/" id="logo"><img border="0" class="iePngFix" alt="logo" src="http://www.cubrid.org/files/attach/images/50/logo.gif"></a>
+		<div id="headerRight">
+			<div id="topMenu">
+				<div id="headerMenu">
+					<a target="_blank" href="http://blog.cubrid.org">BLOG</a><span class="topMenuSeparator"> | </span><a target="_blank" href="http://forum.cubrid.org">FORUM</a><span class="topMenuSeparator"> | </span><a target="_blank" href="http://www.cubrid.org/manual">MANUAL</a><span class="topMenuSeparator"> | </span><a href="http://www.cubrid.org/faq">F.A.Q.</a><span class="topMenuSeparator"> | </span><a href="http://www.cubrid.org/contact">CONTACTS</a>
+				</div>
+			</div>
+		</div>
+		<div class="cleared"></div>
+    </div>
+
+	<div id="neck">
+		<ul class="widget_navigator_51 navigator">
+			<li class="node_63"><a href="http://www.cubrid.org/about">About CUBRID</a></li>
+			<li class="node_65"><a href="http://www.cubrid.org/downloads">Downloads</a></li>
+			<li class="node_66"><a href="http://www.cubrid.org/documentation">Documentation</a></li>
+			<li class="node_277"><a href="http://www.cubrid.org/developers">Developers</a></li>
+			<li class="node_67"><a href="http://www.cubrid.org/community">Community</a></li>
+			<li class="node_68"><a target="_blank" href="http://blog.cubrid.org/categories/news/">News</a></li>
+			<li class="node_69"><a href="http://www.cubrid.org/projects">Projects</a></li>
+		</ul>
+		<div class="cleared"></div>
+	</div>
+	<!--@if($grant->manager)-->
     <div class="wikiInformation">
 		<div class="wikiInformationPadding">
 			<div class="infoView">
 				<!--span class="buttonOfficial"><a href="{getUrl('act','dispXedocsContent','entry','','document_srl','')}">Manual Title </a></span-->
-				<a class="xeDocsHeaderButton" id="manual_index" href="{getUrl('act','dispXedocsTreeIndex','entry','','document_srl','')}"><span>{$lang->cmd_view_document_list}</span></a>
-				<a class="xeDocsHeaderButton" id="table_of_contents" href="{getUrl('act','dispXedocsTitleIndex','entry','','document_srl','')}"><span>{$lang->cmd_view_document_tree}</span></a>
+				<!--a class="xeDocsHeaderButton" id="manual_index" href="{getUrl('act','dispXedocsTreeIndex','entry','','document_srl','')}"><span>{$lang->cmd_view_document_list}</span></a>
+				<a class="xeDocsHeaderButton" id="table_of_contents" href="{getUrl('act','dispXedocsTitleIndex','entry','','document_srl','')}"><span>{$lang->cmd_view_document_tree}</span></a-->
 			</div>
 
-			<!--@if($grant->manager)-->
+			
 			<div id="adminActions">
 				<a class="xeDocsHeaderButtonConfig" id="toc_structure" href="{getUrl('act','dispXedocsModifyTree')}"><span>{$lang->cmd_modify}</span></a>
 				<a class="xeDocsHeaderButtonConfig" id="config" href="{getUrl('act','dispXedocsAdminInsertManual')}"><span>{$lang->cmd_setup}</span></a>
 			</div>
-			<!--@end-->
+			
 		</div>
     </div>
-   
+	<!--@end-->
 
     <!--@if($oDocument && $oDocument->isExists())-->
+	<!--@if($oDocument->isExists()&&$act!='dispXedocsEditPage'&&$grant->manager)-->
 	<div class="wikiRead">
         <div class="wikiReadPadding">
-
-		<form action="{getUrl()}" method="get">
-			<input type="hidden" name="vid" value="{$vid}" /><input type="hidden" name="mid" value="{$mid}" /><input type="hidden" name="act" value="IS" />
-			<input type="text" name="is_keyword" class="xeDocsInputText" value="{$is_keyword}" />
-			
-			
-			<input class="xeDocsSearchButton" src="img/icon_search.png"
-			type="image" value="{$lang->cmd_search}" />
-			
-		</form>
 	
 		<!--  
 			<form action="{getUrl('act','dispXedocsContent','entry','','document_srl','')}" method="get" class="xeDocsSearchForm">
@@ -118,6 +134,7 @@
 			<div class="cleared"></div>
         </div>
     </div>
+	<!--@end-->
 	<!--@elseif($entry)-->
     <div class="wikiRead">
         <div class="wikiReadHeader">

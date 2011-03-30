@@ -14,7 +14,7 @@ a:hover {
 }
 
 /* Board Reset */
-.wiki{
+.xeDocs {
 	font-family: Arial, Tahoma, Sans-serif;
 	line-height:normal;
 	font-size:12px;
@@ -159,7 +159,13 @@ a:hover {
 	-webkit-border-radius: 4px;
 	border: 1px solid #dfdfdf;
 	vertical-align: middle;
+	width: 205px;
 }
+
+.xeDocsInputText:focus {
+	background: #FFF4CF;
+}
+
 .xeDocsSearchButton {
 	vertical-align: middle;
 }
@@ -174,17 +180,17 @@ a:hover {
 .wikiReadBody .xe_content{ overflow:hidden; }
 .wikiReadBody .xe_content a { text-decoration:underline; }
 
-.wikiNavigation {
+.manualNavigation {
 	margin: 20px 0 0 0;
 	padding: 5px 0;
 	border-top: 1px dotted #dfdfdf !important;
 	border-bottom: 1px dotted #dfdfdf !important;
 }
-.wikiNavigation:after { content:""; display:block; clear:both;}
-.wikiNavigation .wikiPrev { float:left; }
-.wikiNavigation .wikiNext { float:right;}
-.wikiNavigation .wikiPrev ,
-.wikiNavigation .wikiNext { color:green; font-weight:bold;}
+.manualNavigation:after { content:""; display:block; clear:both;}
+.manualNavigation .wikiPrev { float:left; }
+.manualNavigation .wikiNext { float:right;}
+.manualNavigation .wikiPrev ,
+.manualNavigation .wikiNext { color:green; font-weight:bold;}
 
 .wikiReadFooter .memberSignature { border:1px solid; padding:10px; margin:1em 0; overflow:hidden; *zoom:1; clear:both; -moz-border-radius:5px; -webkit-border-radius:5px;}
 .wikiReadFooter .memberSignature img.profile { margin:0 1em 0 0; border:1px solid;}
@@ -215,7 +221,7 @@ a:hover {
 .wikiReadFooter .memberSignature{ border-color:#f0f0f0; background-color:#fdfdfd;}
 .wikiReadFooter .memberSignature img.profile { border-color:#eee;} 
 .wikiReadFooter .tag dd a{ color:#4d4d4d;}
-.wikiRead .wikiNavigation{ border-top:1px solid;}
+.wikiRead .manualNavigation{ border-top:1px solid;}
 .wikiRead .command { float:right; }
 
 /* Feedback List */
@@ -418,7 +424,6 @@ a.buttonOfficial a{ _vertical-align:top;}
 
 #treeList {
 	position:relative;
-	padding: 10px 0;
 }
 #treeList ul {
 	margin:0 0 0 10px;
@@ -446,7 +451,7 @@ a.buttonOfficial a{ _vertical-align:top;}
 
 .wiki a.inlink { text-decoration:underline; color:green; }
 
-h1, .h1, h2, h3, #xe h4, h5, h6, #xe p, ul, ol, #content li, .widgetTree, .widgetTree li, .video_thumb, .heading_menu, .description, table, table.col4 tr, table.col4 td, .category, .left, #xe .gap1, .contents-table li, .contents-table, .cubrid-tweets, .cubrid-tweets ul, .cubrid-tweets li, .rrt-author-img, .code, #slider-nav span, #xe dl, #xe dd, #footer, #footer_left_container, .app, .applogo, #xe .summary, #footer div, div.important, #cubrid-share {
+h1, .h1, h2, h3, #xe h4, h5, h6, #xe p, ul, ol, #content li, .widgetTree, .widgetTree li, .video_thumb, .heading_menu, .description, table, table.col4 tr, table.col4 td, .category, .left, #xe .gap1, .contents-table li, .contents-table, .cubrid-tweets, .cubrid-tweets ul, .cubrid-tweets li, .rrt-author-img, .code, #slider-nav span, #xe dl, #xe dd, #footer_manual, .app, .applogo, #xe .summary, #footer div, div.important, #cubrid-share {
 	float:none;
 }
 
@@ -584,7 +589,7 @@ h1, .h1, h2, h3, #xe h4, h5, h6, #xe p, ul, ol, #content li, .widgetTree, .widge
 	background: url('../img/open_close_button.png') 0 0 no-repeat;
 	cursor: pointer;
 	position: absolute;
-	margin: 10px 0 0 0;
+	margin: 70px 0 0 0;
 	left: 267px;
 }
 
@@ -592,7 +597,19 @@ h1, .h1, h2, h3, #xe h4, h5, h6, #xe p, ul, ol, #content li, .widgetTree, .widge
 	width: auto;
 	border-left: 1px solid #dfdfdf;
 	overflow: hidden;
-	padding: 0 15px;
+	padding: 0 5px 0 15px;
+	background-image: -webkit-gradient(
+		linear,
+		left top,
+		right top,
+		color-stop(0, rgb(238,238,238)),
+		color-stop(0.01, rgb(255,255,255))
+	);
+	background-image: -moz-linear-gradient(
+		left center,
+		rgb(238,238,238) 0%,
+		rgb(255,255,255) 1%
+	);
 }
 
 #breadcrumbs {
@@ -606,7 +623,7 @@ h1, .h1, h2, h3, #xe h4, h5, h6, #xe p, ul, ol, #content li, .widgetTree, .widge
 	padding: 5px 0;
 }
 
-#footer {
+#footer_manual {
 	text-align: right;
 	padding: 10px;
 	border-top: 1px solid #dfdfdf;
@@ -626,4 +643,113 @@ h1, .h1, h2, h3, #xe h4, h5, h6, #xe p, ul, ol, #content li, .widgetTree, .widge
 #addComment {
 	width: 100%;
 	height: 350px;
+}
+
+#searchBox {
+	border-bottom: 1px dotted #ccc;
+	margin: 0 0 5px 0;
+	padding: 5px 10px;
+}
+
+#searchBox label {
+	font-size: 13px;
+	font-weight: bold;
+}
+
+#searchBox label span{
+	margin-right: 10px;
+}
+
+#versions {
+	float: right;
+	background: #fff4cf url('../img/icon_versions.png') 5px 4px no-repeat;
+	border-radius: 4px;
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+	padding: 0 5px 0 35px;
+	border: 1px solid #e5dab7;
+	color: #888;
+	margin: 5px 0 0 0;
+}
+
+#footer_copyleft {
+	line-height: 24px;
+}
+
+#footer_copyleft img{
+	vertical-align: middle;
+	margin: 0 10px 0 0;
+	padding: 0 10px;
+}
+
+#logo {
+    display: inline;
+    float: left;
+    margin: 30px 0 0 10px;
+    padding: 0 0 20px;
+    text-decoration: none;
+}
+
+#headerRight {
+	float: right;
+	margin: 0 5px 0 0;
+}
+
+#topMenu {
+	height: 33px;
+}
+
+#headerMenu {
+	border: 4px solid #B1B1B1;
+	border-top: 0;
+    padding: 7px 15px;
+}
+
+#headerMenu a {
+    color: #333333;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.topMenuSeparator {
+    color: #B1B1B1;
+}
+
+#neck {
+	background-image: -webkit-gradient(
+		linear,
+		left top,
+		left bottom,
+		color-stop(0, rgb(250,250,250)),
+		color-stop(1, rgb(237,237,237))
+	);
+	background-image: -moz-linear-gradient(
+		center top,
+		rgb(250,250,250) 0%,
+		rgb(237,237,237) 100%
+	);
+    height: 40px;
+    padding: 0 0 3px;
+	border-top: 1px solid #ddd;
+	border-bottom: 1px solid #ddd;
+}
+
+#neck ul {
+	margin: 0 !important;
+	padding: 0 !important;
+}
+
+#neck li {
+    float: left;
+    font-weight: bold;
+    list-style: none outside none;
+    padding-right: 3px;
+}
+
+#neck li a {
+    color: #666666 !important;
+    float: left;
+    height: 22px;
+    padding: 9px 10px 0 12px;
+    text-decoration: none !important;
 }
