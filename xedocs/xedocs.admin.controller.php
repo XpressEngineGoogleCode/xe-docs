@@ -814,7 +814,7 @@ class ContentBuilderTocProcessor extends TocProcessor
 		$tnodes_count = count($title_nodes); 
 		if(1 ==  $tnodes_count)
 		{
-			$alias = $toc_node->name;
+			$alias = str_replace("/", "|", $toc_node->name); 
 			$oDocumentController->insertAlias($this->module_srl, $toc_node->document_srl, $alias);
 			//debug_syslog(1, "one node insert alias for ".$toc_node->document_srl." alias=".$alias."\n");
 			
@@ -833,6 +833,9 @@ class ContentBuilderTocProcessor extends TocProcessor
 				}else{
 					$alias = $tnode->name.$ti; 	
 				}
+				
+				$alias = str_replace("/", "|",$alias); 
+				
 				$oDocumentController->insertAlias($this->module_srl, $tnode->document_srl, $alias);
 				debug_syslog(1, "multinode insert alias for ".$tnode->document_srl." alias=".$alias."\n");
 			}
