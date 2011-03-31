@@ -7,7 +7,6 @@ class xedocsController extends xedocs {
 
 
 
-
 	function procXedocsInsertDocument()
 	{
 
@@ -203,6 +202,10 @@ class xedocsController extends xedocs {
 
 	function procXedocsDeleteDocument()
 	{
+		if(!$this->grant->is_admin){
+			return $this->setMessage('msg_not_permitted');
+		}
+		
 		$oDocumentController = &getController('document');
 		$oDocumentModel = &getModel('document');
 

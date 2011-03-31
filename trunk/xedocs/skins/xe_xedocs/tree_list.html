@@ -10,6 +10,10 @@
 
 <div id="treeList" >
 	<div id="searchBox">
+	
+	
+<!-- Integrated search form-->
+<!--
 		<form action="{getUrl()}" method="get">
 			<label><span>{$lang->Search}</span>
 				<input type="hidden" name="vid" value="{$vid}" /><input type="hidden" name="mid" value="{$mid}" /><input type="hidden" name="act" value="IS" />
@@ -17,7 +21,33 @@
 				<input class="xeDocsSearchButton" src="img/icon_search.png" type="image" value="{$lang->cmd_search}" />			
 			</label>
 		</form>
+		
+-->
+	
+<!-- Custom search -->
+		
+			<form action="{getUrl()}" method="get" >
+				<input type="hidden" name="vid" value="{$vid}" />
+				
+				<input type="hidden" name="mid" value="{$mid}" />
+				
+      			<input type="hidden" name="category" value="" />
+        		<input type="hidden" name="search_target" value="title_content" />
+        		
+				<input class="xeDocsInputText" type="text" name="search_keyword" />				
+				<input type="hidden" name="act" value="dispXedocsSearchResults" />
+				
+				<input class="xeDocsSearchButton" src="img/icon_search.png" 
+				type="image" value="{$lang->Search}" alt ="{$lang->Search}" title = "{$lang->Search}" />
+			</form>
+
+<!-- Custom search end-->	
+	
+	
 	</div>
+	
+	
+	
 	<ul>
         <!--@for($_i=count($parents)-1; $_i>=0; $_i--)-->
 			<li class="xedocsparentnode" style="list-style-type:none;">
