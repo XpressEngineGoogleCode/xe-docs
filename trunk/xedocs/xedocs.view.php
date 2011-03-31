@@ -156,7 +156,7 @@ class xedocsView extends xedocs {
 		}
 
 		$obj->page = $page;
-		$obj->list_count = 50;
+		$obj->list_count = 10;
 
 		$obj->exclude_module_srl = '0';
 		$obj->sort_index = 'title';
@@ -168,10 +168,13 @@ class xedocsView extends xedocs {
 		$oModuleModel = &getModel('module');
 		foreach($output->data as $doc){
 
+			$entry = $oDocumentModel->getAlias($doc->document_srl);
+			
 			$module_info = $oModuleModel->getModuleInfoByDocumentSrl($doc->document_srl);
-
 			$doc->browser_title = $module_info->browser_title;
 			$doc->mid = $module_info->mid;
+			
+			$doc->entry = $entry;
 		}
 
 		Context::set('document_list', $output->data);
@@ -187,6 +190,8 @@ class xedocsView extends xedocs {
 		Context::set('search_option', $search_option);
 
 		$this->setTemplateFile('search_results');
+		
+		debug_syslog(1, "dispXedocsSearchResults complete\n");
 	}
 
 	function dispXedocsTitleIndex()
