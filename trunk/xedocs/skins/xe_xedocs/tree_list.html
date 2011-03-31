@@ -141,7 +141,8 @@
 	
 	<!--@if($oDocument->allowComment())-->
 		<!--@if($grant->write_comment && $oDocument->isEnableComment() )-->
-			<a id="show_comments" onclick="show_comment_editor(this); return false;" href="{getSiteUrl($site_module_info->domain, '', 'mid', $mid, 'document_srl', $document_srl, 'act', 'dispXedocsCommentEditor')}">Show Comments</div>
+			<a id="show_comments" onclick="show_comment_editor(this); return false;" href="{getSiteUrl($site_module_info->domain, '', 'mid', $mid, 'document_srl', $document_srl, 'act', 'dispXedocsCommentEditor')}">
+			Show Comments ({$oDocument->getCommentcount()})</a></div>
 			<div id="comment_editor">
 			</div>
 		<!--@end-->
