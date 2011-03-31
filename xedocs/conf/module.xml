@@ -36,6 +36,7 @@
     <actions>
 
         <action name="dispXedocsContent" type="view" />
+        <action name="dispXedocsSearchResults" type="view" />
         <action name="dispXedocsEditPage" type="view" />
         <action name="dispXedocsHistory" type="view" />
         <action name="dispXedocsTitleIndex" type="view" />

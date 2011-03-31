@@ -166,6 +166,7 @@ class xedocsAdminController extends xedocs {
 			}
 		}
 		debug_syslog(1, "compile versions complete");
+		$this->setMessage('success_compiled');
 	}
 
 	//TODO optimize with module srl
