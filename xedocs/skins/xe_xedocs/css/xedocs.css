@@ -661,7 +661,6 @@ h1, .h1, h2, h3, #xe h4, h5, h6, #xe p, ul, ol, #content li, .widgetTree, .widge
 }
 
 #versions {
-	float: right;
 	background: #fff4cf url('../img/icon_versions.png') 5px 4px no-repeat;
 	border-radius: 4px;
 	-moz-border-radius: 4px;

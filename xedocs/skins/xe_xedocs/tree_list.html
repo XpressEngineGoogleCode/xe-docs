@@ -81,8 +81,6 @@
 
 <div id="rightContainer">
 
-	<!--#include("breadcrumbs.html")-->
-	
 	<div id="versions">
 		<p>{$lang->versions}
 			<!--@foreach($version_labels as $value)-->
@@ -97,11 +95,12 @@
 		</p>
 	</div>
 	<div class="cleared"></div>
-	
-	<div id="rightcontent">
 
-	    {$page_content}
+	<!--#include("breadcrumbs.html")-->
+	<div class="cleared"></div>
 	
+	<div id="rightcontent">{$page_content}
+
 	<!--@if($module_info->toc_location=='Left')-->
 		<div id='footer_links' class="wikiReadFooter">
 	<!--@else-->
