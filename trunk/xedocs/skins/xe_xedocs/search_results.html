@@ -1,24 +1,11 @@
 <!--#include("header.html")-->
 
-<div class="subTitle">{$lang->document} <span>({number_format($total_count)})</span></div>
-<!--@if(!count($document_list))-->
-	<br/>
-	<br/>
-	<br/>
-    <span  class="noResult" style="margin-left: 10px; margin-top: 20px; margin-bottom: 20px; padding-bottom: 20px; padding-top:20px; text-align: center; text-shadow: silver 1px -1px 1px; font-size: medium; ">
-    
-        {$lang->msg_no_result}
-        <!--@if($last_division)-->
-        <br />{$lang->msg_document_more_search}
-        <!--@end-->
-       </span>
-<!--@end-->        
 
 
 
-<!--@if(!count($document_list))-->
- <!-- 
-<div id="treeList" >        
+<div class="subTitle" style="font-size:16px; font-weight:bold; position:relative; top:+10px; left:+20px;">{$lang->document} <span>({number_format($total_count)})</span></div>
+
+<div id="treeList" style="float:right; position:relative; top:-20px;" >        
         <div id="searchBox">
 			<form action="{getUrl()}" method="get" >
 				<input type="hidden" name="vid" value="{$vid}" />
@@ -37,7 +24,21 @@
         
         </div>
 </div>        
- -->  
+
+	<br/>
+	<br/>
+	<br/>
+
+<!--@if(!count($document_list))-->
+    <span  class="noResult" style="margin-left: 10px; margin-top: 20px; margin-bottom: 20px; padding-bottom: 20px; padding-top:20px; text-align: center; text-shadow: silver 1px -1px 1px; font-size: medium; ">
+    
+        {$lang->msg_no_result}
+        <!--@if($last_division)-->
+        <br />{$lang->msg_document_more_search}
+        <!--@end-->
+       </span>
+
+  
 <!--@else-->
 
 
