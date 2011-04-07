@@ -218,13 +218,13 @@ class xedocsModel extends xedocs {
 
 		foreach($nodes as $node){
 			$module_info = $oModuleModel->getModuleInfoByDocumentSrl($node->document_srl);
-			
+
 			$entry = $oDocumentModel->getAlias($node->document_srl);
-			
+
 			if( $entry ){
-				
+
 				$url = getSiteUrl($site_module_info->document,'','mid',$module_info->mid,'entry',$entry);
-				
+
 			}else
 			{
 				$url = getSiteUrl($site_module_info->document, '', 'mid', $module_info->mid, 'document_srl',$node->document_srl);
@@ -240,11 +240,78 @@ class xedocsModel extends xedocs {
 		return $parents;
 	}
 
-	function getChildren($document_srl, $module_srl){
+	function getChildren($document_srl, $module_srl)
+	{
 		$children = $this-> buildChildren($document_srl, $module_srl);
 		$this->make_links($children, $module_srl);
 
 		return $children;
+	}
+
+
+	function getSiblings($document_srl, $module_srl)
+	{
+		$siblings = $this-> buildSiblings($document_srl, $module_srl);
+		$this->make_links($siblings, $module_srl);
+
+		return $siblings;
+
+	}
+
+	function buildSiblings($document_srl, $module_srl){
+		$list[] = $this->readXedocsTreeCache($module_srl);
+
+		$result = array();
+		$home = $this->getHomeNode($list);
+		if($home->document_srl == $document_srl){
+
+			return $result;
+		}
+
+		$parent_srl = $this->getParentSrl($document_srl, $module_srl, $list);
+
+		$result = $this->getNodeSiblings($document_srl, $module_srl, $parent_srl, $list);
+
+		return $result;
+	}
+
+	function getParentSrl($document_srl, $module_srl, $list){
+
+		$parent_srl;
+		foreach($list as $node => $ns){
+			foreach($ns as $n =>$val){
+
+				if($document_srl == $val->document_srl){
+					$parent_srl = $val->parent_srl;
+					return $parent_srl;
+				}
+			}
+		}
+
+		return $parent_srl;
+	}
+
+	function getNodeSiblings($document_srl, $module_srl, $parent_srl, $list){
+
+
+		foreach($list as $node => $ns){
+			foreach($ns as $n =>$val){
+
+				if($parent_srl == $val->parent_srl
+				&& $document_srl !=  $val->document_srl){
+
+					if($val->title != 'Introduction to CUBRID Manual'){
+						unset($obj);
+						$obj->parent_srl =  $val->parent_srl;
+						$obj->document_srl = $val->document_srl;
+						$obj->title = $val->title;
+						$result[] =  $obj;
+					}
+				}
+			}
+		}
+
+		return $result;
 	}
 
 	function buildChildren($document_srl, $module_srl){
@@ -256,10 +323,10 @@ class xedocsModel extends xedocs {
 			$result = $this->getHomeChildrenNode($list,$document_srl);
 			return $result;
 		}
-		
+
 		foreach($list as $node => $ns){
 			foreach($ns as $n =>$val){
-				
+
 				if($document_srl == $val->parent_srl){
 					unset($obj);
 					$obj->parent_srl =  $val->parent_srl;
@@ -274,7 +341,7 @@ class xedocsModel extends xedocs {
 	}
 
 	function getHomeChildrenNode($list, $document_srl){
-		
+
 		foreach($list as $node => $ns){
 			foreach($ns as $n =>$val){
 				if(0 == $val->parent_srl && $val->document_srl != $document_srl){
@@ -289,7 +356,7 @@ class xedocsModel extends xedocs {
 		}
 		return $result;
 	}
-	
+
 	function buildParents($document_srl, $module_srl)
 	{
 
@@ -302,7 +369,7 @@ class xedocsModel extends xedocs {
 		while(0 < $doc_srl){
 			$node = $this->getNode($list, $doc_srl);
 			if($node->title == 'Introduction to CUBRID Manual'){
-				
+
 			}else{
 				$result[] = $node;//add parent_srl
 			}
@@ -374,14 +441,14 @@ class xedocsModel extends xedocs {
 		{
 			$module_srls=array();
 			$module_srls[] =  $module->module_srl;
-				
+
 			$extra_vars = $oModuleModel->getModuleExtraVars($module_srls);
-				
+
 			if( 0 == strcmp($set_id, $extra_vars[$module->module_srl]->help_name))
 			{
 				$module_set[] = $module;
 			}
-				
+
 		}
 		return $module_set;
 	}
@@ -440,12 +507,12 @@ class xedocsModel extends xedocs {
 		$insert = (0 == strcmp('', trim($document_versions)));
 
 		debug_syslog(1, "add_version document_srl=".$doc->document_srl." existing versions: |".$document_versions."|\n");
-		
+
 		$oDocumentModel = &getModel('document');
-		
+
 		//document titles can be duplicated in tree therefore we need aliases
-		$doc_title = trim($oDocumentModel->getAlias($doc->document_srl)); 		
-		
+		$doc_title = trim($oDocumentModel->getAlias($doc->document_srl));
+
 		debug_syslog(1, "add_version document_srl=".$doc->document_srl." title |".$doc_title."|\n");
 		debug_syslog(1, "            version=".$version." version_doc_srl=".$version_doc_srl."\n");
 
@@ -463,7 +530,7 @@ class xedocsModel extends xedocs {
 
 		if($insert){
 			$output = executeQuery('xedocs.insertDocumentExtraVars', $args);
-			
+
 		}else{
 			$output = executeQuery('xedocs.updateDocumentExtraVars', $args);
 		}
@@ -478,11 +545,11 @@ class xedocsModel extends xedocs {
 		$args->module_srl = $module_srl;
 		$args->eid = "version_labels";
 		$args->var_idx = 1;
-		
+
 		$output =  executeQuery('xedocs.getDocumentExtraVars', $args);
 
 		if (isset($output->data)){
-			
+
 			return $output->data->value;
 		}
 
@@ -522,49 +589,49 @@ class xedocsModel extends xedocs {
 
 		return $output->data;
 	}
-	
-	
+
+
 	function string_to_meta($metastring)
 	{
-		 
+			
 		$meta = array();
 		$values = explode( "|", $metastring);
-		
+
 		foreach($values as $v)
 		{
-		
+
 			$m = explode( ",", $v);
-		
+
 			if(2 == count($m) ){
 				$obj = array();
 				$obj['name'] = $m[0];
 				$obj['value'] = $m[1];
-		
+
 				$meta[] = $obj;
 			}
 		}
-		
+
 		return $meta;
 	}
-	
-	
+
+
 	function meta_to_string($meta)
 	{
-		
+
 		$values = array();
 		foreach($meta as $val)
 		{
 			$values[] = implode(array($val['name'], $val['value']), ",");
-			 		
-		}
-		return implode($values, "|"); 
-	}
-	
 
-		
+		}
+		return implode($values, "|");
+	}
+
+
+
 	function add_meta($module_srl, $document_srl, $meta)
 	{
-		
+
 
 		if(0 != count($meta))
 		{
@@ -573,19 +640,19 @@ class xedocsModel extends xedocs {
 			$args->module_srl = $module_srl;
 			$args->eid = "meta";
 			$args->var_idx = 0;
-			
+
 			$args->value = $this->meta_to_string($meta);
 
 			$output = executeQuery('xedocs.insertDocumentExtraVars', $args);
 
 			return 0 == $output->error;
-			
+
 		}else{
 			debug_syslog(1, "no meta to add\n");
 		}
 		return false;
 	}
-	
+
 	function get_meta($module_srl, $document_srl)
 	{
 		$args = null;
@@ -595,9 +662,9 @@ class xedocsModel extends xedocs {
 		$args->var_idx = 0;
 		$output =  executeQuery('xedocs.getDocumentExtraVars', $args);
 
-		
+
 		if (isset($output->data)){
-			
+
 			return $this->string_to_meta($output->data->value);
 		}
 

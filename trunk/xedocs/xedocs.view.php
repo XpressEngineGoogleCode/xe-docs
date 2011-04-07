@@ -264,7 +264,15 @@ class xedocsView extends xedocs {
 
 		$children = $oXedocsModel->getChildren($document_srl, $module_srl);
 		Context::set("children", $children);
+		
+		$siblings = $oXedocsModel->getSiblings($document_srl, $module_srl);
+		Context::set("siblings", $siblings);
+		
+		
+		
 		Context::set("page_content", $content);
+		
+		
 			
 		$versions = $oXedocsModel->get_versions($module_srl, $oDocument);
 
