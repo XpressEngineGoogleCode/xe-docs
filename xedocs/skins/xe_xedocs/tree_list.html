@@ -49,7 +49,7 @@
 	
 	
 	<ul>
-        <!--@for($_i=count($parents)-1; $_i>=0; $_i--)-->
+        <!--@for($_i=count($parents)-1; $_i>0; $_i--)-->
 			<li class="xedocsparentnode" style="list-style-type:none;">
 				<a href="{$parents[$_i]->href}">
 					<!--@if($_i == count($parents)-1)-->
@@ -61,10 +61,21 @@
 				</a>
 			</li>
  		<!--@end-->
+ 		<li class="xedocsparentnode" style="list-style-type:none;">
+				<a href="{$parents[$_i]->href}"><img src="img/icon_right.png"/ alt="+" title="">
+				{$parents[$_i]->title}
+				</a>
+		</li>
 		
         <!--@for($_i=0; $_i<count($children); $_i++)-->
         <li class="xedocstreenode" style="list-style-type:none;">
 			<a href="{$children[$_i]->href}"><img src="img/down-to-right-arrow.png" alt="-" title=""/> {$children[$_i]->title} </a>
+		</li>
+       	<!--@end-->
+       	
+       	<!--@for($_i=0; $_i<count($siblings); $_i++)-->
+        <li class="xedocsparentnode" style="list-style-type:none;">
+			<a href="{$siblings[$_i]->href}"><img src="img/icon_sibling.png" alt="-" title=""/> {$siblings[$_i]->title} </a>
 		</li>
        	<!--@end-->
 	    
