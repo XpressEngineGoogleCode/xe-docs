@@ -18,6 +18,7 @@ a:hover {
 	font-family: Arial, Tahoma, Sans-serif;
 	line-height:normal;
 	font-size:12px;
+	overflow: hidden;
 }
 
 /* Board Header */
@@ -610,6 +611,8 @@ h1, .h1, h2, h3, #xe h4, h5, h6, #xe p, ul, ol, #content li, .widgetTree, .widge
 		rgb(238,238,238) 0%,
 		rgb(255,255,255) 1%
 	);
+	margin-bottom: -2000px;
+	padding-bottom: 2000px;
 }
 
 #breadcrumbs {
@@ -673,6 +676,9 @@ h1, .h1, h2, h3, #xe h4, h5, h6, #xe p, ul, ol, #content li, .widgetTree, .widge
 
 #footer_copyleft {
 	line-height: 24px;
+	margin: 0;
+	padding: 10px 0;
+	background: #fff;
 }
 
 #footer_copyleft img{
