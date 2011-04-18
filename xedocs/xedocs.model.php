@@ -481,7 +481,23 @@ class xedocsModel extends xedocs {
 		return $mid_set;
 	}
 
-
+	function getHighestSearchRankInSet($set_id){	
+		
+		$result = 0;
+		
+		$module_list = $this->getModuleList();
+		$module_set = $this->getModulesWithSet($set_id, $module_list);
+		
+		foreach($module_set as $module){
+			$module_info = $module_info = &getModel('module')->getModuleInfoByModuleSrl($module->module_srl);
+			if($result < $module_info->search_rank ){
+				$result = $module_info->search_rank;
+			}
+		}
+		
+		return $result;
+		
+	}
 
 
 	function getManualVersions($manual_set)
@@ -672,5 +688,291 @@ class xedocsModel extends xedocs {
 
 	}
 
+
+	/* lucene search related */
+	var $json_service = null;
+
+	
+
+	function getService(){
+	  require_once(_XE_PATH_.'modules/lucene/lib/jsonphp.php');
+		if( !isset($this->json_service) ){
+			debug_syslog(1, "creating new json_service\n");
+			$this->json_service = new Services_JSON(0);
+		}else{
+			debug_syslog(1, "reusing json_service\n");
+		}
+		return $this->json_service;
+
+	}
+
+
+
+        /**
+         * @brief 검색 대상 필드를 확인
+	          Check the Search for field
+         */
+        function isFieldCorrect($fieldname) {
+            $fields = array('title', 'content', 'title_content', 'tags');
+            $answer = in_array($fieldname, $fields);
+            return $answer; 
+        }
+ 
+        /**
+         * @brief module_srl 리스트 및 포함/제외 여부에 따른 조건절을 만듬.
+	                     List and include / exclude based on whether the clause making.
+         */
+        function getSubquery($target_mid, $target_mode, $exclude_module_srl=NULL) {
+	  if( isset($exclude_module_srl) ){
+            $no_secret = ' AND NOT is_secret:yes AND NOT module_srl:'.$exclude_module_srl."; ";
+	  }else{
+	    	$no_secret = ' AND NOT is_secret:yes ';
+	  }
+            $target_mid = trim($target_mid);
+            if ('' == $target_mid) return $no_secret;
+            
+            $target_mid_list = explode(',', $target_mid);
+            $connective = strcmp('include', $target_mode) ? ' AND NOT ':' AND ';
+
+            $query = $no_secret.$connective.'(module_srl:'.implode(' OR module_srl:', $target_mid_list).')';
+            return $query;
+        }
+
+        /**
+         * @brief 검색어에서 nLucene 쿼리 문법을 적용
+	           Results for query syntax to apply the nLucene
+         */
+        function getQuery($query, $search_target, $exclude_module_srl='0') {
+            $query_arr = explode(' ', $query);
+            $answer = '';
+
+            if ($search_target == "title_content") {
+	      return $this->getQuery($query, "title", $exclude_module_srl).$this->getQuery($query, "content", $exclude_module_srl);
+            } else {
+                foreach ($query_arr as $val) {
+                    $answer .= $search_target.':'.$val.' ';
+                }
+            }
+            return $answer;
+        }
+
+
+        /**
+         * @brief 검색 결과에서 id의 배열을 추출
+	          Results extracted from an array of id
+         */
+        function result2idArray($res) {
+            //$res = $this->getService()->decode($res);
+            $res = json_decode($res);
+            $results = $res->results;
+            $answer = array();
+            if ( count($results) > 0) {
+                foreach ($results as $result) {
+                    $answer[] = $result->id;
+                }
+            }
+            return $answer;
+       }
+
+
+
+        /**
+         * @brief 댓글의 id목록으로 댓글을 가져옴
+	          Bringing the id list Comment Comment
+         */
+        function getComments($searchUrl, $params, $service_prefix = null) {
+
+		if( !isset($service_prefix) ){
+			$service_prefix = $this->getDefaultServicePrefix();
+		}
+
+
+            $params->serviceName = $service_prefix.'_comment';
+            $params->fieldName = 'content';
+            $params->displayFields = array('id');
+            $params->query = $params->query.$params->subquery;
+
+
+            $oModelComment = &getModel('comment');
+            $encodedParams = $this->getService()->encode($params);
+
+            $searchResult = FileHandler::getRemoteResource($searchUrl."searchByMap", $encodedParams, 3, "POST", "application/json; charset=UTF-8", array(), array());
+
+            if(!$searchResult && $searchResult != "null") {
+                $idList = array();
+            } else {
+                $idList = $this->result2idArray($searchResult);
+            }
+
+            $comments = array();
+            if (count($idList) > 0) {
+                $tmpComments = $oModelComment->getComments($idList);
+
+                foreach($idList as $id) {
+                    $comments['com'.$id] = $tmpComments[$id];
+                }
+            }
+
+            $searchResult = $this->getService()->decode($searchResult);
+            $page_navigation = new PageHandler($searchResult->totalSize, floor(($searchResult->totalSize) / 10+1), $params->curPage, 10);
+
+            $output->total_count = $searchResult->totalSize;
+            $output->data = $comments;
+            $output->page_navigation = $page_navigation;
+           
+           return $output;
+        }
+
+
+
+        /* 
+         * Clean the Lucene document for tags and separators
+         * @brief This method strips the tags from document and 
+         * @param $results All results that came from lucene search
+         * @param $id ID of the document to extract from results
+         * @author cristiroma
+         */
+        function getHighlightedContent($results, $id) {
+            foreach($results as $result) {
+                if( $result->id == $id ) {
+                    $str = strip_tags($result->content);
+                    //echo $str . "<br /><br />";
+                    $str = '...' . str_replace("#TERM#", "<strong>", $str);
+                    $str = str_replace("#/TERM#", "</strong>", $str);
+                    $str = str_replace("#BREAK#", "<br />...", $str);
+                    return $str;
+                }
+            }
+        }
+
+
+
+        /**
+         * @brief Retrieve from Lucene the documents with highlighted terms Google style.
+         * @author cristiroma
+         */
+        function getDocumentsGoogleStyle($searchUrl, $params, $service_prefix = null) {
+
+		if( !isset($service_prefix) ){
+			$service_prefix = $this->getDefaultServicePrefix();
+		}
+
+            $oModelDocument = &getModel('document');
+
+            $params->serviceName = $service_prefix.'_document';
+            $params->query = '('.$params->query.')'.$params->subquery;
+            $params->displayFields = array("id", "title", "content");
+            $params->highFields = array( array( "content", "100", "2", "#BREAK#" ), array( "title", "100", "1", "" ) );
+            $params->stylePrefix = "#TERM#";
+            $params->styleSuffix = "#/TERM#";
+
+            $encodedParams = json_encode($params);
+            //$searchResult format: { "results" : [ { "content" : "...", "id" : "302", "title" : "Programming..." }, ... ] }
+            $searchResult = FileHandler::getRemoteResource($searchUrl."searchWithHighLightSummaryByMap", $encodedParams, 3, "POST", "application/json; charset=UTF-8", array(), array());
+
+            // 결과가 유효한지 확인
+	    // Results confirm the validity of
+            if ( !$searchResult && $searchResult != "null") {
+                $idList = array();
+            } else {
+                $idList = $this->result2idArray($searchResult);            
+            }
+
+            // 결과가 1개 이상이어야 글 본문을 요청함.
+	    // Results must be at least one body has requested post.
+            $documents = array();
+            $highlight = array();
+            //$searchResult = $this->getService()->decode($searchResult);
+            $searchResult = json_decode($searchResult);
+            if (count($idList) > 0) {
+                $tmpDocuments = $oModelDocument->getDocuments($idList, false, false);
+                // 받아온 문서 목록을 루씬에서 반환한 순서대로 재배열
+		// Russineseo received a list of documents returned by rearranging the order
+                foreach($idList as $id) {
+                    $documents['doc'.$id] = $tmpDocuments[$id];
+                    $content = $this->getHighlightedContent( $searchResult->results, $id);
+                    $highlight[$id] = $content;
+                }
+            }
+
+            $page_navigation = new PageHandler($searchResult->totalSize, ceil( (float)$searchResult->totalSize / 10.0 ), $params->curPage, 10);
+
+            $output->total_count = $searchResult->totalSize;
+            $output->data = $documents;
+            $output->highlight = $highlight;
+            $output->page_navigation = $page_navigation;
+            return $output;
+        }
+
+
+
+        /**
+         * @brief 글의 id 목록으로 글을 가져옴.
+	           Post id list, bringing the article.
+         */
+        function getDocuments($searchUrl, $params, $service_prefix = null) {
+		if( !isset($service_prefix) ){
+			$service_prefix = $this->getDefaultServicePrefix();
+		}
+            $oModelDocument = &getModel('document');
+            
+            $params->serviceName = $service_prefix.'_document';
+            $params->query = '('.$params->query.')'.$params->subquery;
+            $params->displayFields = array("id");
+
+            $encodedParams = $this->getService()->encode($params);
+	    	debug_syslog(1, "luceneModel.getDocuments() encodedParams:".print_r($encodedParams, true)."\n");
+            $searchResult = FileHandler::getRemoteResource($searchUrl."searchByMap", $encodedParams, 3, "POST", "application/json; charset=UTF-8", array(), array());
+
+            // 결과가 유효한지 확인
+	    // Results confirm the validity of
+            if (!$searchResult && $searchResult != "null") {            
+                $idList = array();
+            } else {
+                $idList = $this->result2idArray($searchResult);
+            }
+
+            // 결과가 1개 이상이어야 글 본문을 요청함.
+	    // Results must be at least one body has requested post.
+            $documents = array();
+            if (count($idList) > 0) {
+                $tmpDocuments = $oModelDocument->getDocuments($idList, false, false);
+                // 받아온 문서 목록을 루씬에서 반환한 순서대로 재배열
+		// Russineseo received a list of documents returned by rearranging the order
+                foreach($idList as $id) {
+                    $documents['doc'.$id] = $tmpDocuments[$id];
+                }
+            }
+	    	debug_syslog(1, "searchResult=".$searchResult."\n");
+            //$searchResult = $this->json_service->decode($searchResult);
+            $searchResult = json_decode($searchResult);
+            $page_navigation = new PageHandler($searchResult->totalSize, ceil( (float)$searchResult->totalSize / 10.0 ), $params->curPage, 10);
+
+            $output->total_count = $searchResult->totalSize;
+            $output->data = $documents;
+            $output->page_navigation = $page_navigation;
+            return $output;
+        }
+
+	function getDefaultServicePrefix(){
+            $oModuleModel = &getModel('module');
+            $config = $oModuleModel->getModuleConfig('lucene');
+	    return $config->service_name_prefix;
+	}
+
+	function getDefaultSearchUrl($searchAPI)
+	{
+            $oModuleModel = &getModel('module');
+            $config = $oModuleModel->getModuleConfig('lucene');
+	    syslog(1, "lucene config: ".print_r($config, true)."\n");
+	    return $searchUrl = $config->searchUrl.$searchAPI;
+	}
+
+	function getISConfig(){
+		$oModuleModel = &getModel('module');
+		$ISconfig = $oModuleModel->getModuleConfig('integration_search');
+		return $ISconfig;
+
+	}
 }
 ?>

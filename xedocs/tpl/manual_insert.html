@@ -107,7 +107,15 @@
 </tr>
 
 
-<tr >   
+<tr class="row2">
+    <th scope='col'><div>{$lang->admin_import_manual_search_rank}</div></th>
+	  <td><input type="text" name = "search_rank" id="search_rank" class="inputTypeText w400" value="{htmlspecialchars($module_info->search_rank)}" />
+	  <p>{$lang->about_admin_import_manual_search_rank}</p>
+	  </td>
+</tr>
+
+
+<tr class = "row2">   
     <th scope="col"><div>{$lang->admin_import_manual_tags}</div></th>
 	  <td><input type="text" name = "help_tags" id="help_tags" class="inputTypeText w400" value="{htmlspecialchars($module_info->help_tags)}" />
 	  </td>

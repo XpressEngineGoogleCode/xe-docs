@@ -39,5 +39,8 @@ $lang->manual_set = "Manual Set";
 $lang->cmd_modify_comment = "Modify";
 $lang->top_of_page = "Go to Top";
 $lang->Search = "Search manual";
-$lang->versions = "Versions available for this page:"
+$lang->versions = "Versions available for this page:";
+$lang->admin_import_manual_search_rank = "Search rank";
+$lang->ResultsFrom = "Results from ";
+$lang->about_admin_import_manual_search_rank = "Used for sorting search results. 0 is lowest version. Results with lower rank will be placed at the end . When you add/import a new manual a higher rank is assigned to place results at the begining of the list";
 ?>
