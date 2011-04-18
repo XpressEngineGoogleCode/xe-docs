@@ -34,6 +34,8 @@ class xedocsView extends xedocs {
 		Context::addJsFile($this->module_path.'tpl/js/manual.js');
 
 		Context::set('grant', $this->grant);
+
+
 	}
 
 	function dispXedocsContent() {
@@ -42,6 +44,9 @@ class xedocsView extends xedocs {
 		if(!$output->toBool()){
 			return;
 		}
+
+
+		
 	}
 
 	function dispXedocsHistory()
@@ -82,18 +87,15 @@ class xedocsView extends xedocs {
 
 	function dispXedocsEditPage()
 	{
-		
+
 		debug_syslog(1, "dispXedocsEditPage".print_r($this->grant, true)."\n");
-		
+
 		if(!$this->grant->is_admin){
 			return $this->dispXedocsMessage('msg_not_permitted');
 		}
-		
-		
+
+
 		debug_syslog(1, "dispXedocsEditPage admin chk ok\n");
-
-
-
 
 		$oDocumentModel = &getModel('document');
 		$document_srl = Context::get('document_srl');
@@ -109,8 +111,6 @@ class xedocsView extends xedocs {
 		$oDocument->setDocument($document_srl);
 		$oDocument->add('module_srl', $this->module_srl);
 		Context::set('document_srl',$document_srl);
-
-
 
 		Context::set('oDocument', $oDocument);
 		$history_srl = Context::get('history_srl');
@@ -142,7 +142,92 @@ class xedocsView extends xedocs {
 	}
 
 
-	function dispXedocsSearchResults()
+
+	function dispXedocsSearchResults(){
+		debug_syslog(1, "dispXedocsSearchResults search \n");
+		
+		$oLuceneModel = &getModel('lucene');
+		debug_syslog(1, "dispXedocsSearchResults search 1\n");
+		if( !isset($oLuceneModel) ){
+			debug_syslog(1, "dispXedocsSearchResults fallback \n");
+			return $this->dispXedocsSearchResults_fallback();
+		}
+		
+		$oLuceneModel = &getModel('xedocs');
+		$oDocumentModel = &getModel('document');
+		$oModuleModel = &getModel('module');
+		$oXedocsModel = &getModel('xedocs');
+
+		$moduleList = array();
+		$moduleList[] = $this->module_info;
+		foreach($oXedocsModel->getModuleList() as $module){
+			if($this->module_srl != $module->module_srl){
+				$moduleList[] = $module;
+			}
+		}
+		Context::set('module_list', $moduleList);
+
+		debug_syslog(1, "dispXedocsSearchResults lucene search \n");
+		$searchAPI = "lucene_search_bloc-1.0/SearchBO/";
+
+		$searchUrl = $oLuceneModel->getDefaultSearchUrl($searchAPI);
+		debug_syslog(1, "searchUrl=".$searchUrl."\n");
+
+		$target_mid = $this->module_info->module_srl;
+		$is_keyword = Context::get("search_keyword");
+		
+		$page = (int) Context::get('page');
+		if (!$page) $page = 1;
+		$search_target = Context::get('search_target');
+		if ($search_target == 'tag') $search_target = 'tags';
+
+		debug_syslog(1, "setup complete.target_mid=".$target_mid." now checking\n");
+
+		if(!$oLuceneModel->isFieldCorrect($search_target)){
+		  $search_target = 'title_content';
+		}
+		debug_syslog(1, "search_target=".$search_target."\n");
+
+		//Search queries applied to the target module
+		$query = $oLuceneModel->getSubquery($target_mid, "include", null); 
+
+		debug_syslog(1, "subquery=".$query."\n");
+		//Parameter setting
+		$json_obj->query = $oLuceneModel->getQuery($is_keyword, $search_target, null);
+		$json_obj->curPage = $page;
+		$json_obj->numPerPage = 10;
+		$json_obj->indexType = "db";
+		$json_obj->fieldName = $search_target;
+		$json_obj->target_mid = $target_mid;
+		$json_obj->target_mode = $target_mode;
+		
+		$json_obj->subquery = $query;
+
+		$output = $oLuceneModel->getDocuments($searchUrl, $json_obj);
+
+		foreach($output->data as $doc){
+
+			$this->resolve_document_details($oModuleModel, $oDocumentModel, $doc);
+		}
+		
+
+		//debug_syslog(1, "document_search: ".print_r($output, true)."\n");
+
+		Context::set('document_list', $output->data);
+		Context::set('total_count', $output->total_count);
+		Context::set('total_page', $output->total_page);
+		Context::set('total_page', 1);
+		Context::set('page', $page);
+		Context::set('page_navigation', $output->page_navigation);
+
+
+		$this->setTemplateFile('search_results');
+		
+		debug_syslog(1, "dispXedocsSearchResults complete\n");
+
+	}
+
+	function dispXedocsSearchResults_fallback()
 	{
 
 		$page = Context::get('page');
@@ -150,33 +235,30 @@ class xedocsView extends xedocs {
 		$oXedocsModel = &getModel('xedocs');
 		$moduleList = $oXedocsModel->getModuleList();
 
-		$obj->module_srl = array();
-		foreach($moduleList as $module){
-			$obj->module_srl[] = $module->module_srl;
-		}
-
+		Context::set('module_list', $moduleList);
+		$modules = array();
+		$modules[] = $this->module_srl;
+		$obj->module_srl =$modules; 
+			
 		$obj->page = $page;
 		$obj->list_count = 10;
 
 		$obj->exclude_module_srl = '0';
-		$obj->sort_index = 'title';
-		$obj->order_type = 'asc';
+		$obj->sort_index = 'module';
+		//$obj->order_type = 'asc';
 		$obj->search_keyword = Context::get('search_keyword');
 		$obj->search_target = Context::get('search_target');
 		$output = $oDocumentModel->getDocumentList($obj);
 
 		$oModuleModel = &getModel('module');
+
 		foreach($output->data as $doc){
 
-			$entry = $oDocumentModel->getAlias($doc->document_srl);
-			
-			$module_info = $oModuleModel->getModuleInfoByDocumentSrl($doc->document_srl);
-			$doc->browser_title = $module_info->browser_title;
-			$doc->mid = $module_info->mid;
-			
-			$doc->entry = $entry;
+			$this->resolve_document_details($oModuleModel, $oDocumentModel, $doc);
 		}
-
+		
+		
+		debug_syslog(1, "Count(document_list)=".count($output->data)."\n");
 		Context::set('document_list', $output->data);
 		Context::set('total_count', $output->total_count);
 		Context::set('total_page', $output->total_page);
@@ -190,8 +272,26 @@ class xedocsView extends xedocs {
 		Context::set('search_option', $search_option);
 
 		$this->setTemplateFile('search_results');
+
+		debug_syslog(1, "dispXedocsSearchResults_fallback complete\n");
+	}
+
+	function resolve_document_details($oModuleModel, $oDocumentModel, $doc){
+
+		$entry = $oDocumentModel->getAlias($doc->document_srl);
 		
-		debug_syslog(1, "dispXedocsSearchResults complete\n");
+		$module_info = $oModuleModel->getModuleInfoByDocumentSrl($doc->document_srl);
+		$doc->browser_title = $module_info->browser_title;
+		$doc->mid = $module_info->mid;
+
+		
+		if ( isset($entry) ){
+			$doc->entry = $entry;
+		}else{
+			$doc->entry = "bugbug";
+		}
+		
+		debug_syslog(1, "resolve_document_details doc_sel=".$doc->document_srl." mid= ".$doc->mid." entry=".$doc->entry."\n");
 	}
 
 	function dispXedocsTitleIndex()
@@ -264,15 +364,15 @@ class xedocsView extends xedocs {
 
 		$children = $oXedocsModel->getChildren($document_srl, $module_srl);
 		Context::set("children", $children);
-		
+
 		$siblings = $oXedocsModel->getSiblings($document_srl, $module_srl);
 		Context::set("siblings", $siblings);
-		
-		
-		
+
+
+
 		Context::set("page_content", $content);
-		
-		
+
+
 			
 		$versions = $oXedocsModel->get_versions($module_srl, $oDocument);
 

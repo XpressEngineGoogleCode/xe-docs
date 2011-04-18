@@ -6,6 +6,7 @@
         <node target="toc_location" required = "true" /> 
         <node target="mid" required="true" maxlength="40" filter="alpha_number" />
         <node target="browser_title" required="true" maxlength="250" />
+        <node target="search_rank" required="true" filter="number" />
     </form>
     <parameter>
         <param name="manual_name" target="mid" />

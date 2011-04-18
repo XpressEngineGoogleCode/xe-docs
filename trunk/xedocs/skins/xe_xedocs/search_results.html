@@ -1,29 +1,57 @@
 <!--#include("header.html")-->
 
 
+<style type="text/css">
+
+#globalnav {
+	position:relative;
+	float:left;
+	width:100%;
+	padding:0 0 1.75em 1em;
+	margin:0;
+	list-style:none;
+	line-height:1em;
+}
+
+#globalnav LI {
+	float:left;
+	margin:0;
+	padding:0;
+}
+
+#globalnav SPAN {
+	display:block;
+	color:#444;
+	text-decoration:none;
+	font-weight:bold;
+	background:#ddd;
+	margin:0;
+	padding:0.25em 1em;
+	border-left:1px solid #fff;
+	border-top:1px solid #fff;
+	border-right:1px solid #aaa;
+}
+
+#globalnav SPAN:hover,
+#globalnav SPAN:active,
+#globalnav SPAN.here:link,
+#globalnav SPAN.here:visited {
+	background:#bbb;
+}
+
+#globalnav A.here:link,
+#globalnav A.here:visited {
+	position:relative;
+	z-index:102;
+}
 
 
-<div class="subTitle" style="font-size:16px; font-weight:bold; position:relative; top:+10px; left:+20px;">{$lang->document} <span>({number_format($total_count)})</span></div>
+</style>
 
-<div id="treeList" style="float:right; position:relative; top:-20px;" >        
-        <div id="searchBox">
-			<form action="{getUrl()}" method="get" >
-				<input type="hidden" name="vid" value="{$vid}" />
-				
-				<input type="hidden" name="mid" value="{$mid}" />
-				
-      			<input type="hidden" name="category" value="" />
-        		<input type="hidden" name="search_target" value="title_content" />
-        		
-				<input class="xeDocsInputText" type="text" name="search_keyword" />				
-				<input type="hidden" name="act" value="dispXedocsSearchResults" />
-				
-				<input class="xeDocsSearchButton" src="img/icon_search.png" 
-				type="image" value="{$lang->Search}" alt ="{$lang->Search}" title = "{$lang->Search}" />
-			</form>
-        
-        </div>
-</div>        
+<div class="subTitle" style="font-size:16px; font-weight:bold; position:relative; top:+10px; left:+20px;">
+
+ <span>{number_format($total_count)} articles </span></div>
+
 
 	<br/>
 	<br/>
@@ -41,27 +69,81 @@
   
 <!--@else-->
 
+ <div style="margin-left: 10px;">
+ 
+ <ul id="globalnav">
+ <!--@foreach($module_list as $modul)-->
+ <li><span>
+	<form action="{getUrl()}" method="get" >
+	
+		 
+			    
+	 		<input type="hidden" name="vid" value="{$vid}" />
+			
+			<input type="hidden" name="mid" value="{$modul->mid}" />
+			
+     		<input type="hidden" name="category" value="" />
+       		<input type="hidden" name="search_target" value="title_content" />
+       		<input class="xeDocsInputText" type="hidden" name="search_keyword" value="{$search_keyword}"/>	
+							
+			<input type="hidden" name="act" value="dispXedocsSearchResults" />
+
+			<span>{$modul->browser_title} 
+						
+			<input class="xeDocsSearchButton" src="img/icon_search.png" 
+				type="image"
+				alt ="{$lang->ResultsFrom}" title = "{$lang->ResultsFrom.' '.$modul->browser_title}" />
+			</span>
+
+
+		
+	</form>
+</span>	
+</li>
+<!--@end-->
+
+<div id="treeList" style="float:right; position:relative; top:+10px; margin-right: 10px;" >        
+        <div id="searchBox">
+			<form action="{getUrl()}" method="get" >
+				<input type="hidden" name="vid" value="{$vid}" />
+				
+				<input type="hidden" name="mid" value="{$mid}" />
+				
+      			<input type="hidden" name="category" value="" />
+        		<input type="hidden" name="search_target" value="title_content" />
+        		
+				<input class="xeDocsInputText" type="text" name="search_keyword" value="{$search_keyword}" />				
+				<input type="hidden" name="act" value="dispXedocsSearchResults" />
+				
+				<input class="xeDocsSearchButton" src="img/icon_search.png" 
+				type="image" value="{$lang->Search}" alt ="{$lang->Search}" title = "{$lang->Search}" />
+			</form>
+        
+        </div>
+</div>        
+
+
+<ul>		         
+ </div>
 
     <ul class="searchResult">
-    <!--@foreach($document_list as $document)-->
-        
-        <li>
-            <dl>
-			
-			
-			<!--@$itemTitle = ($document->getDocumentType()=="page")?$document->getModuleName():$document->entry;--> <!--@end -->
-			<!--@$itemURL = ($document->getDocumentType()=="page")?getFullUrl('','mid',$document->getDocumentMid()):(getFullUrl( '','mid',$document->getDocumentMid()).'/entry/'.$document->entry);--> <!--@end -->
-			
-                <dt>
-                <a href="{$itemURL}">{$itemTitle}</a> 
-                </dt>
-                
-                <dd>{$document->getSummary(230)}</dd>
-                <div class="search-url">{$itemURL}</div>
-            </dl>
-        </li>
-        
-    <!--@end-->
+            
+	    <!--@foreach($document_list as $document)-->
+	       
+	        <li style="margin-left: 10px; margin-right: 10px;">
+	            <dl>
+				
+	                <dt>
+	                <a href="{getFullUrl( '','mid',$document->mid).'/entry/'.$document->entry}">
+	                    {$document->entry}</a> <span> <em>( {$document->browser_title} ) </em></span>
+	                </dt>
+	                
+	                <dd>{$document->getSummary(230)}</dd>
+	                <div class="search-url">{$itemURL}</div>
+	            </dl>
+	        </li>
+	       
+    	<!--@end-->
     </ul>
 
 <div class="pagination a1">

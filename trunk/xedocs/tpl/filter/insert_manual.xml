@@ -5,7 +5,7 @@
 
         <node target="help_name" required="true" />
         <node target="version_label" required="true" />
-
+		<node target="search_rank" required="true" filter="number" />
         <node target="toc_location" required = "true" />        
 
     </form>
