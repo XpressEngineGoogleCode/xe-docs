@@ -146,7 +146,7 @@ class xedocsView extends xedocs {
 	function dispXedocsSearchResults(){
 		debug_syslog(1, "dispXedocsSearchResults search \n");
 		
-		$oLuceneModel = &getModel('lucene');
+		$oLuceneModel = &getModule('lucene');
 		debug_syslog(1, "dispXedocsSearchResults search 1\n");
 		if( !isset($oLuceneModel) ){
 			debug_syslog(1, "dispXedocsSearchResults fallback \n");
