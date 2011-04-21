@@ -325,15 +325,16 @@ class xedocsView extends xedocs {
 	function dispXedocsTreeIndex()
 	{
 		$oXedocsModel = &getModel('xedocs');
+		
 		$value = $oXedocsModel->readXedocsTreeCache($this->module_srl);
 		Context::set('list', $value);
-		$this->setTemplateFile('tree_list');
+		
 
 		$document_srl = Context::get('document_srl');
 		$oModuleModel = &getModel('module');
 		$module_info = $oModuleModel->getModuleInfoByModuleSrl($this->module_srl);
 		Context::set("module_info", $module_info);
-
+		$has_page = true;
 		if (!isset($document_srl) )
 		{
 			if(!isset($module_info->first_node_srl))
@@ -345,9 +346,38 @@ class xedocsView extends xedocs {
 			}else{
 				$document_srl = $module_info->first_node_srl;
 			}
+			
+		}else{
+			//check document_srl
+			if(!$oXedocsModel->check_document_srl($document_srl, $module_info))
+			{
+				$has_page = false;
+				debug_syslog(1, "bad document_srl: ".$document_srl."\n" );
+				
+				//we stil need first doc 
+				if(!isset($module_info->first_node_srl))
+				{
+					foreach( $value as $i=>$obj){
+						$document_srl = $obj->document_srl;
+						break;
+					}
+				}else{
+					$document_srl = $module_info->first_node_srl;
+				}
+				
+				
+			}else{
+				
+				debug_syslog(1, "document_srl: ".$document_srl." ok\n" );
+			}
+			
 		}
+		
+		debug_syslog(1, "bad has_page: ".$has_page."\n" );
+		Context::set('has_page', $has_page);
 
-		Context::set('has_page', true);
+		$this->setTemplateFile('tree_list');
+		
 		debug_syslog(1, "dispXedocsTreeIndex: document_srl=".$document_srl."\n");
 
 		$oDocumentModel = &getModel("document");
@@ -355,9 +385,12 @@ class xedocsView extends xedocs {
 
 		Context::set('oDocument', $oDocument);
 
-		$content = $oDocument->getContent(false);
-		$oDocument->add('content', $content);
-
+		if($has_page){
+			$content = $oDocument->getContent(false);
+			$oDocument->add('content', $content);
+			Context::set("page_content", $content);
+		}
+		
 		$module_srl=$oDocument->get('module_srl');
 		$parents = $oXedocsModel->getParents($document_srl, $module_srl);
 		Context::set("parents", $parents);
@@ -367,10 +400,6 @@ class xedocsView extends xedocs {
 
 		$siblings = $oXedocsModel->getSiblings($document_srl, $module_srl);
 		Context::set("siblings", $siblings);
-
-
-
-		Context::set("page_content", $content);
 
 
 			
@@ -422,8 +451,6 @@ class xedocsView extends xedocs {
 					$document_srl = $obj->document_srl;
 					break;
 				}
-				//Context::set('has_page', false);
-				//return;
 			}else{
 				$document_srl = $module_info->first_node_srl;
 			}
