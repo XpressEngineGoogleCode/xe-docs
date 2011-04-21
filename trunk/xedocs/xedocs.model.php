@@ -14,6 +14,33 @@ class xedocsModel extends xedocs {
 		}
 	}
 
+	function check_document_srl($document_srl, $expected_module_info){
+		$args->document_srl = $document_srl;
+        $output = executeQuery('document.getDocument', $args);
+        
+        
+        debug_syslog(1, "check_document_srl(".$document_srl.")->".print_r($output, true)."\n");
+        
+        if (!$output->toBool()) return false;
+        
+        
+        $oModuleModel = &getModel('module');
+        $module_info = $oModuleModel->getModuleInfoByDocumentSrl($document_srl);
+        
+        if( !isset($module_info)){
+        	return false;
+        }
+        debug_syslog(1, "check_document_srl(".$document_srl.") module_info".print_r($module_info, true)."\n");
+        
+        if($expected_module_info->mid != $module_info->mid){
+        	debug_syslog(1, "mid mismatch: expected=".$expected_module_info->mid."vs actual=".$module_info->mid."\n");
+        }
+        
+        
+        return true;
+        
+	}
+	
 
 	function getXmlCacheFilename($module_srl)
 	{
