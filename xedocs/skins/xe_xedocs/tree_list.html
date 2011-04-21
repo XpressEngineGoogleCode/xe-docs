@@ -82,12 +82,24 @@
 	</ul>
 </div>
 
+<!--@if(!$has_page)-->
+<div id="rightContainer">
+		<div id="rightcontent" style='margin:2px; color:red; margin-right:20px; font-size:16px; font-weight:bold;' >
+		<br />
+		<br />
+	    We could not find your requested manual page. Please click on a node in content tree to see other manual pages.
+	    <br />
+	    <br />
+	</div>
+</div>	
+<!--@else-->
 
 <div id="showHideTree" onclick="hidediv1('treeList'); return false;" alt="Close Tree" title="Close tree"></div>
 
+
 <div id="rightContainer">
 
-<!--@if($has_page)-->
+
 	<div id="versions">
 		<p>{$lang->versions}
 			<!--@foreach($version_labels as $value)-->
@@ -103,29 +115,15 @@
 	</div>
 	<div class="cleared"></div>
 
-
 	<!--#include("breadcrumbs.html")-->
-	
 	<div class="cleared"></div>
-<!--@end-->
 	
-	<!--@if($has_page)-->
-		<div id="rightcontent">{$page_content}
-	<!--@else-->
-		<div id="rightcontent" style='margin:2px; color:red; margin-right:20px; font-size:16px; font-weight:bold;' >
-		<br />
-		<br />
-	    We could not find your requested manual page. Please click on a node in content tree to see other manual pages.
-	    <br />
-	    <br />
-	</div>
-	<!--@end-->
-	
+	<div id="rightcontent">{$page_content}
+
 	<!--@if($module_info->toc_location=='Left')-->
 		<div id='footer_links' class="wikiReadFooter">
 	<!--@else-->
-	
-
+	<!--@end-->
 			<div class="manualNavigation" >
 			
 			<!--@if($oDocumentPrev)-->
@@ -154,23 +152,23 @@
 	</div> <!--end of div right content-->
 	<!--@end-->
 
-<!--@if($has_page)-->
-	<!--@if($module_info->toc_location=='Left')-->
+	<!--@if($has_page)-->
+		
 		<div id="comments">
-   	<!--@else-->
-	<!--@end-->
-	
-	
-	<!--@if($oDocument->allowComment())-->
-		<!--@if($grant->write_comment && $oDocument->isEnableComment() )-->
-			<a id="show_comments" onclick="show_comment_editor(this); return false;" href="{getSiteUrl($site_module_info->domain, '', 'mid', $mid, 'document_srl', $document_srl, 'act', 'dispXedocsCommentEditor')}">
-			Show Comments ({$oDocument->getCommentcount()})</a></div>
-			<div id="comment_editor">
-			</div>
+		
+		
+		<!--@if($oDocument->allowComment())-->
+			<!--@if($grant->write_comment && $oDocument->isEnableComment() )-->
+				<a id="show_comments" onclick="show_comment_editor(this); return false;" href="{getSiteUrl($site_module_info->domain, '', 'mid', $mid, 'document_srl', $document_srl, 'act', 'dispXedocsCommentEditor')}">
+				Show Comments ({$oDocument->getCommentcount()})</a>
+				</div>
+				
+				<div id="comment_editor">
+				
+			<!--@end-->
 		<!--@end-->
-	<!--@end-->
-<!--@end-->
-
+		</div>
+	<!--@end--> <!--has_page-->
 </div>
 
 <!--#include("footer.html")-->
