@@ -298,7 +298,8 @@ class xedocsModel extends xedocs {
 		$parent_srl = $this->getParentSrl($document_srl, $module_srl, $list);
 
 		$result = $this->getNodeSiblings($document_srl, $module_srl, $parent_srl, $list);
-
+		
+		 
 		return $result;
 	}
 
@@ -325,7 +326,8 @@ class xedocsModel extends xedocs {
 			foreach($ns as $n =>$val){
 
 				if($parent_srl == $val->parent_srl
-				&& $document_srl !=  $val->document_srl){
+					//&& $document_srl !=  $val->document_srl
+				){
 
 					if($val->title != 'Introduction to CUBRID Manual'){
 						unset($obj);
@@ -714,8 +716,68 @@ class xedocsModel extends xedocs {
 		return array();
 
 	}
+	
+	
+	function add_original_url($document_srl, $url)
+	{
+			$args = null;
+			$args->document_srl = $document_srl;
+			$args->module_srl = $module_srl;
+			$args->eid = "orig_url";
+			$args->var_idx = 0;
 
+			$args->value = $url;
 
+			$output = executeQuery('xedocs.insertDocumentExtraVars', $args);
+
+			return 0 == $output->error;
+		
+	}
+	
+	function get_original_url($document_srl)
+	{
+		$args = null;
+		$args->document_srl = $document_srl;
+		$args->module_srl = $module_srl;
+		$args->eid = "orig_url";
+		$args->var_idx = 0;
+		
+		$output =  executeQuery('xedocs.getDocumentExtraVars', $args);
+
+		if (isset($output->data)){
+
+			return $output->data->value;
+		}
+
+		return "";
+	}
+	
+
+	function get_word_count($keyword)
+	{ 
+		$values = preg_split("/[\s,]+/", $keyword, -1, PREG_SPLIT_NO_EMPTY);	//any number of spaces or commas
+		debug_syslog(1, "->".print_r($values, true)."\n");
+		return count($values);
+	}
+	
+	function getKeywords($document_list)
+	{
+		$keywords = array();
+		$f = fopen("/var/tmp/keywords.txt", "w");
+		foreach($document_list as $doc)
+		{
+			$title = $doc->getTitle();
+			$wc = $this->get_word_count($title);
+			debug_syslog(1, "Keyword: ".$title."->".$wc."\n");
+			if( 1 != $wc ) continue;
+			 
+			$keywords[] = $title;
+			fputs($f, $title."\n" );
+		}
+		fclose($f);
+		return $keywords;
+	}
+	
 	/* lucene search related */
 	var $json_service = null;
 
