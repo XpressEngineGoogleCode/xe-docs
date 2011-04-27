@@ -1,190 +1,93 @@
 <!--#include("header.html")-->
 
-
-<style type="text/css">
-
-#globalnav {
-	position:relative;
-	float:left;
-	width:100%;
-	padding:0 0 1.75em 1em;
-	margin:0;
-	list-style:none;
-	line-height:1em;
-}
-
-#globalnav LI {
-	float:left;
-	margin:0;
-	padding:0;
-}
-
-#globalnav SPAN {
-	display:block;
-	color:#444;
-	text-decoration:none;
-	font-weight:bold;
-	background:#ddd;
-	margin:0;
-	padding:0.25em 1em;
-	border-left:1px solid #fff;
-	border-top:1px solid #fff;
-	border-right:1px solid #aaa;
-}
-
-#globalnav SPAN:hover,
-#globalnav SPAN:active,
-#globalnav SPAN.here:link,
-#globalnav SPAN.here:visited {
-	background:#bbb;
-}
-
-#globalnav A.here:link,
-#globalnav A.here:visited {
-	position:relative;
-	z-index:102;
-}
-
-
-</style>
-
-<div class="subTitle" style="font-size:16px; font-weight:bold; position:relative; top:+10px; left:+20px;">
-
- <span>{number_format($total_count)} articles </span></div>
-
-		<div id="treeList" style="float:right; position:relative; top:+10px; margin-right: 10px;" >        
-		        <div id="searchBox">
-					<form action="{getUrl()}" method="get" >
-						<input type="hidden" name="vid" value="{$vid}" />
-						
-						<input type="hidden" name="mid" value="{$mid}" />
-						
-		      			<input type="hidden" name="category" value="" />
-		        		<input type="hidden" name="search_target" value="title_content" />
-		        		
-						<input class="xeDocsInputText" type="text" name="search_keyword" value="{$search_keyword}" />				
-						<input type="hidden" name="act" value="dispXedocsSearchResults" />
-						
-						<input class="xeDocsSearchButton" src="img/icon_search.png" 
-						type="image" value="{$lang->Search}" alt ="{$lang->Search}" title = "{$lang->Search}" />
-					</form>
-		        
-		        </div>
-		</div>        
-
-	<br/>
-	<br/>
-	<br/>
-
-<!--@if(!count($document_list))-->
-    <span  class="noResult" style="margin-left: 10px; margin-top: 20px; margin-bottom: 20px; padding-bottom: 20px; padding-top:20px; text-align: center; text-shadow: silver 1px -1px 1px; font-size: medium; ">
-    
-        {$lang->msg_no_result}
-        
-        
-        <!--@if($last_division)-->
-        <br />{$lang->msg_document_more_search}
-        
-        
-        
-        
-        
-        <!--@end-->
-       </span>
-
-  
-<!--@else-->
-
- <div style="margin-left: 10px;">
- 
- <ul id="globalnav">
- <!--@foreach($module_list as $modul)-->
- <li><span>
-	<form action="{getUrl()}" method="get" >
-	
-		 
-			    
-	 		<input type="hidden" name="vid" value="{$vid}" />
+<div id="treeList">        
+	<div id="searchBox">
+		<form action="{getUrl()}" method="get" >
+			<input type="hidden" name="vid" value="{$vid}" />
 			
-			<input type="hidden" name="mid" value="{$modul->mid}" />
+			<input type="hidden" name="mid" value="{$mid}" />
 			
-     		<input type="hidden" name="category" value="" />
-       		<input type="hidden" name="search_target" value="title_content" />
-       		<input class="xeDocsInputText" type="hidden" name="search_keyword" value="{$search_keyword}"/>	
-							
+			<input type="hidden" name="category" value="" />
+			<input type="hidden" name="search_target" value="title_content" />
+			
+			<input class="xeDocsInputText" type="text" name="search_keyword" value="{$search_keyword}" />				
 			<input type="hidden" name="act" value="dispXedocsSearchResults" />
-
-			<span>{$modul->browser_title} 
-						
+			
 			<input class="xeDocsSearchButton" src="img/icon_search.png" 
-				type="image"
-				alt ="{$lang->ResultsFrom}" title = "{$lang->ResultsFrom.' '.$modul->browser_title}" />
-			</span>
-
-
-		
-	</form>
-</span>	
-</li>
-<!--@end-->
-
-<div id="treeList" style="float:right; position:relative; top:+10px; margin-right: 10px;" >        
-        <div id="searchBox">
-			<form action="{getUrl()}" method="get" >
-				<input type="hidden" name="vid" value="{$vid}" />
-				
-				<input type="hidden" name="mid" value="{$mid}" />
-				
-      			<input type="hidden" name="category" value="" />
-        		<input type="hidden" name="search_target" value="title_content" />
-        		
-				<input class="xeDocsInputText" type="text" name="search_keyword" value="{$search_keyword}" />				
-				<input type="hidden" name="act" value="dispXedocsSearchResults" />
-				
-				<input class="xeDocsSearchButton" src="img/icon_search.png" 
-				type="image" value="{$lang->Search}" alt ="{$lang->Search}" title = "{$lang->Search}" />
-			</form>
-        
-        </div>
-</div>        
-
-
-<ul>		         
- </div>
-
-    <ul class="searchResult">
-            
-	    <!--@foreach($document_list as $document)-->
-	       
-	        <li style="margin-left: 10px; margin-right: 10px;">
-	            <dl>
-				
-	                <dt>
-	                <a href="{getFullUrl( '','mid',$document->mid).'/entry/'.$document->entry}">
-	                    {$document->entry}</a> <span> <em>( {$document->browser_title} ) </em></span>
-	                </dt>
-	                
-	                <dd>{$document->getSummary(230)}</dd>
-	                <div class="search-url">{$itemURL}</div>
-	            </dl>
-	        </li>
-	       
-    	<!--@end-->
-    </ul>
-
-<div class="pagination a1">
-    <a href="{getUrl('page','','document_srl','','division',$division,'last_division',$last_division,'entry','')}" class="prevEnd">{$lang->first_page}</a> 
-    <!--@while($page_no = $page_navigation->getNextPage())-->
-        <!--@if($page == $page_no)-->
-            <strong>{$page_no}</strong> 
-        <!--@else-->
-            <a href="{getUrl('page',$page_no,'document_srl','','division',$division,'last_division',$last_division,'entry','')}">{$page_no}</a>
-        <!--@end-->
-    <!--@end-->
-    <a href="{getUrl('page',$page_navigation->last_page,'document_srl','','division',$division,'last_division',$last_division,'entry','')}" class="nextEnd">{$lang->last_page}</a>
+			type="image" value="{$lang->Search}" alt ="{$lang->Search}" title = "{$lang->Search}" />
+		</form>
+	</div>
 </div>
 
-<!--@end-->
+<div id="showHideTree" onclick="hidediv1('treeList'); return false;" alt="Close Tree" title="Close tree"></div>
+
+ <div id="rightContainer">
+	<div id="rightcontent">
+		
+		<ul id="tabSystem">
+			<!--@foreach($module_list as $modul)-->
+			<li>
+				<form action="{getUrl()}" method="get" >
+					<input type="hidden" name="vid" value="{$vid}" />
+
+					<input type="hidden" name="mid" value="{$modul->mid}" />
+
+					<input type="hidden" name="category" value="" />
+					<input type="hidden" name="search_target" value="title_content" />
+					<input class="xeDocsInputText" type="hidden" name="search_keyword" value="{$search_keyword}"/>	
+									
+					<input type="hidden" name="act" value="dispXedocsSearchResults" />
+					
+					<input class="<!--@if($mid==$modul->mid)-->on<!--@end-->" type="submit" value = "{$lang->ResultsFrom.$modul->browser_title}" />
+				</form>
+			</li>
+			<!--@end-->
+		</ul>
+
+		<div class="cleared"></div>
+		
+		<!--@if(!count($document_list))-->
+		<span class="noResult">
+			{$lang->msg_no_result}
+			<!--@if($last_division)-->
+			<br />
+			{$lang->msg_document_more_search}
+			<!--@end-->
+		</span>
+		<!--@else-->
+		
+		<p id="articleCount"><img src="img/iconH2.gif" />Article ({number_format($total_count)})</p>
+
+		<ul class="searchResult">
+			<!--@foreach($document_list as $document)-->
+				<li>
+					<dl>
+						<dt>
+							<a href="{getFullUrl( '','mid',$document->mid).'/entry/'.$document->entry}">{$document->entry}</a>
+							<span><em>( {$document->browser_title} )</em></span>
+						</dt>
+						<dd>{$document->getSummary(400)}</dd>
+						<p class="search-url">{getFullUrl( '','mid',$document->mid).'/entry/'.$document->entry}{$itemURL}</p>
+					</dl>
+				</li>
+			<!--@end-->
+		</ul>
+		
+		<div class="pagination a1">
+			<a href="{getUrl('page','','document_srl','','division',$division,'last_division',$last_division,'entry','')}" class="prevEnd">{$lang->first_page}</a> 
+			<!--@while($page_no = $page_navigation->getNextPage())-->
+				<!--@if($page == $page_no)-->
+					<strong>{$page_no}</strong> 
+				<!--@else-->
+					<a href="{getUrl('page',$page_no,'document_srl','','division',$division,'last_division',$last_division,'entry','')}">{$page_no}</a>
+				<!--@end-->
+			<!--@end-->
+			<a href="{getUrl('page',$page_navigation->last_page,'document_srl','','division',$division,'last_division',$last_division,'entry','')}" class="nextEnd">{$lang->last_page}</a>
+		</div>
+
+		<!--@end-->
+	</div>
+</div>
 
 
 
