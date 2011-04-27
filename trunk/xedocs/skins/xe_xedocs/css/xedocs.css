@@ -758,3 +758,93 @@ h1, .h1, h2, h3, #xe h4, h5, h6, #xe p, ul, ol, #content li, .widgetTree, .widge
     padding: 9px 10px 0 12px;
     text-decoration: none !important;
 }
+
+#articleCount {
+	margin: 10px 0;
+	line-height: 20px;
+}
+
+#articleCount img {
+	vertical-align: middle;
+	margin: 0 5px 0 0;
+}
+
+#tabSystem {
+	margin: 5px 0;
+	padding: 0;
+}
+
+#tabSystem  li {
+	float: left;
+	margin: 0;
+	list-style-image: none;
+	list-style-type: none;
+}
+
+#tabSystem  li input {
+	background: #ddd;
+	border-radius: 5px 5px 0 0;
+	-moz-border-radius: 5px 5px 0 0;
+	-webkit-border-radius: 5px 5px 0 0;
+	background-image: -webkit-gradient(
+		linear,
+		left bottom,
+		left top,
+		color-stop(0, rgb(255,255,255)),
+		color-stop(1, rgb(237,237,237))
+	);
+	background-image: -moz-linear-gradient(
+		center bottom,
+		rgb(255,255,255) 0%,
+		rgb(237,237,237) 100%
+	);
+	border: 0;
+	border-top: 1px solid #ddd;
+	border-left: 1px solid #ddd;
+	border-right: 1px solid #ddd;
+	padding: 10px 15px;
+	margin: 0 2px 0 0 ;
+	color: #666;
+	font-weight: bold;
+}
+
+#tabSystem  li input:hover {
+	cursor: pointer;
+}
+
+#tabSystem  li input.on {
+	color: #aa0000;
+}
+
+.searchResult {
+	margin: 0;
+	padding: 0;
+}
+
+.searchResult li {
+	list-style-image: none;
+	list-style-type: none;
+	margin: 20px 0 0 0;
+	padding: 0;
+}
+
+.searchResult dl dt {
+	font-size: 15px;
+}
+
+.searchResult dl dt span {
+	color: #999;
+	font-size: 13px;
+}
+
+.searchResult dl dd {
+	margin: 5px 0;
+	color: #555;
+	font-size: 14px;
+}
+
+.search-url {
+	margin: 0;
+	font-size: 14px;
+	color: #000;
+}
