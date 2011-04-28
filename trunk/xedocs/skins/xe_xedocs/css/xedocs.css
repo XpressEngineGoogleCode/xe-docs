@@ -175,6 +175,9 @@ a:hover {
 .wikiRead {
 	background: #f4f4f4;
 	border-bottom: 1px solid #dfdfdf;
+	height: 0;
+	display: none;
+	overflow: hidden;
 }
 
 .wikiReadBody{ overflow:hidden; *zoom:1;}

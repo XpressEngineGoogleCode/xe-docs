@@ -43,4 +43,6 @@ $lang->versions = "Versions available for this page:";
 $lang->admin_import_manual_search_rank = "Search rank";
 $lang->ResultsFrom = "Results from ";
 $lang->about_admin_import_manual_search_rank = "Used for sorting search results. 0 is lowest version. Results with lower rank will be placed at the end . When you add/import a new manual a higher rank is assigned to place results at the begining of the list";
+$lang->edit_page = "Edit page";
+$lang->delete_page = "Delete page";
 ?>
