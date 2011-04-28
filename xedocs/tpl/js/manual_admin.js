@@ -50,6 +50,19 @@ function completeDeleteManual(ret_obj) {
 }
 
 
+function completeCompileKeywords(){
+    var error = ret_obj['error'];
+    var message = ret_obj['message'];
+    var page = ret_obj['page'];
+    alert(message);
+
+    var url = current_url.setQuery('act','dispXedocsAdminView').setQuery('module_srl','');
+    if(page) url = url.setQuery('page',page);
+    location.href = url;    
+	
+}
+
+
 
 function doCartSetup(url) {
     var module_srl = new Array();

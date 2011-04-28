@@ -1,0 +1,15 @@
+<filter name="compile_keywords" module="xedocs" act="procXedocsAdminCompileKeywords" >
+
+    <form>
+        <node target="module_srl" required="true" />
+        <node target="help_name" required="true" />
+        
+    </form>
+
+    <response callback_func="completeCompileKeywords">
+        <tag name="error" />
+        <tag name="message" />
+        <tag name="page" />
+    </response>
+
+</filter>

@@ -141,7 +141,24 @@ class xedocsView extends xedocs {
 		$this->setTemplateFile('message');
 	}
 
-
+	function sortArrayByKeyDesc($object_array, $key ){
+		
+		debug_syslog(1 , "sortArrayByKeyDesc key=".$key." obj_count=".count($object_array)."\n");
+		
+		$key_array = array();
+		foreach($object_array as $obj ){
+			debug_syslog(1, " key value = ".$obj->{$key}."\n" );
+			$key_array[$obj->{$key}] = $obj;
+		}
+		
+		krsort($key_array);
+		
+		$result = array();
+		foreach($key_array as $rank => $obj ){
+			$result[] = $obj;
+		}
+		return $result;
+	}
 
 	function dispXedocsSearchResults(){
 		debug_syslog(1, "dispXedocsSearchResults search \n");
@@ -158,13 +175,11 @@ class xedocsView extends xedocs {
 		$oModuleModel = &getModel('module');
 		$oXedocsModel = &getModel('xedocs');
 
-		$moduleList = array();
-		$moduleList[] = $this->module_info;
-		foreach($oXedocsModel->getModuleList() as $module){
-			if($this->module_srl != $module->module_srl){
-				$moduleList[] = $module;
-			}
-		}
+		
+		$moduleList = $oXedocsModel->getModuleList(true);
+		
+		$moduleList = $this->sortArrayByKeyDesc($moduleList, 'search_rank');
+		
 		Context::set('module_list', $moduleList);
 
 		debug_syslog(1, "dispXedocsSearchResults lucene search \n");
@@ -233,12 +248,12 @@ class xedocsView extends xedocs {
 		$page = Context::get('page');
 		$oDocumentModel = &getModel('document');
 		$oXedocsModel = &getModel('xedocs');
-		$moduleList = $oXedocsModel->getModuleList();
-
+		
+		$moduleList = $oXedocsModel->getModuleList(true);
+		$moduleList = $this->sortArrayByKeyDesc($moduleList, 'search_rank');
 		Context::set('module_list', $moduleList);
-		$modules = array();
-		$modules[] = $this->module_srl;
-		$obj->module_srl =$modules; 
+		
+		$obj->module_srl =array($this->module_srl); 
 			
 		$obj->page = $page;
 		$obj->list_count = 10;
@@ -324,6 +339,7 @@ class xedocsView extends xedocs {
 
 	function dispXedocsTreeIndex()
 	{
+		debug_syslog(1, "dispXedocsTreeIndex\n" );
 		$oXedocsModel = &getModel('xedocs');
 		
 		$value = $oXedocsModel->readXedocsTreeCache($this->module_srl);
@@ -331,8 +347,10 @@ class xedocsView extends xedocs {
 		
 
 		$document_srl = Context::get('document_srl');
+		debug_syslog(1, "Context document_srl=".$document_srl."\n" );
 		$oModuleModel = &getModel('module');
 		$module_info = $oModuleModel->getModuleInfoByModuleSrl($this->module_srl);
+		debug_syslog(1, "module_info=".print_r($module_info, true)."\n" );
 		Context::set("module_info", $module_info);
 		$has_page = true;
 		if (!isset($document_srl) )
@@ -341,10 +359,12 @@ class xedocsView extends xedocs {
 			{
 				foreach( $value as $i=>$obj){
 					$document_srl = $obj->document_srl;
+					debug_syslog(1, "dispXedocsTreeIndex setting document_srl to first_node_srl 0\n" );
 					break;
 				}
 			}else{
 				$document_srl = $module_info->first_node_srl;
+				debug_syslog(1, "dispXedocsTreeIndex setting document_srl to first_node_srl\n" );
 			}
 			
 		}else{
@@ -359,10 +379,12 @@ class xedocsView extends xedocs {
 				{
 					foreach( $value as $i=>$obj){
 						$document_srl = $obj->document_srl;
+						debug_syslog(1, "dispXedocsTreeIndex setting document_srl to first_node_srl 1\n" );
 						break;
 					}
 				}else{
 					$document_srl = $module_info->first_node_srl;
+					debug_syslog(1, "dispXedocsTreeIndex setting document_srl to first_node_srl 2\n" );
 				}
 				
 				
@@ -373,7 +395,7 @@ class xedocsView extends xedocs {
 			
 		}
 		
-		debug_syslog(1, "bad has_page: ".$has_page."\n" );
+		debug_syslog(1, "has_page: ".$has_page."\n" );
 		Context::set('has_page', $has_page);
 
 		$this->setTemplateFile('tree_list');
@@ -385,10 +407,26 @@ class xedocsView extends xedocs {
 
 		Context::set('oDocument', $oDocument);
 
+		
+		
 		if($has_page){
 			$content = $oDocument->getContent(false);
+			
+			if(isset($module_info->keywords)){
+				
+				$keywords = $oXedocsModel->string_to_keyword_list($module_info->keywords);
+				debug_syslog(1, "There are ".count($keywords)." keyword targets\n");
+				$kcontent = $oXedocsModel->get_document_content_with_keywords($content, $keywords);
+				if( 0 < $kcontent->fcount ){
+					$content = $kcontent->content; 
+				}
+			}
+			else{
+				debug_syslog(1, "No keywords in module\n");
+			}
 			$oDocument->add('content', $content);
 			Context::set("page_content", $content);
+			
 		}
 		
 		$module_srl=$oDocument->get('module_srl');
@@ -430,7 +468,7 @@ class xedocsView extends xedocs {
 			Context::set('oDocumentNext', $oDocumentModel->getDocument($next_document_srl));
 
 		}
-
+		debug_syslog(1, "dispXedocsTreeIndex complete\n" );
 
 	}
 
