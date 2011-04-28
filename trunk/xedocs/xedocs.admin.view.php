@@ -57,6 +57,7 @@ class xedocsAdminView extends xedocs {
 
 	function dispXedocsAdminManualInfo()
 	{
+		debug_syslog(1, "dispXedocsAdminManualInfo\n");
 	}
 
 	function dispXedocsAdminGrantInfo()
@@ -86,8 +87,12 @@ class xedocsAdminView extends xedocs {
 		if(!in_array($this->module_info->module, array('admin', 'xedocs'))) {
 			return $this->alertMessage('msg_invalid_request');
 		}
-
+		$module_info = Context::get('module_info');
+		
+		debug_syslog(1, "module info: ".print_r($module_info, true)."\n");
+		
 		$oModuleModel = &getModel('module');
+		
 		$skin_list = $oModuleModel->getSkins($this->module_path);
 		Context::set('skin_list',$skin_list);
 
@@ -141,6 +146,29 @@ class xedocsAdminView extends xedocs {
 		$this->setTemplateFile("compile_version_labels");
 	}
 	
+	
+	
+	function dispXedocsAdminCompileKeywordList()
+	{
+		debug_syslog(1, dispXedocsAdminCompileKeywordList);
+		$module_info = Context::get('module_info');
+		$oModuleModel = &getModel('module');
+		$module_info = $oModuleModel->getModuleInfoByModuleSrl($module_info->module_srl);
+		$oModuleModel->addModuleExtraVars($module_info);
+		
+		$manual_set = &getModel('xedocs')->getModuleMidSet($module_info->help_name);
+		$module_count = count($manual_set);
+
+		debug_syslog(1, "module_count =".$module_count."\n");
+		debug_syslog(1, "help_name =".$module_info->help_name."\n");
+		
+		Context::set('module_count',$module_count);	
+		Context::set('module_info',$module_info);
+		Context::set('manual_set', $manual_set);
+		
+		$this->setTemplateFile("compile_keyword_list");
+		
+	}
 
 	function dispXedocsAdminDeleteManual()
 	{

@@ -19,7 +19,7 @@ class xedocsModel extends xedocs {
         $output = executeQuery('document.getDocument', $args);
         
         
-        debug_syslog(1, "check_document_srl(".$document_srl.")->".print_r($output, true)."\n");
+        //debug_syslog(1, "check_document_srl(".$document_srl.")->".print_r($output, true)."\n");
         
         if (!$output->toBool()) return false;
         
@@ -30,12 +30,12 @@ class xedocsModel extends xedocs {
         if( !isset($module_info)){
         	return false;
         }
-        debug_syslog(1, "check_document_srl(".$document_srl.") module_info".print_r($module_info, true)."\n");
+        //debug_syslog(1, "check_document_srl(".$document_srl.") module_info".print_r($module_info, true)."\n");
         
         if($expected_module_info->mid != $module_info->mid){
         	debug_syslog(1, "mid mismatch: expected=".$expected_module_info->mid."vs actual=".$module_info->mid."\n");
+        	return false;
         }
-        
         
         return true;
         
@@ -235,28 +235,35 @@ class xedocsModel extends xedocs {
 		return $contributors;
 	}
 
-	function make_links( $nodes , $module_srl)
+	function make_document_link($document_srl)
 	{
-		$site_module_info = Context::get('site_module_info');
+			$oDocumentModel = &getModel('document');
+			$oModuleModel = &getModel('module');
+			$site_module_info = Context::get('site_module_info');
+		
+			
+			$module_info = $oModuleModel->getModuleInfoByDocumentSrl($document_srl);
 
-		$oDocumentModel = &getModel('document');
-		$oModuleModel = &getModel('module');
-		$site_module_info = Context::get('site_module_info');
-
-		foreach($nodes as $node){
-			$module_info = $oModuleModel->getModuleInfoByDocumentSrl($node->document_srl);
-
-			$entry = $oDocumentModel->getAlias($node->document_srl);
+			$entry = $oDocumentModel->getAlias($document_srl);
 
 			if( $entry ){
-
+				
 				$url = getSiteUrl($site_module_info->document,'','mid',$module_info->mid,'entry',$entry);
 
 			}else
 			{
-				$url = getSiteUrl($site_module_info->document, '', 'mid', $module_info->mid, 'document_srl',$node->document_srl);
+				
+				$url = getSiteUrl($site_module_info->document, '', 'mid', $module_info->mid, 'document_srl',$document_srl);
 			}
-			$node->{'href'} = $url;
+			return $url;
+	}
+	
+	function make_links( $nodes , $module_srl)
+	{
+
+		foreach($nodes as $node){
+			
+			$node->{'href'} = $this->make_document_link($node->document_srl);
 		}
 	}
 
@@ -447,7 +454,7 @@ class xedocsModel extends xedocs {
 
 
 
-	function getModuleList()
+	function getModuleList($add_extravars = false)
 	{
 		$args->sort_index = "module_srl";
 		$args->page = 1;
@@ -457,8 +464,21 @@ class xedocsModel extends xedocs {
 
 		$output = executeQueryArray('xedocs.getManualList', $args);
 		ModuleModel::syncModuleToSite($output->data);
+		
+		if(!$add_extravars){
+			return  $output->data;
+		}
+			
+		$oModuleModel = &getModel('module');
+		
+		foreach($output->data as $module_info){
+			$extra_vars = $oModuleModel->getModuleExtraVars($module_info->module_srl);
+			foreach($extra_vars[$module_info->module_srl] as $k=>$v){
+				$module_info->{$k} = $v;
+			}
+		}
+		
 		return  $output->data;
-
 	}
 
 	function getModulesWithSet($set_id, $module_list)
@@ -510,23 +530,6 @@ class xedocsModel extends xedocs {
 		return $mid_set;
 	}
 
-	function getHighestSearchRankInSet($set_id){	
-		
-		$result = 0;
-		
-		$module_list = $this->getModuleList();
-		$module_set = $this->getModulesWithSet($set_id, $module_list);
-		
-		foreach($module_set as $module){
-			$module_info = $module_info = &getModel('module')->getModuleInfoByModuleSrl($module->module_srl);
-			if($result < $module_info->search_rank ){
-				$result = $module_info->search_rank;
-			}
-		}
-		
-		return $result;
-		
-	}
 
 
 	function getManualVersions($manual_set)
@@ -756,26 +759,114 @@ class xedocsModel extends xedocs {
 	function get_word_count($keyword)
 	{ 
 		$values = preg_split("/[\s,]+/", $keyword, -1, PREG_SPLIT_NO_EMPTY);	//any number of spaces or commas
-		debug_syslog(1, "->".print_r($values, true)."\n");
 		return count($values);
 	}
 	
-	function getKeywords($document_list)
+	function getKeywordTargets($document_list, $max_count=50)
 	{
 		$keywords = array();
-		$f = fopen("/var/tmp/keywords.txt", "w");
+		
+		$count =0;
 		foreach($document_list as $doc)
 		{
 			$title = $doc->getTitle();
 			$wc = $this->get_word_count($title);
-			debug_syslog(1, "Keyword: ".$title."->".$wc."\n");
+			
 			if( 1 != $wc ) continue;
+			$obj = null;
+			$obj->title = $title;
+			$obj->target_document_srl = $doc->document_srl;
 			 
-			$keywords[] = $title;
-			fputs($f, $title."\n" );
+			$keywords[] = $obj;
+			$count += 1;
+			if($count > $max_count) break; 
 		}
-		fclose($f);
+		
 		return $keywords;
+	}
+	
+	function keyword_to_string($key){
+		$result = array();
+		foreach($key as $name=>$val){
+			$result[] = $name."=".$val;
+		}
+		return implode(",", $result);
+	}
+	
+	function string_to_keyword($value)
+	{
+		$key = null;
+		$result = explode(",", $value);
+		foreach($result as $val){
+			$values = explode("=", $val);
+			$key->{$values[0]} = $values[1];
+		}
+		return $key;
+	}
+	
+	function keyword_list_to_string($keywords){
+		$k = array();
+		foreach($keywords as $key){
+			$k[] =$this->keyword_to_string($key);
+		}
+		return implode("|", $k);
+	}
+	
+	function string_to_keyword_list($value){
+		$skeywords = explode("|", $value);
+		$keywords = array();
+		foreach($skeywords as $sval){
+			$keywords[] = $this->string_to_keyword($sval);
+		}
+		return $keywords;
+	}
+	
+	function make_keyword_link($key){
+		$url = $this->make_document_link($key->target_document_srl);
+		
+		
+		
+		$result =  "<a href='".$url."'>".$key->title."</a>";
+		
+		return $result;
+	}
+	
+	function get_document_content_with_keywords($content, $keywords, $tags="p")
+	{ 
+		require_once 'simple_html_dom.php';
+
+		$dom = str_get_html($content);
+		debug_syslog(1, "dom parsed\n");
+		$fcount = 0;  
+		foreach( $dom->find($tags) as $text){
+		  foreach($keywords as $key){
+		      
+		      $kvalue = $key->title;
+		      $m = array();
+		      $res = preg_match_all("%".$kvalue."%", $text->plaintext, $m);
+		      if( ! $res ) continue;
+		      $fcount += $res;
+		      $key->freq = $res;
+			  $replacement = $this->make_keyword_link($key);
+		      $replaced = preg_replace("%".$kvalue."%", $replacement, $text->plaintext);
+		      $text->innertext = $replaced;
+		  }
+		}
+		$result = null;
+		$result->content = "".$dom;
+		$result->links = array();
+		$result->fcount = $fcount; 
+		
+		debug_syslog(1, "fcount = ".$fcount."\n");
+		if( 0 == $fcount ) return $result;
+		
+		foreach($keywords as $key){
+		    if( 0 < $key->freq ){
+		      $result->links = $this->make_keyword_link($key);
+		    }
+	  	}
+		 
+		return $result;
 	}
 	
 	/* lucene search related */

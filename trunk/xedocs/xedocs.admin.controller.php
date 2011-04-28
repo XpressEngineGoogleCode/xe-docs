@@ -18,6 +18,7 @@ function customError($errno, $errstr){
 	//die();
 }
 
+require_once 'simple_html_dom.php';
 
 class xedocsAdminController extends xedocs {
 
@@ -48,6 +49,7 @@ class xedocsAdminController extends xedocs {
 		if($args->use_comment!='N'){
 			$args->use_comment = 'Y';
 		}
+		
 
 		$module_name = $args->manual_name;
 		unset($args->manual_name);
@@ -169,6 +171,46 @@ class xedocsAdminController extends xedocs {
 		$this->setMessage('success_compiled');
 	}
 
+	
+	function procXedocsAdminCompileKeywords(){
+
+		debug_syslog(1, "procXedocsAdminCompileKeywords\n");
+		set_time_limit(0);
+
+		$oXedocsModel = &getModel('xedocs'); 
+		
+		$help_name = Context::get('help_name');
+		$module_srl = Context::get('module_srl');
+
+		debug_syslog(1, "module_srl='".$module_srl."'\n");
+		debug_syslog(1, "help_name='".$help_name."'\n");
+		
+		
+		$docs = $oXedocsModel->getDocumentList($module_srl);
+		
+		debug_syslog(1, "there are ".count($docs)." documents \n getting keywords ...\n");
+		
+		
+		$keywords = $oXedocsModel->getKeywordTargets($docs, 10000);
+		
+		debug_syslog(1, "extract keywords complete count = ".count($keywords)."\n");
+		
+		$oModuleModel = &getModel('module');
+		$update_args = $oModuleModel->getModuleExtraVars($module_srl);
+		
+		$update_args->{'keywords'} = $oXedocsModel->keyword_list_to_string($keywords);
+		
+		debug_syslog(1, "keyword string".$update_args->keywords."\n");
+		$oModuleController = &getController('module'); 
+		$oModuleController->insertModuleExtraVars($module_srl, $update_args);
+		
+		debug_syslog(1, "compile keywords complete");
+		$this->setMessage('success_compiled');
+	}
+	
+	
+	
+	
 	//TODO optimize with module srl
 	function has_document($crt_doc, $other_docs )
 	{
@@ -301,7 +343,8 @@ class xedocsAdminController extends xedocs {
 		
 		$update_args->{'version_label'} = Context::get('version_label');
 		$update_args->{'help_tags'} = Context::get('help_tags');
-
+		$update_args->{'search_rank'} = Context::get('search_rank');
+		
 		$toc_location = Context::get('toc_location');
 		
 		if( !isset($toc_location) ){
@@ -390,7 +433,7 @@ class xedocsAdminController extends xedocs {
 
 }
 
-include 'simple_html_dom.php';
+
 
 class ContentBuilderTocProcessor extends TocProcessor
 {
@@ -1105,7 +1148,8 @@ class ContentBuilderTocProcessor extends TocProcessor
 
 		$oDocumentModel = $this->controller->getModel('document');
 		$oDocumentController = $this->controller->getController('document');
-
+		
+		
 		
 		
 		if ( 0 == strcmp('', trim($toc_node->relpath)) ) //a not navigable node
@@ -1162,6 +1206,11 @@ class ContentBuilderTocProcessor extends TocProcessor
 
 		if ( 0 != strcmp('', $toc_node->relpath ) ){
 			$this->node_paths[$toc_node->relpath] = $toc_node;
+			
+			$oXedocsModel = $this->controller->getModel('document');
+			
+			$oXedocsModel->add_original_url($obj->document_srl, $toc_node->relpath);
+			
 		}
 
 		if(!$output->toBool()){
