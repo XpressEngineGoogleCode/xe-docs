@@ -851,3 +851,12 @@ h1, .h1, h2, h3, #xe h4, h5, h6, #xe p, ul, ol, #content li, .widgetTree, .widge
 	font-size: 14px;
 	color: #000;
 }
+
+#noResult {
+	padding: 20px 0 80px 0;
+}
+
+#noResult p {
+	font-weight: bold;
+	font-size: 13px;
+}

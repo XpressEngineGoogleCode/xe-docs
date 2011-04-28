@@ -47,13 +47,12 @@
 		<div class="cleared"></div>
 		
 		<!--@if(!count($document_list))-->
-		<span class="noResult">
-			{$lang->msg_no_result}
+		<div id="noResult">
+			<p>{$lang->msg_no_result}</p>
 			<!--@if($last_division)-->
-			<br />
-			{$lang->msg_document_more_search}
+			<p>{$lang->msg_document_more_search}</p>
 			<!--@end-->
-		</span>
+		</div>
 		<!--@else-->
 		
 		<p id="articleCount"><img src="img/iconH2.gif" />Article ({number_format($total_count)})</p>
