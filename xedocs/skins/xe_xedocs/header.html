@@ -63,8 +63,9 @@
 			<div id="adminActions">
 				<a class="xeDocsHeaderButtonConfig" id="toc_structure" href="{getUrl('act','dispXedocsModifyTree')}"><span>{$lang->cmd_modify}</span></a>
 				<a class="xeDocsHeaderButtonConfig" id="config" href="{getUrl('act','dispXedocsAdminInsertManual')}"><span>{$lang->cmd_setup}</span></a>
+				<a class="xeDocsHeaderButtonConfig" id="editPage" href="{getUrl('act','dispXedocsEditPage')}"><span>{$lang->edit_page}</span></a>
+				<a class="xeDocsHeaderButtonConfig" href="#" onclick="if(confirm('{$lang->confirm_delete}')) { doDeleteManual('{$oDocument->document_srl}'); }; return false;"><span>{$lang->delete_page}</span></a>
 			</div>
-			
 		</div>
     </div>
 	<!--@end-->
@@ -110,28 +111,7 @@
 				<span class="ipAddress"><!--@if($grant->manager || $module_info->display_ip_address!='N')-->{$oDocument->getIpaddress()}<!--@end--></span>
 			</div>
 			
-			<!--@if(!$history && ($oDocument->isExists()||$use_history != 'N'))-->
-			<div class="command" >
-				<!--@if($oDocument->isExists()&&$act!='dispXedocsEditPage'&&$grant->manager)-->
-					<a class="" href="{getUrl('act','dispXedocsEditPage','entry',$entry)}"><img src="img/icon_edit_page.png" alt="" title="{$lang->cmd_edit}" /></a>
-				<!--@end-->
-				<!--@if($oDocument->isExists()&&$grant->delete_document && $oDocument->get('title')!='Front Page')-->
-					<a class="" href="#" onclick="if(confirm('{$lang->confirm_delete}')) { doDeleteManual('{$oDocument->document_srl}'); }; return false;"><img src="img/icon_delete_page.png" alt="" title="{$lang->cmd_delete}" /></a>
-				<!--@end-->
-				<!--@if($use_history != 'N')-->
-					<a class="" href="{getUrl('act','dispXedocsHistory','document_srl',$oDocument->document_srl,'history_srl','')}"><img src="img/icon_history.png" alt="" title="{$lang->cmd_delete}" /></a>
-					<span class="buttonOfficial"><a href="{getUrl('act','dispXedocsHistory','document_srl',$oDocument->document_srl,'history_srl','')}">Histories</a></span>
-				<!--@end-->
-			</div>
-			<!--@else-->
-			<div class="command">
-				<!--@if($history)-->
-					{$lang->notice_old_revision}
-				<!--@end-->
-				<span class="buttonOfficial"><a href="{getUrl('act','','history_srl','')}">{$lang->cmd_back}</a></span>
-			</div>
-			<!--@end-->
-			<div class="cleared"></div>
+
         </div>
     </div>
 	<!--@end-->
