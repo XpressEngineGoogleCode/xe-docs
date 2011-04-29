@@ -1207,7 +1207,7 @@ class ContentBuilderTocProcessor extends TocProcessor
 		if ( 0 != strcmp('', $toc_node->relpath ) ){
 			$this->node_paths[$toc_node->relpath] = $toc_node;
 			
-			$oXedocsModel = $this->controller->getModel('document');
+			$oXedocsModel = $this->controller->getModel('xedocs');
 			
 			$oXedocsModel->add_original_url($obj->document_srl, $toc_node->relpath);
 			
