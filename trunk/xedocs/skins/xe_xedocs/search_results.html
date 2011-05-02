@@ -65,7 +65,7 @@
 							<a href="{getFullUrl( '','mid',$document->mid).'/entry/'.$document->entry}">{$document->entry}</a>
 							<span><em>( {$document->browser_title} )</em></span>
 						</dt>
-						<dd>{$document->getSummary(400)}</dd>
+						<dd>{preg_replace('/^[ \t]*[\r\n]+/m', '', $document->getSummary(400))}</dd>
 						<p class="search-url">{getFullUrl( '','mid',$document->mid).'/entry/'.$document->entry}{$itemURL}</p>
 					</dl>
 				</li>
