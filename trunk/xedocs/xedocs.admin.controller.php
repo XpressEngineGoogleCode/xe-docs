@@ -51,7 +51,7 @@ class xedocsAdminController extends xedocs {
 		}
 		
 
-		$module_name = $args->manual_name;
+		debug_syslog(1, "args :\n ".print_r($args, true)."\n");		
 		unset($args->manual_name);
 
 		if($args->module_srl) {
@@ -171,6 +171,47 @@ class xedocsAdminController extends xedocs {
 		$this->setMessage('success_compiled');
 	}
 
+
+	
+	
+	function _update_keyword($keyword, $orig_keyword=null)
+	{
+		
+		debug_syslog(1, "_update_keyword(".$keyword.", orig=".$orig_keyword.")\n");
+		$module_srl = Context::get('module_srl');
+		$target_document_srl = Context::get('target_document_srl');
+		
+		$oXedocsModel = &getModel('xedocs');
+		$updated = $oXedocsModel->update_keyword($module_srl, $orig_keyword, $keyword, $target_document_srl);
+		if($updated){
+			debug_syslog(1, "keyword updated\n");
+		}
+		
+	}
+	
+	function procXedocsAdminEditKeyword()
+	{
+		debug_syslog(1, "procXedocsAdminEditKeyword\n");
+		$orig_keyword = Context::get('orig_title');
+		$keyword = Context::get('title');
+		
+		$this->_update_keyword($keyword, $orig_keyword);
+		$this->setMessage("success");
+		debug_syslog(1, "procXedocsAdminEditKeyword complete\n");
+	}
+	
+	function procXedocsAdminAddKeyword()
+	{
+		debug_syslog(1, "procXedocsAdminAddKeyword\n");
+		
+		$keyword = Context::get('title');
+		$orig_keyword = null;
+		
+		$this->_update_keyword($keyword, $orig_keyword);
+		$this->setMessage("success");
+		debug_syslog(1, "procXedocsAdminAddKeyword complete\n");
+	}
+	
 	
 	function procXedocsAdminCompileKeywords(){
 
@@ -196,11 +237,12 @@ class xedocsAdminController extends xedocs {
 		debug_syslog(1, "extract keywords complete count = ".count($keywords)."\n");
 		
 		$oModuleModel = &getModel('module');
-		$update_args = $oModuleModel->getModuleExtraVars($module_srl);
 		
+		$extra_vars = $oModuleModel->getModuleExtraVars($module_srl);
+		$update_args = $extra_vars[$module_srl];
 		$update_args->{'keywords'} = $oXedocsModel->keyword_list_to_string($keywords);
 		
-		debug_syslog(1, "keyword string".$update_args->keywords."\n");
+		
 		$oModuleController = &getController('module'); 
 		$oModuleController->insertModuleExtraVars($module_srl, $update_args);
 		
@@ -506,37 +548,15 @@ class ContentBuilderTocProcessor extends TocProcessor
 	}
 	
 	
-	
-
 	function get_document_link($document_srl)
 	{
-
-		if( !isset($document_srl) ) return false;
-
-		$oDocumentModel = $this->controller->getModel('document');
-		$site_module_info = Context::get('site_module_info');
-		$oModuleModel = $this->controller->getModel('module');
-		
-		$module_info = $oModuleModel->getModuleInfoByDocumentSrl($document_srl);
-		
-		$entry = $oDocumentModel->getAlias($document_srl);
-		
-		if($entry){
-			
-			$url = getSiteUrl($site_module_info->document,'','mid',$module_info->mid,'entry',$entry);
-			
-		}else{
-			$url = getSiteUrl($site_module_info->document,'','mid', $module_info->mid, 'document_srl',$document_srl);
-		}
-		
-		return $url;
-		
+		$oXedocsModel = &getModel('xedocs');
+		return $oXedocsModel->get_document_link($document_srl);
 	}
+	
 
 	function resolve_links($toc_node)
 	{
-
-
 
 		if( 0 == strcmp('home', $toc_node->name)){
 			return;
@@ -1083,6 +1103,8 @@ class ContentBuilderTocProcessor extends TocProcessor
 		$contents = $this->removeHtmlTag($contents, "</link>");
 		
 		debug_syslog(1, "cleanup document contents complete \n");
+		
+		$contents = preg_replace('/^[ \t]*[\r\n]+/m', '', $contents);
 		
 		return $contents;
 		

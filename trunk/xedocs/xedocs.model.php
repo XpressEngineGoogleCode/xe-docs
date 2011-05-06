@@ -14,6 +14,33 @@ class xedocsModel extends xedocs {
 		}
 	}
 
+	function get_first_node_srl($module_srl)
+	{
+		if(!isset($module_srl)) return null;
+
+		
+		$oModuleModel = &getModel('module');
+		$module_info = $oModuleModel->getModuleInfoByModuleSrl($module_srl);
+		
+		if( !isset($module_info) ) return null;
+
+		if(!isset($module_info->first_node_srl))
+		{
+			$value = $this->readXedocsTreeCache($module_srl);
+			foreach( $value as $i=>$obj){
+				$document_srl = $obj->document_srl;
+				debug_syslog(1, "get_first_node_srl setting document_srl to first_node_srl 0\n" );
+				break;
+			}
+		}else{
+			$document_srl = $module_info->first_node_srl;
+			debug_syslog(1, "get_first_node_srl setting document_srl to first_node_srl 1\n" );
+		}
+		
+		return $document_srl;
+	}
+	
+	
 	function check_document_srl($document_srl, $expected_module_info){
 		$args->document_srl = $document_srl;
         $output = executeQuery('document.getDocument', $args);
@@ -39,6 +66,34 @@ class xedocsModel extends xedocs {
         
         return true;
         
+	}
+	
+	function get_document_link($document_srl)
+	{
+
+		if( !isset($document_srl) ) return false;
+
+		$oDocumentModel = &getModel('document');
+		$oModuleModel = &getModel('module');
+
+		$module_info = $oModuleModel->getModuleInfoByDocumentSrl($document_srl);
+
+		$site_module_info = Context::get('site_module_info');
+
+		$entry = $oDocumentModel->getAlias($document_srl);
+
+		if($entry){
+
+			$url = getSiteUrl($site_module_info->document,'','mid',$module_info->mid,'entry',$entry);
+
+		}else{
+
+
+			$url = getSiteUrl($site_module_info->document,'','mid', $module_info->mid, 'document_srl',$document_srl);
+		}
+
+		return $url;
+
 	}
 	
 
@@ -795,6 +850,10 @@ class xedocsModel extends xedocs {
 	
 	function string_to_keyword($value)
 	{
+		
+		if( !isset($value) || 0==strcmp("", $value)){
+			return null;
+		}
 		$key = null;
 		$result = explode(",", $value);
 		foreach($result as $val){
@@ -807,12 +866,16 @@ class xedocsModel extends xedocs {
 	function keyword_list_to_string($keywords){
 		$k = array();
 		foreach($keywords as $key){
-			$k[] =$this->keyword_to_string($key);
+			$obj = $this->keyword_to_string($key);
+			if(isset($obj)){
+				$k[] = $obj;
+			}
 		}
 		return implode("|", $k);
 	}
 	
 	function string_to_keyword_list($value){
+		
 		$skeywords = explode("|", $value);
 		$keywords = array();
 		foreach($skeywords as $sval){
@@ -831,17 +894,25 @@ class xedocsModel extends xedocs {
 		return $result;
 	}
 	
-	function get_document_content_with_keywords($content, $keywords, $tags="p")
+	function get_document_content_with_keywords($oDocument, $keywords, $tags="p")
 	{ 
 		require_once 'simple_html_dom.php';
 
+		
+		$document_srl = $oDocument->document_srl;
+		$content = $oDocument->getContent(true);
+		
 		$dom = str_get_html($content);
-		debug_syslog(1, "dom parsed\n");
+		
 		$fcount = 0;  
 		foreach( $dom->find($tags) as $text){
 		  foreach($keywords as $key){
-		      
-		      $kvalue = $key->title;
+		  	
+		  	  $kvalue = $key->title;
+		  	  //do not make links to self
+		      if($document_srl == $key->target_document_srl){
+		      	continue;
+		      }
 		      $m = array();
 		      $res = preg_match_all("%".$kvalue."%", $text->plaintext, $m);
 		      if( ! $res ) continue;
@@ -867,6 +938,180 @@ class xedocsModel extends xedocs {
 	  	}
 		 
 		return $result;
+	}
+	
+	
+	function clear_keywords($module_srl){
+		$oModuleModel = &getModel('module');
+		$module_info = $oModuleModel->getModuleInfoByModuleSrl($module_srl);
+		if(!isset($module_info) ){
+			return false;
+		}
+
+		$extra_vars = $oModuleModel->getModuleExtraVars($module_srl);
+		$update_args = $extra_vars[$module_srl];
+		$update_args->{'keywords'} = null;
+		
+		$oModuleController = &getController('module'); 
+		$oModuleController->insertModuleExtraVars($module_srl, $update_args);
+		debug_syslog(1, "model clear_keywords complete\n");
+	}
+	
+	function update_keyword($module_srl, $orig_keyword, $keyword, $target_document_srl)
+	{
+		if(!isset($keyword) || !isset($keyword) || !isset($target_document_srl)){
+			return false;
+		}
+		
+		$oModuleModel = &getModel('module');
+		$module_info = $oModuleModel->getModuleInfoByModuleSrl($module_srl);
+		if(!isset($module_info) ){
+			return false;
+		}
+		
+		
+		$keywords = null;
+		if( isset($module_info->keywords) ) 
+		{
+			$keywords = $this->string_to_keyword_list($module_info->keywords);
+		}
+		//remove original
+		if( isset($orig_keyword)) 
+		{
+			debug_syslog(1, "there are ".count($keywords)." keywords\n");
+			foreach($keywords as $i=>$val){
+				if(0 == strcmp($val->title,$orig_keyword) ){
+					$val->title = $keyword;
+					$val->target_document_srl = $target_document_srl;
+					break;
+				}
+			}
+		}else{
+			debug_syslog(1, "adding keyword\n");
+			$obj = null;
+			$obj->title = $keyword;
+			$obj->target_document_srl = $target_document_srl;
+			 
+			$keywords[] = $obj;
+		}
+			
+		debug_syslog(1, "updating extravars\n");
+		
+		$extra_vars = $oModuleModel->getModuleExtraVars($module_srl);
+		$update_args = $extra_vars[$module_srl];
+		$update_args->{'keywords'} = $this->keyword_list_to_string($keywords);
+		
+		$oModuleController = &getController('module'); 
+		$oModuleController->insertModuleExtraVars($module_srl, $update_args);
+		
+		return true;
+		
+	}
+	
+	function delete_keyword($module_srl, $keyword)
+	{
+		if(!isset($keyword)){
+			return false;
+		}
+		
+		$oModuleModel = &getModel('module');
+		$module_info = $oModuleModel->getModuleInfoByModuleSrl($module_srl);
+		if(!isset($module_info) || !isset($module_info->keywords)){
+			return false;
+		}
+		
+		$keywords = $this->string_to_keyword_list($module_info->keywords);
+		$deleted = false;
+		debug_syslog(1, "there are ".count($keywords)." keywords\n");
+		foreach($keywords as $i=>$val){
+			if(0 == strcmp($val->title,$keyword) ){
+				unset($keywords[$i]);
+				$deleted = true;
+				break;
+			}
+		}
+		
+		if($deleted)
+		{
+			
+			debug_syslog(1, "keyword deleted. updating extravars\n");
+			
+			$extra_vars = $oModuleModel->getModuleExtraVars($module_srl);
+			$update_args = $extra_vars[$module_srl];
+			$update_args->{'keywords'} = $this->keyword_list_to_string($keywords);
+			
+			$oModuleController = &getController('module'); 
+			$oModuleController->insertModuleExtraVars($module_srl, $update_args);
+		}
+		return $deleted;
+	}
+	
+	function _is_search($is_keyword, $target_module_srl, $search_target, $page, $items_per_page= 10)
+	{
+		debug_syslog(1, "_is_search search target_module_srl=".$target_module_srl."\n");
+		$oDocumentModel = &getModel('document');
+		
+		$obj = null;
+		$obj->module_srl =array($target_module_srl); 
+			
+		$obj->page = $page;
+		$obj->list_count = $items_per_page;
+
+		$obj->exclude_module_srl = '0';
+		$obj->sort_index = 'module';
+		//$obj->order_type = 'asc';
+		$obj->search_keyword = $is_keyword;
+		$obj->search_target = $search_target;
+		return $oDocumentModel->getDocumentList($obj);
+		
+	}
+	
+	function _lucene_search($is_keyword, $target_module_srl, $search_target, $page, $items_per_page= 10 )
+	{
+		$oLuceneModel = &getModel('xedocs'); //temporary imported sources so we not interfere with nlucene
+
+		debug_syslog(1, "_lucene_search search target_module_srl=".$target_module_srl."\n");
+		$searchAPI = "lucene_search_bloc-1.0/SearchBO/";
+
+		$searchUrl = $oLuceneModel->getDefaultSearchUrl($searchAPI);
+		debug_syslog(1, "searchUrl=".$searchUrl."\n");
+
+		debug_syslog(1, "setup complete.target_mid=".$target_module_srl." now checking\n");
+
+		if(!$oLuceneModel->isFieldCorrect($search_target)){
+		  $search_target = 'title_content';
+		}
+		debug_syslog(1, "search_target=".$search_target."\n");
+
+		//Search queries applied to the target module
+		$query = $oLuceneModel->getSubquery($target_module_srl, "include", null); 
+
+		debug_syslog(1, "subquery=".$query."\n");
+		//Parameter setting
+		$json_obj->query = $oLuceneModel->getQuery($is_keyword, $search_target, null);
+		$json_obj->curPage = $page;
+		$json_obj->numPerPage = $items_per_page;
+		$json_obj->indexType = "db";
+		$json_obj->fieldName = $search_target;
+		$json_obj->target_mid = $target_module_srl;
+		$json_obj->target_mode = $target_mode;
+		
+		$json_obj->subquery = $query;
+
+		return $oLuceneModel->getDocuments($searchUrl, $json_obj);
+	}
+	
+	function search($is_keyword, $target_module_srl, $search_target, $page, $items_per_page= 10)
+	{
+		debug_syslog(1, "search search keyword=".$is_keyword."\n");
+		$oLuceneModule = &getModule('lucene');
+		
+		if( !isset($oLuceneModule) ){
+			//if nlucene not installed we fallback to IS
+			return $this->_is_search($is_keyword, $target_module_srl, $search_target, $page, $items_per_page);
+		}
+		
+		return $this->_lucene_search($is_keyword, $target_module_srl, $search_target, $page, $items_per_page);
 	}
 	
 	/* lucene search related */
