@@ -46,6 +46,7 @@
         <action name="dispXedocsModifyComment" type="view" />
         <action name="dispXedocsDeleteComment" type="view" />
 		<action name='dispXedocsCommentEditor' type="view" />
+		
 
         <action name="procXedocsInsertDocument" type="controller" />
         <action name="procXedocsInsertComment" type="controller" />
@@ -60,7 +61,15 @@
         <action name="dispXedocsAdminImportManual" type="view" standalone="true" />
         <action name="dispXedocsAdminDeleteManual" type="view" standalone="true" />
 		<action name="dispXedocsAdminCompileVersion" type="view" standalone="true" />
+		
 		<action name="dispXedocsAdminCompileKeywordList" type="view" standalone="true" />
+		<action name="dispXedocsAdminEditKeyword" type="view" standalone="true" />
+		<action name="dispXedocsAdminDeleteKeyword" type="view" standalone="true" />
+		<action name="dispXedocsAdminAddKeyword" type="view" standalone="true" />				
+		<action name="dispXedocsAdminManualPageSelect" type="view" standalone="true" />
+		<action name='dispXedocsAdminSelectDocumentList' type="view"  standalone="true"/>
+		<action name='dispXedocsAdminClearKeywordList' type="view"  standalone="true"/>
+		
 
         <action name="dispXedocsAdminManualInfo" type="view" standalone="true" />
         <action name="dispXedocsAdminGrantInfo" type="view" standalone="true" />
@@ -72,7 +81,9 @@
         <action name="procXedocsAdminInsertManual"  type="controller" standalone="true" />
         <action name="procXedocsAdminCompileVersion" type="controller" standalone="true" />
         <action name="procXedocsAdminCompileKeywords" type="controller" standalone="true" />
-        
+        <action name="procXedocsAdminEditKeyword" type="controller" standalone="true" />
+        <action name="procXedocsAdminAddKeyword" type="controller" standalone="true" />
+        	
 
         <action name="getXedocsTreeList" type="model" />
         <action name="getManualList" type="model" standalone="true" />

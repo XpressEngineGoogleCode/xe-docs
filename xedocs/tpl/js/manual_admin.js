@@ -50,18 +50,45 @@ function completeDeleteManual(ret_obj) {
 }
 
 
-function completeCompileKeywords(){
+function completeCompileKeywords(ret_obj){
     var error = ret_obj['error'];
     var message = ret_obj['message'];
     var page = ret_obj['page'];
     alert(message);
-
-    var url = current_url.setQuery('act','dispXedocsAdminView').setQuery('module_srl','');
+    
+    var url = current_url.setQuery('act','dispXedocsAdminCompileKeywordList');
     if(page) url = url.setQuery('page',page);
     location.href = url;    
 	
 }
 
+
+function completeEditKeyword(ret_obj){
+    var error = ret_obj['error'];
+    var message = ret_obj['message'];
+    var page = ret_obj['page'];
+    alert(message);
+
+    var url = current_url.setQuery('act','dispXedocsAdminCompileKeywordList')
+    if(page) url = url.setQuery('page',page);
+    location.href = url;    
+	
+}
+
+
+
+function completeAddKeyword(ret_obj){
+    var error = ret_obj['error'];
+    var message = ret_obj['message'];
+    var page = ret_obj['page'];
+    alert(message);
+
+    var url = current_url.setQuery('act','dispXedocsAdminCompileKeywordList');
+    if(page) url = url.setQuery('page',page);
+    
+    location.href = url;    
+	
+}
 
 
 function doCartSetup(url) {
@@ -79,3 +106,25 @@ function doCartSetup(url) {
 function doArrangeXedocsList(module_srl) {
     exec_xml('xedocs','procXedocsAdminArrangeList',{module_srl:module_srl},function() {location.reload();});
 }
+
+
+
+function insertManualPage(id, document_srl, mid, browser_title) 
+{
+    
+    
+    if(!window.opener){
+    	alert('!window.opener');
+    	window.close();
+    }
+
+    if(typeof(opener.insertSelectedManualPage)=='undefined'){
+    	alert('undefined opener.insertSelectedManualPage');
+    	return;
+    }
+    
+    opener.insertSelectedManualPage(id, document_srl, mid, browser_title);
+    window.close();
+    
+}
+

@@ -47,4 +47,15 @@ $lang->ResultsFrom = "Results from ";
 $lang->about_admin_import_manual_search_rank = "Used for sorting search results. 0 is lowest version. Results with lower rank will be placed at the end . When you add/import a new manual a higher rank is assigned to place results at the begining of the list";
 $lang->edit_page = "Edit page";
 $lang->delete_page = "Delete page";
+
+$lang->keyword = "Keyword";
+$lang->no_keywords = "Keyword list not compiled for this manual.";
+$lang->total_keywords ="Total keywords";
+$lang->edit_keyword = "Edit Keyword";
+$lang->add_keyword = "Add Keyword";
+$lang->manual_page_selector = "Manual Page Selector";
+$lang->manual_page = "Manual Page";
+$lang->manual_page_name = "Manual Page Title";
+$lang->manual_page_sumarry = "Sumarry";
+$lang->cmd_update_keyword = "Apply";
 ?>
