@@ -671,11 +671,48 @@ h1, .h1, h2, h3, #xe h4, h5, h6, #xe p, ul, ol, #content li, .widgetTree, .widge
 	border-radius: 4px;
 	-moz-border-radius: 4px;
 	-webkit-border-radius: 4px;
-	padding: 0 5px 0 35px;
 	border: 1px solid #e5dab7;
 	color: #888;
 	margin: 5px 0 0 0;
 }
+/* cursor */
+#versions .version{cursor:pointer}
+#versions .active{cursor:normal}
+/* display */
+#versions form{display:inline-block}
+/* float */
+#logo{float:left}
+/* width */
+#logo{width:197px}
+/* height */
+#logo{height:60px}
+#versions .version{height:16px}
+/* margin */
+#versions p,.search-url,.searchResult dl dd{margin:0}
+#logo{margin:6px 0 6px 20px}
+/* padding */
+#logo{padding:0}
+#versions{padding:9px 5px 9px 35px}
+/* font-family */
+#versions .version{font-family:lucida grande,lucida sans unicode,arial,verdana,sans-serif}
+/* font-weight */
+#versions .version,.searchResult dl dt span{font-size:12px}
+.searchResult dl dd,.search-url{font-size:13px}
+/* font-weight */
+#versions .active{font-weight:bold}
+/* color */
+#versions .version{color:#1780AB}
+#versions .active,.search-url{color:#000}
+.searchResult dl dt span{color:#999}
+.searchResult dl dd{color:#555}
+/* text-decoration */
+#versions .version:hover,.searchResult a{text-decoration:underline}
+#versions .active:hover{text-decoration:none}
+/* background */
+#versions .version{background:none}
+#logo{background:url(/files/attach/images/50/cubrid-logo.png) no-repeat}
+/* border */
+#versions .version{border:0}
 
 #footer_copyleft {
 	line-height: 24px;
@@ -688,14 +725,6 @@ h1, .h1, h2, h3, #xe h4, h5, h6, #xe p, ul, ol, #content li, .widgetTree, .widge
 	vertical-align: middle;
 	margin: 0 10px 0 0;
 	padding: 0 10px;
-}
-
-#logo {
-    display: inline;
-    float: left;
-    margin: 30px 0 0 10px;
-    padding: 0 0 20px;
-    text-decoration: none;
 }
 
 #headerRight {
@@ -833,23 +862,6 @@ h1, .h1, h2, h3, #xe h4, h5, h6, #xe p, ul, ol, #content li, .widgetTree, .widge
 
 .searchResult dl dt {
 	font-size: 15px;
-}
-
-.searchResult dl dt span {
-	color: #999;
-	font-size: 13px;
-}
-
-.searchResult dl dd {
-	margin: 5px 0;
-	color: #555;
-	font-size: 14px;
-}
-
-.search-url {
-	margin: 0;
-	font-size: 14px;
-	color: #000;
 }
 
 #noResult {
