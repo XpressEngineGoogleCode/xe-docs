@@ -41,17 +41,36 @@
 
 <div id="keyword_commands">
 
-<a href="{getUrl('act','dispXedocsAdminAddKeyword','module_srl',$module_srl)}" class="button blue"><span>Create</span></a>
+<a href="{getUrl('act','dispXedocsAdminAddKeyword','module_srl',$module_srl)}" class="button blue"><span>{$lang->cmd_create_keword}</span></a>
 &nbsp
-<a href="{getUrl('act','dispXedocsAdminClearKeywordList','module_srl',$module_srl)}" class="button blue"><span>Clear Keywords</span></a>
+<a href="{getUrl('act','dispXedocsAdminClearKeywordList','module_srl',$module_srl)}" class="button blue"><span>{$lang->cmd_clear_kewords}</span></a>
+&nbsp&nbsp
+
+<form action="./" method="get">
+
+<input type="hidden" name="module" value="admin" />
+<input type="hidden" name="page" value="{$page}" />
+<input type="hidden" name="module_srl" value="{$module_info->module_srl}" />
+<input type="hidden" name="act" value="dispXedocsAdminCompileKeywordList" />
+
+{$lang->filter_keywords} <input type="text" value="{$filter_keyword}" name="filter_keyword" />
+
+<span class="button black strong"><input type="submit" value="{$lang->cmd_filter_kewords}" /></span>
+<form>
 
 </div>
+
+
 
 <!--@if(0 == $total_keywords)-->
 	{$lang->no_keywords}
 <!--@else-->
 
-<div style='float:right'>{$lang->total_keywords} &nbsp {$total_keywords} </div>
+<div style='float:right; position:relative; top:-20px;'>{$lang->total_keywords} &nbsp {$total_keywords} &nbsp &nbsp &nbsp 
+<a href="{getUrl('act','dispXedocsAdminReviewKeywords','module_srl',$module_srl)}" class="button blue"><span>Review Keyword Links</span></a>
+</div>
+
+
 <table cellspacing="0" class="rowTable">
 	<tr>
 	

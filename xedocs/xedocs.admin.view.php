@@ -129,6 +129,7 @@ class xedocsAdminView extends xedocs {
 
 		debug_syslog(1, dispXedocsAdminCompileVersion);
 		$module_info = Context::get('module_info');
+		
 		$oModuleModel = &getModel('module');
 		$module_info = $oModuleModel->getModuleInfoByModuleSrl($module_info->module_srl);
 		$oModuleModel->addModuleExtraVars($module_info);
@@ -239,6 +240,98 @@ class xedocsAdminView extends xedocs {
 		debug_syslog(1, "dispXedocsAdminAddKeyword complete\n");
 	}
 
+	
+	function dispXedocsAdminReviewKeywords(){
+		debug_syslog(1, "dispXedocsAdminReviewKeywords\n");
+		$document_srl = Context::get('document_srl');
+		$module_srl = Context::get('module_srl');
+		
+		$oXedocsModel = &getModel('xedocs');
+		
+		if( !isset($document_srl) ){
+			$document_srl = $oXedocsModel->get_first_node_srl($module_srl);
+		}
+		
+		debug_syslog(1, "dispXedocsAdminReviewKeywords".print_r($this->grant, true)."\n");
+
+		if(!$this->grant->is_admin){
+			return $this->dispXedocsMessage('msg_not_permitted');
+		}
+
+		$oModuleModel = &getModel('module');
+		$module_info = $oModuleModel->getModuleInfoByModuleSrl($module_srl);
+
+		debug_syslog(1, "dispXedocsAdminReviewKeywords admin chk ok\n");
+
+		$oDocumentModel = &getModel('document');
+
+		$oDocument = $oDocumentModel->getDocument(0, $this->grant->manager);
+		$oDocument->setDocument($document_srl);
+		
+		$oDocument->add('module_srl', $module_srl);
+		Context::set('document_srl',$document_srl);
+	
+		$entry = $oDocumentModel->getAlias($document_srl);
+		Context::set('entry', $entry);
+		
+		debug_syslog(1, "dispXedocsAdminReviewKeywords entry = ".$entry."\n");
+		
+		if(isset($module_info->keywords)){
+				
+				$keywords = $oXedocsModel->string_to_keyword_list($module_info->keywords);
+				debug_syslog(1, "There are ".count($keywords)." keyword targets\n");
+				$kcontent = $oXedocsModel->get_document_content_with_keywords($oDocument, $keywords);
+				debug_syslog(1, "got kcontent\n");
+				if( 0 < $kcontent->fcount ){
+					$content = $kcontent->content;
+					debug_syslog(1, "There are ".count($kcontent->links)." links inserted\n");
+					Context::set("klinks", $kcontent->links); 
+				}
+				else{
+					Context::set("klinks", null);
+					debug_syslog(1, "No keywords matched in document\n");
+					$content = $oDocument->getContent(false);  
+				}
+				
+			}
+		else{
+				Context::set("klinks", null);
+				$content = $oDocument->getContent(false);
+				debug_syslog(1, "No keywords in module\n");
+		}
+		
+		$oDocument->add('content', $content);
+		Context::set("page_content", $content);
+				
+		Context::set('oDocument', $oDocument);
+
+		//Context::addJsFilter($this->module_path.'tpl/filter', 'insert.xml');
+		
+		
+		list($prev_document_srl, $next_document_srl) = $oXedocsModel->getPrevNextDocument($module_srl, $document_srl);
+
+		if($prev_document_srl){
+
+			$oPrevDocEntry = $oDocumentModel->getAlias($prev_document_srl);
+			Context::set('oPrevDocEntry', $oPrevDocEntry);
+			Context::set('oDocumentPrev', $oDocumentModel->getDocument($prev_document_srl));
+		}
+
+		if($next_document_srl)
+		{
+			$oNextDocEntry = $oDocumentModel->getAlias($next_document_srl);
+
+			Context::set('oNextDocEntry', $oNextDocEntry);
+			Context::set('oDocumentNext', $oDocumentModel->getDocument($next_document_srl));
+
+		}
+		
+		
+		
+		$this->setTemplateFile("review_keyword_links");
+		debug_syslog(1, "dispXedocsAdminReviewKeywords complete\n");
+	}
+	
 	function resolve_document_details($oModuleModel, $oDocumentModel, $doc){
 
 		$entry = $oDocumentModel->getAlias($doc->document_srl);
@@ -393,13 +486,14 @@ class xedocsAdminView extends xedocs {
 		$oXedocsModel = &getModel('xedocs');
 		if(isset($module_info->keywords)){
 				
+				$filter_keyword = Context::get('filter_keyword');
 				$items_per_page = 10;
 				if(!isset($page)){
 					$page = 1;	
 				}
 
 				
-				$keywords = $oXedocsModel->string_to_keyword_list($module_info->keywords);
+				$keywords = $oXedocsModel->string_to_keyword_list($module_info->keywords, $filter_keyword);
 				
 				$paged_keywords = array();
 				

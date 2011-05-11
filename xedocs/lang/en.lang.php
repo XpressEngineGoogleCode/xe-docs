@@ -58,4 +58,10 @@ $lang->manual_page = "Manual Page";
 $lang->manual_page_name = "Manual Page Title";
 $lang->manual_page_sumarry = "Sumarry";
 $lang->cmd_update_keyword = "Apply";
+$lang->confirm_review_keywords = "Review Keyword Links !";
+$lang->cmd_accept_keywords = "Accept Kewword Links";
+$lang->filter_keywords = "Filter Keywords";
+$lang->cmd_clear_kewords = "Clear Keywords";
+$lang->cmd_create_keword = "Create Keyword";
+$lang->cmd_filter_kewords = "Apply filter";
 ?>
