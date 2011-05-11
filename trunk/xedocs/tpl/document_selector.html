@@ -51,11 +51,11 @@ id={$id}
 
 						<td>
 							<a href="{getFullUrl( '','mid',$document->mid).'/entry/'.$document->entry}">{$document->entry}</a>
-							<span><em>( {$document->browser_title} ) - ({$document->document_srl})</em></span>
+							<span><em>({$document->browser_title})</em></span>
 						</td>
 						
-						<td>{preg_replace('/^[ \t]*[\r\n]+/m', '', $document->getSummary(400))}
-						<p class="search-url">{getFullUrl( '','mid',$document->mid).'/entry/'.$document->entry}{$itemURL}</p>
+						<td>{preg_replace('/^[ \t]*[\r\n]+/m', '', $document->getSummary(200))}
+						<!-- <p class="search-url">{getFullUrl( '','mid',$document->mid).'/entry/'.$document->entry}{$itemURL}</p> -->
 						</td>
 						<td>
 							<a href="#" onclick="insertManualPage('{$id}', '{$document->document_srl}', '{$mid}', '{$document->getTitle()}');  return false;" class="button green"><span>{$lang->cmd_select}</span></a>

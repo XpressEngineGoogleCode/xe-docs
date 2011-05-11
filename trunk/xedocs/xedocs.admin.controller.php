@@ -241,7 +241,7 @@ class xedocsAdminController extends xedocs {
 		$extra_vars = $oModuleModel->getModuleExtraVars($module_srl);
 		$update_args = $extra_vars[$module_srl];
 		$update_args->{'keywords'} = $oXedocsModel->keyword_list_to_string($keywords);
-		
+		Context::set('filter_keyword', null);
 		
 		$oModuleController = &getController('module'); 
 		$oModuleController->insertModuleExtraVars($module_srl, $update_args);

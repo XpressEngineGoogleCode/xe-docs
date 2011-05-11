@@ -1,0 +1,93 @@
+<!--%import("js/manual_admin.js")-->
+<!--#include("header.html")-->
+
+<script type="text/javascript">
+function showlink(id, color){
+	var e = document.getElementById(id);
+	e.style.backgroundColor = color;
+
+}
+function unshowlink(id){
+	
+	var e = document.getElementById(id);
+	e.style.backgroundColor = "yellow";
+}
+
+</script>
+
+<h4 class="xeAdmin">{$lang->confirm_review_keywords}</h4>
+
+<!--#include("review_content.html")-->
+
+
+
+<form action="./" method="post" onsubmit="return procFilter(this, apply_keywords)" id="fo_write">
+<input type="hidden" name="mid" value="{$mid}" />
+<input type="hidden" name="content" value="{$oDocument->getContentText()}" />
+<input type="hidden" name="document_srl" value="{$document_srl}" />
+<input type="hidden" name="title" value="{$oDocument->get('title')}" />
+
+
+<div class="wikiWriteHeader">
+
+    <!--@if($oDocument->get('title')!='Front Page')-->
+	<div class="title">Document entry: <b>{$entry}</b></div> <br />
+    <!--@end-->
+
+
+    <div>{$oDocument->getContent(false)}</div>
+
+	<div class="klinks_commands" id='review_commands' >
+    <!--@if($klinks)-->
+    Total {count($klinks)} links to review
+    
+    	<ul>
+    	<!--@foreach($klinks as $klink)-->
+    		<li>
+    		
+    			<a href="" class="button blue"  onmouseover="showlink('{$klink->id}', 'lightgreen');" onmouseout="unshowlink('{$klink->id}');"><span>Accept</span></a>  
+    			<a href="" class="button blue"  onmouseover="showlink('{$klink->id}', 'red');" onmouseout="unshowlink('{$klink->id}');"><span>Reject</span></a> link to '{$klink->key->title}'  id = {$klink->id}
+    		</li>
+    	<!--@end-->
+    	</ul>
+	
+	<!--@else-->
+	No links to review.
+	<!--@end-->
+	</div>
+    
+	<div class="manualNavigation">
+	 
+			<!--@if($oDocumentPrev)-->
+				<p class="wikiPrev" >
+					<span>Previous document:</span>
+					
+					<a href="{getSiteUrl($site_module_info->domain, 'act','dispXedocsAdminReviewKeywords','document_srl',$oDocumentPrev->document_srl)}">
+				  
+					{$oDocumentPrev->getTitle()}</a>                   				
+				</p>
+			<!--@else-->
+				<p class="wikiPrev" >
+					<span>Previous document:</span>
+					None
+				</p>	
+			<!--@end-->
+			
+			<!--@if($oDocumentNext)-->
+				<p class="wikiNext" >
+					<span>Next document:</span>
+					
+					
+					<a href="{getSiteUrl($site_module_info->domain, 'act','dispXedocsAdminReviewKeywords','document_srl',$oDocumentNext->document_srl)}">
+				
+					{$oDocumentNext->getTitle()}</a>
+				</p>
+			<!--@end-->
+				<div class="cleared"></div>
+	
+        <span  style="float:right;" class="button black strong"><input type="submit" value="{$lang->cmd_accept_keywords}" accesskey="s" /></span>
+    </div>
+</div>
+
+</form>
+<!--#include("footer.html")-->

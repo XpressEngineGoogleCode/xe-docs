@@ -820,8 +820,9 @@ class xedocsModel extends xedocs {
 	function getKeywordTargets($document_list, $max_count=50)
 	{
 		$keywords = array();
-		
+		$oDocumentModel = &getModel('document');
 		$count =0;
+		$titles = array();
 		foreach($document_list as $doc)
 		{
 			$title = $doc->getTitle();
@@ -831,7 +832,15 @@ class xedocsModel extends xedocs {
 			$obj = null;
 			$obj->title = $title;
 			$obj->target_document_srl = $doc->document_srl;
-			 
+
+			$oldk = $titles[$title];
+			if(!isset($oldk)){
+				$titles[$title] = array($obj);
+			}else{
+				$obj->title = $oDocumentModel->getAlias($document_srl);
+				$oldk[] = $obj; 
+			}
+			
 			$keywords[] = $obj;
 			$count += 1;
 			if($count > $max_count) break; 
@@ -871,44 +880,66 @@ class xedocsModel extends xedocs {
 				$k[] = $obj;
 			}
 		}
-		return implode("|", $k);
+		return implode("|-|", $k);
 	}
 	
-	function string_to_keyword_list($value){
+	function string_to_keyword_list($value, $filter_keyword = null){
 		
-		$skeywords = explode("|", $value);
+		$skeywords = explode("|-|", $value);
 		$keywords = array();
 		foreach($skeywords as $sval){
-			$keywords[] = $this->string_to_keyword($sval);
+			$kval = $this->string_to_keyword($sval);
+			
+			if(isset($filter_keyword))
+			{
+				$m = array();
+				if(!preg_match("#".$filter_keyword."#", $kval->title, $m)){
+					continue;
+				}
+			}
+			$keywords[] = $kval; 
 		}
 		return $keywords;
 	}
 	
-	function make_keyword_link($key){
+	function make_keyword_link($key, $link_id, $color){
 		$url = $this->make_document_link($key->target_document_srl);
 		
-		
-		
-		$result =  "<a href='".$url."'>".$key->title."</a>";
-		
+		$result->href =  "<a id='".$link_id."' style='background-color:".$color.";' href='".$url."'>".$key->title."</a>";
+		$result->url = $url;
+		 
 		return $result;
 	}
 	
-	function get_document_content_with_keywords($oDocument, $keywords, $tags="p")
+	function get_document_content_with_keywords($oDocument, $keywords, $tags="p", $color='yellow')
 	{ 
 		require_once 'simple_html_dom.php';
 
 		
 		$document_srl = $oDocument->document_srl;
-		$content = $oDocument->getContent(true);
+		$content = $oDocument->getContent(false);
 		
 		$dom = str_get_html($content);
-		
+		$link_id_prefix = 'keyword_link_';
+		$link_id = 1;
 		$fcount = 0;  
+		
+		
+		foreach($keywords as $key){
+			$key->freq = 0;
+		}
+		debug_syslog(1, "fequencies cleared \n");
+		$result = null;
+		$result->links = array();
+		
 		foreach( $dom->find($tags) as $text){
 		  foreach($keywords as $key){
-		  	
+		  	  
 		  	  $kvalue = $key->title;
+		  	  if("" == trim($kvalue)){
+		  	  		continue;
+		  	  }
+		  	  
 		  	  //do not make links to self
 		      if($document_srl == $key->target_document_srl){
 		      	continue;
@@ -918,25 +949,84 @@ class xedocsModel extends xedocs {
 		      if( ! $res ) continue;
 		      $fcount += $res;
 		      $key->freq = $res;
-			  $replacement = $this->make_keyword_link($key);
-		      $replaced = preg_replace("%".$kvalue."%", $replacement, $text->plaintext);
+			  	      
+		      $lid = $link_id_prefix.$link_id;
+		      $link_id += 1;
+
+		      //add links in result
+		      $obj = null;
+		      $obj->id = $lid;
+		      $obj->key = $key;
+		      
+		      
+			  $replacement = $this->make_keyword_link($key, $lid, $color);
+			  $obj->url = $replacement->url; 
+			  $result->links[] = $obj;
+			    
+		      $replaced = preg_replace("%".$kvalue."%", $replacement->href, $text->plaintext);
 		      $text->innertext = $replaced;
 		  }
 		}
-		$result = null;
-		$result->content = "".$dom;
-		$result->links = array();
-		$result->fcount = $fcount; 
+		
+		debug_syslog(1, "".count($result->links)."links inserted \n");
+		
+		
+		$lcontent =  "".$dom;
+		
+		$klinks = array();
+		$result->fcount = $fcount;
+		if( 0 < $fcount ){
+			
+			
+			$klinks = array();
+			foreach($keywords as $key){
+				if( 0 == $key->freq) continue;
+				
+				$lid = $link_id_prefix.$link_id;
+		      	$link_id += 1;
+		      	
+		      	$link=null;
+		      	$link->key = $key->title;
+		      	
+				$replacement = $this->make_keyword_link($key, $lid, $color);
+				$link->href = $replacement->href; 
+				
+				$llist =  $klinks[$key->freq];
+				if(!isset($llist)){
+					$llist = array();
+					$llist[] = $link;
+					
+				}else{
+					$llist[] = $link;
+				}
+				$klinks[$key->freq] = $llist;
+			       
+			}
+			debug_syslog(1, "result prepared , inserting See Also ... \n");
+			
+			$lcontent = $lcontent."<h4> See Also:</h4><ul>\n";
+			ksort($klinks);
+			$keys = array(); 
+			foreach($klinks  as $freq => $llink ){
+				foreach($llink as $link){
+					$k = $keys[$link->key];
+					if( isset($k) ) continue;
+					 
+					$lcontent = $lcontent."<li>".$link->href."</li><!-- freq=".$freq." key=".$link->key." -->\n";
+					$keys[$link->key] = $link;
+				}
+			}
+			
+		  	$lcontent = $lcontent."</ul>";
+		  	debug_syslog(1, " inserting See Als complete \n");
+		}		
+		
+		$result->content = $lcontent;
 		
 		debug_syslog(1, "fcount = ".$fcount."\n");
-		if( 0 == $fcount ) return $result;
 		
-		foreach($keywords as $key){
-		    if( 0 < $key->freq ){
-		      $result->links = $this->make_keyword_link($key);
-		    }
-	  	}
-		 
+		debug_syslog(1, "".count($result->links)."links inserted final\n");
+	
 		return $result;
 	}
 	
