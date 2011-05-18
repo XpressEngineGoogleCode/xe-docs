@@ -690,19 +690,21 @@ h1, .h1, h2, h3, #xe h4, h5, h6, #xe p, ul, ol, #content li, .widgetTree, .widge
 /* margin */
 #versions p,.search-url,.searchResult dl dd{margin:0}
 #logo{margin:6px 0 6px 20px}
+.xeDocs #rightcontent h4{margin:10px 0 23px 0}
 /* padding */
 #logo{padding:0}
 #versions{padding:9px 5px 9px 35px}
 /* font-family */
 #versions .version{font-family:lucida grande,lucida sans unicode,arial,verdana,sans-serif}
-/* font-weight */
+/* font-size */
 #versions .version,.searchResult dl dt span{font-size:12px}
 .searchResult dl dd,.search-url{font-size:13px}
+.xeDocs #rightcontent h4{font-size:34px}
 /* font-weight */
 #versions .active{font-weight:bold}
 /* color */
 #versions .version{color:#1780AB}
-#versions .active,.search-url{color:#000}
+#versions .active,.search-url,.xeDocs #rightcontent h4{color:#000}
 .searchResult dl dt span{color:#999}
 .searchResult dl dd{color:#555}
 /* text-decoration */
