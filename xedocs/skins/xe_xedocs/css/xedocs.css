@@ -614,8 +614,8 @@ h1, .h1, h2, h3, #xe h4, h5, h6, #xe p, ul, ol, #content li, .widgetTree, .widge
 		rgb(238,238,238) 0%,
 		rgb(255,255,255) 1%
 	);
-	margin-bottom: -2000px;
-	padding-bottom: 2000px;
+	/*margin-bottom: -2000px;
+	padding-bottom: 2000px;*/
 }
 
 #breadcrumbs {
