@@ -436,7 +436,7 @@ class xedocsView extends xedocs {
 	function format_versions($versions, $document_srl)
 	{
 		if( !isset($versions) || 0 == strcmp('', $versions)){
-			return "";
+			return array();
 		}
 
 		$result = array();
