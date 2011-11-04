@@ -182,7 +182,7 @@ class xedocsModel extends xedocs {
 		$list = array();
 		$root_node = null;
 		foreach($output->data as $node) {
-			if($node->title == 'Front Page') {
+                        if($node->parent_srl == 0) {
 				$root_node = $node;
 				$root_node->parent_srl = 0;
 				continue;
@@ -390,8 +390,7 @@ class xedocsModel extends xedocs {
 				if($parent_srl == $val->parent_srl
 					//&& $document_srl !=  $val->document_srl
 				){
-
-					if($val->title != 'Introduction to CUBRID Manual'){
+                                    if($val->parent_srl != 0) {
 						unset($obj);
 						$obj->parent_srl =  $val->parent_srl;
 						$obj->document_srl = $val->document_srl;
@@ -409,12 +408,13 @@ class xedocsModel extends xedocs {
 		$list[] = $this->readXedocsTreeCache($module_srl);
 
 		$result = array();
+/*
 		$home = $this->getHomeNode($list);
 		if($home->document_srl == $document_srl){
 			$result = $this->getHomeChildrenNode($list,$document_srl);
 			return $result;
 		}
-
+*/
 		foreach($list as $node => $ns){
 			foreach($ns as $n =>$val){
 
@@ -459,9 +459,7 @@ class xedocsModel extends xedocs {
 
 		while(0 < $doc_srl){
 			$node = $this->getNode($list, $doc_srl);
-			if($node->title == 'Introduction to CUBRID Manual'){
-
-			}else{
+			if($node->parent_srl != 0){
 				$result[] = $node;//add parent_srl
 			}
 			$doc_srl = $node->parent_srl;//check for parent_srl
@@ -473,8 +471,7 @@ class xedocsModel extends xedocs {
 	function getHomeNode($list){
 		foreach($list as $node => $ns){
 			foreach($ns as $n =>$val){
-
-				if($val->title == 'Introduction to CUBRID Manual'){
+                            if($val->parent_srl == 0) {
 					unset($obj);
 					$obj->parent_srl =  0;
 					$obj->document_srl = $val->document_srl;
