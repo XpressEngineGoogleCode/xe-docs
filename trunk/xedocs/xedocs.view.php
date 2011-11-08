@@ -266,7 +266,7 @@ class xedocsView extends xedocs {
 
 
 
-	function dispXedocsTreeIndex()
+	function dispXedocsIndex()
 	{
             /* Retrieve current manual tree */
             $oXedocsModel = &getModel('xedocs');
