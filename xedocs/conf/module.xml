@@ -40,13 +40,13 @@
         <action name="dispXedocsEditPage" type="view" />
         <action name="dispXedocsHistory" type="view" />
         <action name="dispXedocsTitleIndex" type="view" />
-        <action name="dispXedocsTreeIndex" type="view" index="true" />
+        <action name="dispXedocsIndex" type="view" index="true" />
         <action name="dispXedocsModifyTree" type="view" />
         <action name="dispXedocsReplyComment" type="view" />
         <action name="dispXedocsModifyComment" type="view" />
         <action name="dispXedocsDeleteComment" type="view" />
 		<action name='dispXedocsCommentEditor' type="view" />
-		
+
 
         <action name="procXedocsInsertDocument" type="controller" />
         <action name="procXedocsInsertComment" type="controller" />
@@ -54,29 +54,29 @@
         <action name="procXedocsDeleteComment" type="controller" />
         <action name="procXedocsMoveTree" type="controller" />
         <action name="procXedocsRecompileTree" type="controller" />
-        
+
 
         <action name="dispXedocsAdminView" type="view" standalone="true" admin_index="true" />
         <action name="dispXedocsAdminInsertManual" type="view" standalone="true" setup_index="true" />
         <action name="dispXedocsAdminImportManual" type="view" standalone="true" />
         <action name="dispXedocsAdminDeleteManual" type="view" standalone="true" />
 		<action name="dispXedocsAdminCompileVersion" type="view" standalone="true" />
-		
+
 		<action name="dispXedocsAdminCompileKeywordList" type="view" standalone="true" />
 		<action name="dispXedocsAdminEditKeyword" type="view" standalone="true" />
 		<action name="dispXedocsAdminDeleteKeyword" type="view" standalone="true" />
-		<action name="dispXedocsAdminAddKeyword" type="view" standalone="true" />				
+		<action name="dispXedocsAdminAddKeyword" type="view" standalone="true" />
 		<action name="dispXedocsAdminManualPageSelect" type="view" standalone="true" />
 		<action name='dispXedocsAdminSelectDocumentList' type="view"  standalone="true"/>
 		<action name='dispXedocsAdminClearKeywordList' type="view"  standalone="true"/>
 		<action name='dispXedocsAdminReviewKeywords' type="view"  standalone="true"/>
-		
-		
+
+
 
         <action name="dispXedocsAdminManualInfo" type="view" standalone="true" />
         <action name="dispXedocsAdminGrantInfo" type="view" standalone="true" />
         <action name="dispXedocsAdminSkinInfo" type="view" standalone="true" />
-        
+
 
         <action name="procXedocsAdminImportArchive" type="controller" standalone="true" />
         <action name="procXedocsAdminDelete"  type="controller" standalone="true" />
@@ -85,7 +85,7 @@
         <action name="procXedocsAdminCompileKeywords" type="controller" standalone="true" />
         <action name="procXedocsAdminEditKeyword" type="controller" standalone="true" />
         <action name="procXedocsAdminAddKeyword" type="controller" standalone="true" />
-        	
+
 
         <action name="getXedocsTreeList" type="model" />
         <action name="getManualList" type="model" standalone="true" />
