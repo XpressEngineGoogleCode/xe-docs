@@ -268,125 +268,102 @@ class xedocsView extends xedocs {
 
 	function dispXedocsTreeIndex()
 	{
-		debug_syslog(1, "dispXedocsTreeIndex\n" );
-		$oXedocsModel = &getModel('xedocs');
+            /* Retrieve current manual tree */
+            $oXedocsModel = &getModel('xedocs');
+            $documents_tree = $oXedocsModel->readXedocsTreeCache($this->module_srl);
 
-		$value = $oXedocsModel->readXedocsTreeCache($this->module_srl);
-		Context::set('list', $value);
+            /* Retrieve current document_srl */
+            $document_srl = Context::get('document_srl');
 
+            $has_page = true;
+            if (!isset($document_srl) )
+            {
+                // If no document_srl is explicitly specified in current request, get tree root
+                $document_srl = $oXedocsModel->get_first_node_srl($this->module_srl);
+            }else{
+                // Check if given document_srl exists (is valid)
+                if(!$oXedocsModel->check_document_srl($document_srl, $this->module_info))
+                {
+                    // Mark this view as invalid if the document_srl is wrong
+                    $has_page = false;
+                    // Get document_srl of root document
+                    if(!isset($this->module_info->first_node_srl))
+                    {
+                        foreach($documents_tree as $i=>$obj){
+                                $document_srl = $obj->document_srl;
+                                break;
+                        }
+                    }else{
+                        $document_srl = $this->module_info->first_node_srl;
+                    }
+                }
+            }
 
-		$document_srl = Context::get('document_srl');
-		debug_syslog(1, "Context document_srl=".$document_srl."\n" );
+            Context::set('has_page', $has_page);
 
-                $has_page = true;
-		if (!isset($document_srl) )
-		{
+            $this->setTemplateFile('tree_list');
 
-			$document_srl = $oXedocsModel->get_first_node_srl($this->module_srl);
+            $oDocumentModel = &getModel("document");
+            $oDocument = $oDocumentModel->getDocument($document_srl);
+            Context::set('oDocument', $oDocument);
 
+            if($has_page){
+                // If current document exists and has keywords, replace keywords with links to corresponding articles
+                if(isset($this->module_info->keywords)){
+                    $keywords = $oXedocsModel->string_to_keyword_list($this->module_info->keywords);
+                    $kcontent = $oXedocsModel->get_document_content_with_keywords($oDocument, $keywords);
+                    if( 0 < $kcontent->fcount ){
+                            $content = $kcontent->content;
+                    }
+                }
+                else{
+                    // Get content without popup menu
+                    $content = $oDocument->getContent(false);
+                }
+                $oDocument->add('content', $content);
+                Context::set("page_content", $content);
+            }
 
-		}else{
-			//check document_srl
-			if(!$oXedocsModel->check_document_srl($document_srl, $this->module_info))
-			{
-				$has_page = false;
-				debug_syslog(1, "bad document_srl: ".$document_srl."\n" );
+            /* Get manual tree */
+            $module_srl=$oDocument->get('module_srl');
+            $parents = $oXedocsModel->getParents($document_srl, $module_srl);
+            Context::set("parents", $parents);
 
-				//we stil need first doc
-				if(!isset($this->module_info->first_node_srl))
-				{
-					foreach( $value as $i=>$obj){
-						$document_srl = $obj->document_srl;
-						debug_syslog(1, "dispXedocsTreeIndex setting document_srl to first_node_srl 1\n" );
-						break;
-					}
-				}else{
-					$document_srl = $this->module_info->first_node_srl;
-					debug_syslog(1, "dispXedocsTreeIndex setting document_srl to first_node_srl 2\n" );
-				}
+            $children = $oXedocsModel->getChildren($document_srl, $module_srl);
+            Context::set("children", $children);
 
+            $siblings = $oXedocsModel->getSiblings($document_srl, $module_srl);
+            Context::set("siblings", $siblings);
 
-			}else{
-
-				debug_syslog(1, "document_srl: ".$document_srl." ok\n" );
-			}
-
-		}
-
-		debug_syslog(1, "has_page: ".$has_page."\n" );
-		Context::set('has_page', $has_page);
-
-		$this->setTemplateFile('tree_list');
-
-		debug_syslog(1, "dispXedocsTreeIndex: document_srl=".$document_srl."\n");
-
-		$oDocumentModel = &getModel("document");
-		$oDocument = $oDocumentModel->getDocument($document_srl);
-
-		Context::set('oDocument', $oDocument);
-
-		if($has_page){
-
-
-			if(isset($this->module_info->keywords)){
-
-				$keywords = $oXedocsModel->string_to_keyword_list($this->module_info->keywords);
-				debug_syslog(1, "There are ".count($keywords)." keyword targets\n");
-				$kcontent = $oXedocsModel->get_document_content_with_keywords($oDocument, $keywords);
-				if( 0 < $kcontent->fcount ){
-					$content = $kcontent->content;
-				}
-			}
-			else{
-				$content = $oDocument->getContent(false);
-				debug_syslog(1, "No keywords in module\n");
-			}
-			$oDocument->add('content', $content);
-			Context::set("page_content", $content);
-
-		}
-
-		$module_srl=$oDocument->get('module_srl');
-		$parents = $oXedocsModel->getParents($document_srl, $module_srl);
-		Context::set("parents", $parents);
-
-		$children = $oXedocsModel->getChildren($document_srl, $module_srl);
-		Context::set("children", $children);
-
-		$siblings = $oXedocsModel->getSiblings($document_srl, $module_srl);
-		Context::set("siblings", $siblings);
+            /* Get versioning information */
+            $versions = $oXedocsModel->get_versions($module_srl, $oDocument);
+            $version_labels = $this->format_versions(trim($versions), $document_srl);
+            Context::set("version_labels",  $version_labels );
 
 
+            $meta = $oXedocsModel->get_meta($module_srl, $document_srl);
+            Context::set("meta", $meta);
 
-		$versions = $oXedocsModel->get_versions($module_srl, $oDocument);
+            Context::setBrowserTitle($this->module_info->browser_title." - ".$oDocument->getTitle());
 
-		$version_labels = $this->format_versions(trim($versions), $document_srl);
-		Context::set("version_labels",  $version_labels );
+            /* Load navigation data */
+            list($prev_document_srl, $next_document_srl) = $oXedocsModel->getPrevNextDocument($this->module_srl, $document_srl);
 
-		$meta = $oXedocsModel->get_meta($module_srl, $document_srl);
-		Context::set("meta", $meta);
+            if($prev_document_srl){
 
-		Context::setBrowserTitle($this->module_info->browser_title." - ".$oDocument->getTitle());
+                    $oPrevDocEntry = $oDocumentModel->getAlias($prev_document_srl);
+                    Context::set('oPrevDocEntry', $oPrevDocEntry);
+                    Context::set('oDocumentPrev', $oDocumentModel->getDocument($prev_document_srl));
+            }
 
-		list($prev_document_srl, $next_document_srl) = $oXedocsModel->getPrevNextDocument($this->module_srl, $document_srl);
+            if($next_document_srl)
+            {
+                    $oNextDocEntry = $oDocumentModel->getAlias($next_document_srl);
 
-		if($prev_document_srl){
+                    Context::set('oNextDocEntry', $oNextDocEntry);
+                    Context::set('oDocumentNext', $oDocumentModel->getDocument($next_document_srl));
 
-			$oPrevDocEntry = $oDocumentModel->getAlias($prev_document_srl);
-			Context::set('oPrevDocEntry', $oPrevDocEntry);
-			Context::set('oDocumentPrev', $oDocumentModel->getDocument($prev_document_srl));
-		}
-
-		if($next_document_srl)
-		{
-			$oNextDocEntry = $oDocumentModel->getAlias($next_document_srl);
-
-			Context::set('oNextDocEntry', $oNextDocEntry);
-			Context::set('oDocumentNext', $oDocumentModel->getDocument($next_document_srl));
-
-		}
-		debug_syslog(1, "dispXedocsTreeIndex complete\n" );
-
+            }
 	}
 
 
