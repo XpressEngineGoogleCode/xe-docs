@@ -59,7 +59,7 @@
 				<a class="xeDocsHeaderButton" id="table_of_contents" href="{getUrl('act','dispXedocsTitleIndex','entry','','document_srl','')}"><span>{$lang->cmd_view_document_tree}</span></a-->
 			</div>
 
-			
+
 			<div id="adminActions">
 				<a class="xeDocsHeaderButtonConfig" id="toc_structure" href="{getUrl('act','dispXedocsModifyTree')}"><span>{$lang->cmd_modify}</span></a>
 				<a class="xeDocsHeaderButtonConfig" id="config" href="{getUrl('act','dispXedocsAdminInsertManual')}"><span>{$lang->cmd_setup}</span></a>
@@ -74,8 +74,8 @@
 	<!--@if($oDocument->isExists()&&$act!='dispXedocsEditPage'&&$grant->manager)-->
 	<div class="wikiRead">
         <div class="wikiReadPadding">
-	
-		<!--  
+
+		<!--
 			<form action="{getUrl('act','dispXedocsContent','entry','','document_srl','')}" method="get" class="xeDocsSearchForm">
 				<input type="hidden" name="mid" value="{$mid}" />
 				<input type="hidden" name="vid" value="{$vid}" />
@@ -92,7 +92,7 @@
 				<!--@end-->
 			</div>
 			<!--@end-->
-			
+
 			<div style='display: none;'>
 				<!--@if($history)-->
 					<a href="#" class="author member_{$history->member_srl}" onclick="return false;">{$history->nick_name}</a>
@@ -110,14 +110,17 @@
 
 				<span class="ipAddress"><!--@if($grant->manager || $module_info->display_ip_address!='N')-->{$oDocument->getIpaddress()}<!--@end--></span>
 			</div>
-			
+
 
         </div>
     </div>
 	<!--@end-->
-	<!--@elseif($entry)-->
+	<!--@else-->
     <div class="wikiRead">
         <div class="wikiReadHeader">
+            <div class="titleArea">
+                <h3 class="title">{$oDocument->get('title')}</h3>
+            </div>
         </div>
     </div>
     <!--@if($visit_log)-->
