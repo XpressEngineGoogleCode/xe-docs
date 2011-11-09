@@ -268,14 +268,11 @@ class xedocsView extends xedocs {
 
 	function dispXedocsIndex()
 	{
-            /* Retrieve current manual tree */
             $oXedocsModel = &getModel('xedocs');
-            $documents_tree = $oXedocsModel->readXedocsTreeCache($this->module_srl);
 
             /* Retrieve current document_srl */
             $document_srl = Context::get('document_srl');
 
-            $has_page = true;
             if (!isset($document_srl) )
             {
                 // If no document_srl is explicitly specified in current request, get tree root
@@ -285,29 +282,37 @@ class xedocsView extends xedocs {
                 if(!$oXedocsModel->check_document_srl($document_srl, $this->module_info))
                 {
                     // Mark this view as invalid if the document_srl is wrong
-                    $has_page = false;
+                    unset($document_srl);
                     // Get document_srl of root document
-                    if(!isset($this->module_info->first_node_srl))
-                    {
-                        foreach($documents_tree as $i=>$obj){
-                                $document_srl = $obj->document_srl;
-                                break;
-                        }
-                    }else{
-                        $document_srl = $this->module_info->first_node_srl;
-                    }
                 }
             }
 
-            Context::set('has_page', $has_page);
-
-            $this->setTemplateFile('tree_list');
+            /* Retrieve srl of document which will render tree */
+            /* If a document exists for request, render tree for it */
+            if(isset($document_srl)){
+                $tree_document_srl = $document_srl;
+            }
+            else {
+                /* Otherwise, render tree for root (= show all nodes) */
+                if(!isset($this->module_info->first_node_srl))
+                {
+                    $documents_tree = $oXedocsModel->readXedocsTreeCache($this->module_srl);
+                    if($documents_tree)
+                        foreach($documents_tree as $i=>$obj){
+                                $tree_document_srl = $obj->document_srl;
+                                break;
+                        }
+                }else{
+                    $tree_document_srl = $this->module_info->first_node_srl;
+                }
+            }
 
             $oDocumentModel = &getModel("document");
-            $oDocument = $oDocumentModel->getDocument($document_srl);
-            Context::set('oDocument', $oDocument);
+            if($document_srl){
+                $this->setTemplateFile('tree_list');
 
-            if($has_page){
+                $oDocument = $oDocumentModel->getDocument($document_srl);
+
                 // If current document exists and has keywords, replace keywords with links to corresponding articles
                 if(isset($this->module_info->keywords)){
                     $keywords = $oXedocsModel->string_to_keyword_list($this->module_info->keywords);
@@ -321,18 +326,31 @@ class xedocsView extends xedocs {
                     $content = $oDocument->getContent(false);
                 }
                 $oDocument->add('content', $content);
-                Context::set("page_content", $content);
+
+            } else {
+                $this->setTemplateFile('create_document');
+
+                $oDocument = $oDocumentModel->getDocument(0);
+                $oDocument->add('title', 'Create new page');
             }
+
+            Context::set('oDocument', $oDocument);
+
 
             /* Get manual tree */
             $module_srl=$oDocument->get('module_srl');
-            $parents = $oXedocsModel->getParents($document_srl, $module_srl);
+
+            if($tree_document_srl){
+                $parents = $oXedocsModel->getParents($tree_document_srl, $module_srl);
+                $children = $oXedocsModel->getChildren($tree_document_srl, $module_srl);
+                $siblings = $oXedocsModel->getSiblings($tree_document_srl, $module_srl);
+            }
+            else {
+                $parents = $siblings = $children = array();
+            }
+
             Context::set("parents", $parents);
-
-            $children = $oXedocsModel->getChildren($document_srl, $module_srl);
             Context::set("children", $children);
-
-            $siblings = $oXedocsModel->getSiblings($document_srl, $module_srl);
             Context::set("siblings", $siblings);
 
             /* Get versioning information */

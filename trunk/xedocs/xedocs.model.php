@@ -18,15 +18,16 @@ class xedocsModel extends xedocs {
 	{
 		if(!isset($module_srl)) return null;
 
-		
+
 		$oModuleModel = &getModel('module');
 		$module_info = $oModuleModel->getModuleInfoByModuleSrl($module_srl);
-		
+
 		if( !isset($module_info) ) return null;
 
 		if(!isset($module_info->first_node_srl))
 		{
 			$value = $this->readXedocsTreeCache($module_srl);
+                        if(!$value) return;
 			foreach( $value as $i=>$obj){
 				$document_srl = $obj->document_srl;
 				debug_syslog(1, "get_first_node_srl setting document_srl to first_node_srl 0\n" );
@@ -36,38 +37,38 @@ class xedocsModel extends xedocs {
 			$document_srl = $module_info->first_node_srl;
 			debug_syslog(1, "get_first_node_srl setting document_srl to first_node_srl 1\n" );
 		}
-		
+
 		return $document_srl;
 	}
-	
-	
+
+
 	function check_document_srl($document_srl, $expected_module_info){
 		$args->document_srl = $document_srl;
         $output = executeQuery('document.getDocument', $args);
-        
-        
+
+
         //debug_syslog(1, "check_document_srl(".$document_srl.")->".print_r($output, true)."\n");
-        
+
         if (!$output->toBool()) return false;
-        
-        
+
+
         $oModuleModel = &getModel('module');
         $module_info = $oModuleModel->getModuleInfoByDocumentSrl($document_srl);
-        
+
         if( !isset($module_info)){
         	return false;
         }
         //debug_syslog(1, "check_document_srl(".$document_srl.") module_info".print_r($module_info, true)."\n");
-        
+
         if($expected_module_info->mid != $module_info->mid){
         	debug_syslog(1, "mid mismatch: expected=".$expected_module_info->mid."vs actual=".$module_info->mid."\n");
         	return false;
         }
-        
+
         return true;
-        
+
 	}
-	
+
 	function get_document_link($document_srl)
 	{
 
@@ -95,7 +96,7 @@ class xedocsModel extends xedocs {
 		return $url;
 
 	}
-	
+
 
 	function getXmlCacheFilename($module_srl)
 	{
@@ -144,7 +145,7 @@ class xedocsModel extends xedocs {
 		}
 
 		$dat_file = $this->getDatCacheFilename($module_srl);
-			
+
 		if(!file_exists($dat_file)) {
 			$oXedocsController->recompileTree($module_srl);
 		}
@@ -295,29 +296,29 @@ class xedocsModel extends xedocs {
 			$oDocumentModel = &getModel('document');
 			$oModuleModel = &getModel('module');
 			$site_module_info = Context::get('site_module_info');
-		
-			
+
+
 			$module_info = $oModuleModel->getModuleInfoByDocumentSrl($document_srl);
 
 			$entry = $oDocumentModel->getAlias($document_srl);
 
 			if( $entry ){
-				
+
 				$url = getSiteUrl($site_module_info->document,'','mid',$module_info->mid,'entry',$entry);
 
 			}else
 			{
-				
+
 				$url = getSiteUrl($site_module_info->document, '', 'mid', $module_info->mid, 'document_srl',$document_srl);
 			}
 			return $url;
 	}
-	
+
 	function make_links( $nodes , $module_srl)
 	{
 
 		foreach($nodes as $node){
-			
+
 			$node->{'href'} = $this->make_document_link($node->document_srl);
 		}
 	}
@@ -360,8 +361,8 @@ class xedocsModel extends xedocs {
 		$parent_srl = $this->getParentSrl($document_srl, $module_srl, $list);
 
 		$result = $this->getNodeSiblings($document_srl, $module_srl, $parent_srl, $list);
-		
-		 
+
+
 		return $result;
 	}
 
@@ -516,20 +517,20 @@ class xedocsModel extends xedocs {
 
 		$output = executeQueryArray('xedocs.getManualList', $args);
 		ModuleModel::syncModuleToSite($output->data);
-		
+
 		if(!$add_extravars){
 			return  $output->data;
 		}
-			
+
 		$oModuleModel = &getModel('module');
-		
+
 		foreach($output->data as $module_info){
 			$extra_vars = $oModuleModel->getModuleExtraVars($module_info->module_srl);
 			foreach($extra_vars[$module_info->module_srl] as $k=>$v){
 				$module_info->{$k} = $v;
 			}
 		}
-		
+
 		return  $output->data;
 	}
 
@@ -693,7 +694,7 @@ class xedocsModel extends xedocs {
 
 	function string_to_meta($metastring)
 	{
-			
+
 		$meta = array();
 		$values = explode( "|", $metastring);
 
@@ -771,8 +772,8 @@ class xedocsModel extends xedocs {
 		return array();
 
 	}
-	
-	
+
+
 	function add_original_url($document_srl, $url)
 	{
 			$args = null;
@@ -786,9 +787,9 @@ class xedocsModel extends xedocs {
 			$output = executeQuery('xedocs.insertDocumentExtraVars', $args);
 
 			return 0 == $output->error;
-		
+
 	}
-	
+
 	function get_original_url($document_srl)
 	{
 		$args = null;
@@ -796,7 +797,7 @@ class xedocsModel extends xedocs {
 		$args->module_srl = $module_srl;
 		$args->eid = "orig_url";
 		$args->var_idx = 0;
-		
+
 		$output =  executeQuery('xedocs.getDocumentExtraVars', $args);
 
 		if (isset($output->data)){
@@ -806,14 +807,14 @@ class xedocsModel extends xedocs {
 
 		return "";
 	}
-	
+
 
 	function get_word_count($keyword)
-	{ 
+	{
 		$values = preg_split("/[\s,]+/", $keyword, -1, PREG_SPLIT_NO_EMPTY);	//any number of spaces or commas
 		return count($values);
 	}
-	
+
 	function getKeywordTargets($document_list, $max_count=50)
 	{
 		$keywords = array();
@@ -824,7 +825,7 @@ class xedocsModel extends xedocs {
 		{
 			$title = $doc->getTitle();
 			$wc = $this->get_word_count($title);
-			
+
 			if( 1 != $wc ) continue;
 			$obj = null;
 			$obj->title = $title;
@@ -835,17 +836,17 @@ class xedocsModel extends xedocs {
 				$titles[$title] = array($obj);
 			}else{
 				$obj->title = $oDocumentModel->getAlias($document_srl);
-				$oldk[] = $obj; 
+				$oldk[] = $obj;
 			}
-			
+
 			$keywords[] = $obj;
 			$count += 1;
-			if($count > $max_count) break; 
+			if($count > $max_count) break;
 		}
-		
+
 		return $keywords;
 	}
-	
+
 	function keyword_to_string($key){
 		$result = array();
 		foreach($key as $name=>$val){
@@ -853,10 +854,10 @@ class xedocsModel extends xedocs {
 		}
 		return implode(",", $result);
 	}
-	
+
 	function string_to_keyword($value)
 	{
-		
+
 		if( !isset($value) || 0==strcmp("", $value)){
 			return null;
 		}
@@ -868,7 +869,7 @@ class xedocsModel extends xedocs {
 		}
 		return $key;
 	}
-	
+
 	function keyword_list_to_string($keywords){
 		$k = array();
 		foreach($keywords as $key){
@@ -879,14 +880,14 @@ class xedocsModel extends xedocs {
 		}
 		return implode("|-|", $k);
 	}
-	
+
 	function string_to_keyword_list($value, $filter_keyword = null){
-		
+
 		$skeywords = explode("|-|", $value);
 		$keywords = array();
 		foreach($skeywords as $sval){
 			$kval = $this->string_to_keyword($sval);
-			
+
 			if(isset($filter_keyword))
 			{
 				$m = array();
@@ -894,49 +895,49 @@ class xedocsModel extends xedocs {
 					continue;
 				}
 			}
-			$keywords[] = $kval; 
+			$keywords[] = $kval;
 		}
 		return $keywords;
 	}
-	
+
 	function make_keyword_link($key, $link_id, $color){
 		$url = $this->make_document_link($key->target_document_srl);
-		
+
 		$result->href =  "<a id='".$link_id."' style='background-color:".$color.";' href='".$url."'>".$key->title."</a>";
 		$result->url = $url;
-		 
+
 		return $result;
 	}
-	
+
 	function get_document_content_with_keywords($oDocument, $keywords, $tags="p", $color='yellow')
-	{ 
+	{
 		require_once 'simple_html_dom.php';
 
-		
+
 		$document_srl = $oDocument->document_srl;
 		$content = $oDocument->getContent(false);
-		
+
 		$dom = str_get_html($content);
 		$link_id_prefix = 'keyword_link_';
 		$link_id = 1;
-		$fcount = 0;  
-		
-		
+		$fcount = 0;
+
+
 		foreach($keywords as $key){
 			$key->freq = 0;
 		}
 		debug_syslog(1, "fequencies cleared \n");
 		$result = null;
 		$result->links = array();
-		
+
 		foreach( $dom->find($tags) as $text){
 		  foreach($keywords as $key){
-		  	  
+
 		  	  $kvalue = $key->title;
 		  	  if("" == trim($kvalue)){
 		  	  		continue;
 		  	  }
-		  	  
+
 		  	  //do not make links to self
 		      if($document_srl == $key->target_document_srl){
 		      	continue;
@@ -946,7 +947,7 @@ class xedocsModel extends xedocs {
 		      if( ! $res ) continue;
 		      $fcount += $res;
 		      $key->freq = $res;
-			  	      
+
 		      $lid = $link_id_prefix.$link_id;
 		      $link_id += 1;
 
@@ -954,80 +955,80 @@ class xedocsModel extends xedocs {
 		      $obj = null;
 		      $obj->id = $lid;
 		      $obj->key = $key;
-		      
-		      
+
+
 			  $replacement = $this->make_keyword_link($key, $lid, $color);
-			  $obj->url = $replacement->url; 
+			  $obj->url = $replacement->url;
 			  $result->links[] = $obj;
-			    
+
 		      $replaced = preg_replace("%".$kvalue."%", $replacement->href, $text->plaintext);
 		      $text->innertext = $replaced;
 		  }
 		}
-		
+
 		debug_syslog(1, "".count($result->links)."links inserted \n");
-		
-		
+
+
 		$lcontent =  "".$dom;
-		
+
 		$klinks = array();
 		$result->fcount = $fcount;
 		if( 0 < $fcount ){
-			
-			
+
+
 			$klinks = array();
 			foreach($keywords as $key){
 				if( 0 == $key->freq) continue;
-				
+
 				$lid = $link_id_prefix.$link_id;
 		      	$link_id += 1;
-		      	
+
 		      	$link=null;
 		      	$link->key = $key->title;
-		      	
+
 				$replacement = $this->make_keyword_link($key, $lid, $color);
-				$link->href = $replacement->href; 
-				
+				$link->href = $replacement->href;
+
 				$llist =  $klinks[$key->freq];
 				if(!isset($llist)){
 					$llist = array();
 					$llist[] = $link;
-					
+
 				}else{
 					$llist[] = $link;
 				}
 				$klinks[$key->freq] = $llist;
-			       
+
 			}
 			debug_syslog(1, "result prepared , inserting See Also ... \n");
-			
+
 			$lcontent = $lcontent."<h4> See Also:</h4><ul>\n";
 			ksort($klinks);
-			$keys = array(); 
+			$keys = array();
 			foreach($klinks  as $freq => $llink ){
 				foreach($llink as $link){
 					$k = $keys[$link->key];
 					if( isset($k) ) continue;
-					 
+
 					$lcontent = $lcontent."<li>".$link->href."</li><!-- freq=".$freq." key=".$link->key." -->\n";
 					$keys[$link->key] = $link;
 				}
 			}
-			
+
 		  	$lcontent = $lcontent."</ul>";
 		  	debug_syslog(1, " inserting See Als complete \n");
-		}		
-		
+		}
+
 		$result->content = $lcontent;
-		
+
 		debug_syslog(1, "fcount = ".$fcount."\n");
-		
+
 		debug_syslog(1, "".count($result->links)."links inserted final\n");
-	
+
 		return $result;
 	}
-	
-	
+
+
 	function clear_keywords($module_srl){
 		$oModuleModel = &getModel('module');
 		$module_info = $oModuleModel->getModuleInfoByModuleSrl($module_srl);
@@ -1038,32 +1039,32 @@ class xedocsModel extends xedocs {
 		$extra_vars = $oModuleModel->getModuleExtraVars($module_srl);
 		$update_args = $extra_vars[$module_srl];
 		$update_args->{'keywords'} = null;
-		
-		$oModuleController = &getController('module'); 
+
+		$oModuleController = &getController('module');
 		$oModuleController->insertModuleExtraVars($module_srl, $update_args);
 		debug_syslog(1, "model clear_keywords complete\n");
 	}
-	
+
 	function update_keyword($module_srl, $orig_keyword, $keyword, $target_document_srl)
 	{
 		if(!isset($keyword) || !isset($keyword) || !isset($target_document_srl)){
 			return false;
 		}
-		
+
 		$oModuleModel = &getModel('module');
 		$module_info = $oModuleModel->getModuleInfoByModuleSrl($module_srl);
 		if(!isset($module_info) ){
 			return false;
 		}
-		
-		
+
+
 		$keywords = null;
-		if( isset($module_info->keywords) ) 
+		if( isset($module_info->keywords) )
 		{
 			$keywords = $this->string_to_keyword_list($module_info->keywords);
 		}
 		//remove original
-		if( isset($orig_keyword)) 
+		if( isset($orig_keyword))
 		{
 			debug_syslog(1, "there are ".count($keywords)." keywords\n");
 			foreach($keywords as $i=>$val){
@@ -1078,35 +1079,35 @@ class xedocsModel extends xedocs {
 			$obj = null;
 			$obj->title = $keyword;
 			$obj->target_document_srl = $target_document_srl;
-			 
+
 			$keywords[] = $obj;
 		}
-			
+
 		debug_syslog(1, "updating extravars\n");
-		
+
 		$extra_vars = $oModuleModel->getModuleExtraVars($module_srl);
 		$update_args = $extra_vars[$module_srl];
 		$update_args->{'keywords'} = $this->keyword_list_to_string($keywords);
-		
-		$oModuleController = &getController('module'); 
+
+		$oModuleController = &getController('module');
 		$oModuleController->insertModuleExtraVars($module_srl, $update_args);
-		
+
 		return true;
-		
+
 	}
-	
+
 	function delete_keyword($module_srl, $keyword)
 	{
 		if(!isset($keyword)){
 			return false;
 		}
-		
+
 		$oModuleModel = &getModel('module');
 		$module_info = $oModuleModel->getModuleInfoByModuleSrl($module_srl);
 		if(!isset($module_info) || !isset($module_info->keywords)){
 			return false;
 		}
-		
+
 		$keywords = $this->string_to_keyword_list($module_info->keywords);
 		$deleted = false;
 		debug_syslog(1, "there are ".count($keywords)." keywords\n");
@@ -1117,30 +1118,30 @@ class xedocsModel extends xedocs {
 				break;
 			}
 		}
-		
+
 		if($deleted)
 		{
-			
+
 			debug_syslog(1, "keyword deleted. updating extravars\n");
-			
+
 			$extra_vars = $oModuleModel->getModuleExtraVars($module_srl);
 			$update_args = $extra_vars[$module_srl];
 			$update_args->{'keywords'} = $this->keyword_list_to_string($keywords);
-			
-			$oModuleController = &getController('module'); 
+
+			$oModuleController = &getController('module');
 			$oModuleController->insertModuleExtraVars($module_srl, $update_args);
 		}
 		return $deleted;
 	}
-	
+
 	function _is_search($is_keyword, $target_module_srl, $search_target, $page, $items_per_page= 10)
 	{
 		debug_syslog(1, "_is_search search target_module_srl=".$target_module_srl."\n");
 		$oDocumentModel = &getModel('document');
-		
+
 		$obj = null;
-		$obj->module_srl =array($target_module_srl); 
-			
+		$obj->module_srl =array($target_module_srl);
+
 		$obj->page = $page;
 		$obj->list_count = $items_per_page;
 
@@ -1150,9 +1151,9 @@ class xedocsModel extends xedocs {
 		$obj->search_keyword = $is_keyword;
 		$obj->search_target = $search_target;
 		return $oDocumentModel->getDocumentList($obj);
-		
+
 	}
-	
+
 	function _lucene_search($is_keyword, $target_module_srl, $search_target, $page, $items_per_page= 10 )
 	{
 		$oLuceneModel = &getModel('xedocs'); //temporary imported sources so we not interfere with nlucene
@@ -1171,7 +1172,7 @@ class xedocsModel extends xedocs {
 		debug_syslog(1, "search_target=".$search_target."\n");
 
 		//Search queries applied to the target module
-		$query = $oLuceneModel->getSubquery($target_module_srl, "include", null); 
+		$query = $oLuceneModel->getSubquery($target_module_srl, "include", null);
 
 		debug_syslog(1, "subquery=".$query."\n");
 		//Parameter setting
@@ -1182,29 +1183,29 @@ class xedocsModel extends xedocs {
 		$json_obj->fieldName = $search_target;
 		$json_obj->target_mid = $target_module_srl;
 		$json_obj->target_mode = $target_mode;
-		
+
 		$json_obj->subquery = $query;
 
 		return $oLuceneModel->getDocuments($searchUrl, $json_obj);
 	}
-	
+
 	function search($is_keyword, $target_module_srl, $search_target, $page, $items_per_page= 10)
 	{
 		debug_syslog(1, "search search keyword=".$is_keyword."\n");
 		$oLuceneModule = &getModule('lucene');
-		
+
 		if( !isset($oLuceneModule) ){
 			//if nlucene not installed we fallback to IS
 			return $this->_is_search($is_keyword, $target_module_srl, $search_target, $page, $items_per_page);
 		}
-		
+
 		return $this->_lucene_search($is_keyword, $target_module_srl, $search_target, $page, $items_per_page);
 	}
-	
+
 	/* lucene search related */
 	var $json_service = null;
 
-	
+
 
 	function getService(){
 	  require_once(_XE_PATH_.'modules/lucene/lib/jsonphp.php');
@@ -1227,9 +1228,9 @@ class xedocsModel extends xedocs {
         function isFieldCorrect($fieldname) {
             $fields = array('title', 'content', 'title_content', 'tags');
             $answer = in_array($fieldname, $fields);
-            return $answer; 
+            return $answer;
         }
- 
+
         /**
          * @brief module_srl 리스트 및 포함/제외 여부에 따른 조건절을 만듬.
 	                     List and include / exclude based on whether the clause making.
@@ -1242,7 +1243,7 @@ class xedocsModel extends xedocs {
 	  }
             $target_mid = trim($target_mid);
             if ('' == $target_mid) return $no_secret;
-            
+
             $target_mid_list = explode(',', $target_mid);
             $connective = strcmp('include', $target_mode) ? ' AND NOT ':' AND ';
 
@@ -1331,15 +1332,15 @@ class xedocsModel extends xedocs {
             $output->total_count = $searchResult->totalSize;
             $output->data = $comments;
             $output->page_navigation = $page_navigation;
-           
+
            return $output;
         }
 
 
 
-        /* 
+        /*
          * Clean the Lucene document for tags and separators
-         * @brief This method strips the tags from document and 
+         * @brief This method strips the tags from document and
          * @param $results All results that came from lucene search
          * @param $id ID of the document to extract from results
          * @author cristiroma
@@ -1387,7 +1388,7 @@ class xedocsModel extends xedocs {
             if ( !$searchResult && $searchResult != "null") {
                 $idList = array();
             } else {
-                $idList = $this->result2idArray($searchResult);            
+                $idList = $this->result2idArray($searchResult);
             }
 
             // 결과가 1개 이상이어야 글 본문을 요청함.
@@ -1427,7 +1428,7 @@ class xedocsModel extends xedocs {
 			$service_prefix = $this->getDefaultServicePrefix();
 		}
             $oModelDocument = &getModel('document');
-            
+
             $params->serviceName = $service_prefix.'_document';
             $params->query = '('.$params->query.')'.$params->subquery;
             $params->displayFields = array("id");
@@ -1438,7 +1439,7 @@ class xedocsModel extends xedocs {
 
             // 결과가 유효한지 확인
 	    // Results confirm the validity of
-            if (!$searchResult && $searchResult != "null") {            
+            if (!$searchResult && $searchResult != "null") {
                 $idList = array();
             } else {
                 $idList = $this->result2idArray($searchResult);
