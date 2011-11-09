@@ -10,44 +10,44 @@
 
 <div id="treeList" >
 	<div id="searchBox">
-	
-	
+
+
 <!-- Integrated search form-->
 <!--
 		<form action="{getUrl()}" method="get">
 			<label><span>{$lang->Search}</span>
 				<input type="hidden" name="vid" value="{$vid}" /><input type="hidden" name="mid" value="{$mid}" /><input type="hidden" name="act" value="IS" />
 				<input type="text" name="is_keyword" class="xeDocsInputText" value="{$is_keyword}" />
-				<input class="xeDocsSearchButton" src="img/icon_search.png" type="image" value="{$lang->cmd_search}" />			
+				<input class="xeDocsSearchButton" src="img/icon_search.png" type="image" value="{$lang->cmd_search}" />
 			</label>
 		</form>
-		
+
 -->
-	
+
 <!-- Custom search -->
-		
+
 			<form action="{getUrl()}" method="get" >
 				<input type="hidden" name="vid" value="{$vid}" />
-				
+
 				<input type="hidden" name="mid" value="{$mid}" />
-				
+
       			<input type="hidden" name="category" value="" />
         		<input type="hidden" name="search_target" value="title_content" />
-        		
-				<input class="xeDocsInputText" type="text" name="search_keyword" />				
+
+				<input class="xeDocsInputText" type="text" name="search_keyword" />
 				<input type="hidden" name="act" value="dispXedocsSearchResults" />
-				
-				<input class="xeDocsSearchButton" src="img/icon_search.png" 
+
+				<input class="xeDocsSearchButton" src="img/icon_search.png"
 				type="image" value="{$lang->Search}" alt ="{$lang->Search}" title = "{$lang->Search}" />
 			</form>
 
-<!-- Custom search end-->	
-	
-	
+<!-- Custom search end-->
+
+
 	</div>
-	
-	
-	
+
+
+
 	<ul>
         <!--@for($_i=count($parents)-1; $_i>0; $_i--)-->
 			<li class="xedocsparentnode" style="list-style-type:none;">
@@ -61,9 +61,9 @@
 				</a>
 			</li>
  		<!--@end-->
- 		
+
  		<!--@if(0 == count($siblings) )-->
- 		
+
 	     	<li class="xedocsparentnode" style="list-style-type:none;">
 			<a href="{$parents[$_i]->href}" style="color: #000;"><img src="img/icon_right.png"/ alt="+" title="">
 			{$parents[$_i]->title}
@@ -76,17 +76,17 @@
 				<a href="{$children[$_i]->href}"><img src="img/down-to-right-arrow.png" alt="-" title=""/> {$children[$_i]->title} </a>
 			</li>
 	    	<!--@end-->
-	    	
+
 		<!--@end-->
-       	
-       	
+
+
        	<!--@for($_j=0; $_j<count($siblings); $_j++)-->
-       	
-       	
+
+
         <li class="xedocsparentnode" style="list-style-type:none;">
 			<a href="{$siblings[$_j]->href}"><img src="img/icon_right.png" alt="+" title=""/> {$siblings[$_j]->title} </a>
 		</li>
-		
+
 			<!--@if($siblings[$_j]->document_srl==$document_srl)-->
 		        <!--@for($_i=0; $_i<count($children); $_i++)-->
 		        <li class="xedocstreenode" style="list-style-type:none;">
@@ -94,14 +94,14 @@
 				</li>
 		    	<!--@end-->
        		<!--@end-->
-		
-		
+
+
        	<!--@end-->
-	    
+
 	</ul>
 </div>
 
-<!--@if(!$has_page)-->
+<!--@if(!$oDocument->isExists())-->
 <div id="rightContainer">
 		<div id="rightcontent" style='margin:2px; color:red; margin-right:20px; font-size:16px; font-weight:bold;' >
 		<br />
@@ -110,7 +110,7 @@
 	    <br />
 	    <br />
 	</div>
-</div>	
+</div>
 <!--@else-->
 
 <div id="showHideTree" onclick="hidediv1('treeList'); return false;" alt="Close Tree" title="Close tree"></div>
@@ -122,13 +122,13 @@
 	<div id="versions">
 		<p>{$lang->versions}
 			<!--@foreach($version_labels as $value)-->
-			
+
 				<!--@if($value->is_current_version)-->
 					<span>{$value->vlabel}</span>&nbsp;|&nbsp;
 				<!--@else-->
 					<a href='{$value->href}'> {$value->vlabel} </a>&nbsp;|&nbsp;
 				<!--@end-->
-			
+
 			<!--@end-->
 		</p>
 	</div>
@@ -136,32 +136,33 @@
 
 	<!--#include("breadcrumbs.html")-->
 	<div class="cleared"></div>
-	
-	<div id="rightcontent">{$page_content}
+
+        <div>{$oDocument->get('title')}</div>
+	<div id="rightcontent">{$oDocument->get('content')}
 
 	<!--@if($module_info->toc_location=='Left')-->
 		<div id='footer_links' class="wikiReadFooter">
 	<!--@else-->
 	<!--@end-->
 			<div class="manualNavigation" >
-			
+
 			<!--@if($oDocumentPrev)-->
 				<p class="wikiPrev" style="width: 50%;">
 					<span>Previous document:</span>
-					
+
 					<a href="{getSiteUrl($site_module_info->domain, '','mid',$mid,'entry',$oPrevDocEntry)}">
-				  
-					{$oDocumentPrev->getTitle()}</a>                   				
+
+					{$oDocumentPrev->getTitle()}</a>
 				</p>
 			<!--@end-->
-			
+
 			<!--@if($oDocumentNext)-->
 				<p class="wikiNext" style="width: 50%; text-align: right;">
 					<span>Next document:</span>
-					
-					
+
+
 					<a href="{getSiteUrl($site_module_info->domain, '','mid',$mid,'entry',$oNextDocEntry)}">
-				
+
 					{$oDocumentNext->getTitle()}</a>
 				</p>
 			<!--@end-->
@@ -172,18 +173,18 @@
 	<!--@end-->
 
 	<!--@if($has_page)-->
-		
+
 		<div id="comments">
-		
-		
+
+
 		<!--@if($oDocument->allowComment())-->
 			<!--@if($grant->write_comment && $oDocument->isEnableComment() )-->
 				<a id="show_comments" onclick="show_comment_editor(this); return false;" href="{getSiteUrl($site_module_info->domain, '', 'mid', $mid, 'document_srl', $document_srl, 'act', 'dispXedocsCommentEditor')}">
 				Show Comments ({$oDocument->getCommentcount()})</a>
 				</div>
-				
+
 				<div id="comment_editor">
-				
+
 			<!--@end-->
 		<!--@end-->
 		</div>

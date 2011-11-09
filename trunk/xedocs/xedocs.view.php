@@ -88,47 +88,36 @@ class xedocsView extends xedocs {
 		return  $module_info->first_node_srl;
 	}
 
+        /**
+         * View used for editing an existing document or for creating a new one
+         */
 	function dispXedocsEditPage()
 	{
+            if(!$this->grant->is_admin){
+                    return $this->dispXedocsMessage('msg_not_permitted');
+            }
 
-		debug_syslog(1, "dispXedocsEditPage".print_r($this->grant, true)."\n");
+            $oDocumentModel = &getModel('document');
+            $document_srl = Context::get('document_srl');
 
-		if(!$this->grant->is_admin){
-			return $this->dispXedocsMessage('msg_not_permitted');
-		}
+            $oDocument = $oDocumentModel->getDocument(0, $this->grant->manager);
+            $oDocument->setDocument($document_srl);
+            $oDocument->add('module_srl', $this->module_srl);
+            Context::set('document_srl',$document_srl);
 
+            Context::set('oDocument', $oDocument);
+            $history_srl = Context::get('history_srl');
+            if($history_srl) {
+                    $output = $oDocumentModel->getHistory($history_srl);
+                    if($output && $output->content != null){
 
-		debug_syslog(1, "dispXedocsEditPage admin chk ok\n");
+                            Context::set('history', $output);
+                    }
+            }
 
-		$oDocumentModel = &getModel('document');
-		$document_srl = Context::get('document_srl');
+            Context::addJsFilter($this->module_path.'tpl/filter', 'insert.xml');
 
-		if (!isset($document_srl) ) //resolve first document
-		{
-			$document_srl = $this->resolve_firstdocument();
-		}
-
-
-
-		$oDocument = $oDocumentModel->getDocument(0, $this->grant->manager);
-		$oDocument->setDocument($document_srl);
-		$oDocument->add('module_srl', $this->module_srl);
-		Context::set('document_srl',$document_srl);
-
-		Context::set('oDocument', $oDocument);
-		$history_srl = Context::get('history_srl');
-		if($history_srl) {
-
-			$output = $oDocumentModel->getHistory($history_srl);
-			if($output && $output->content != null){
-
-				Context::set('history', $output);
-			}
-		}
-
-		Context::addJsFilter($this->module_path.'tpl/filter', 'insert.xml');
-
-		$this->setTemplateFile('write_form');
+            $this->setTemplateFile('write_form');
 	}
 
 	/**
