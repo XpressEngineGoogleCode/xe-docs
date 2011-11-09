@@ -49,54 +49,26 @@
 
 
 	<ul>
-        <!--@for($_i=count($parents)-1; $_i>0; $_i--)-->
-			<li class="xedocsparentnode" style="list-style-type:none;">
-				<a href="{$parents[$_i]->href}">
-					<!--@if($_i == count($parents)-1)-->
-						<img src="img/icon_root.png"/ alt="+" title="">
-					<!--@else-->
-						<img src="img/icon_arrow.png"/ alt="+" title="">
-					<!--@end-->
-					{$parents[$_i]->title}
-				</a>
-			</li>
- 		<!--@end-->
 
- 		<!--@if(0 == count($siblings) )-->
+        <!--@foreach($documents_tree as $node)-->
+        <li class="xedocsTreeNode">
+            <a href="{$node->href}">
+            <!--@if($node->type == 'root')-->
+                <img src="img/icon_root.png" alt="+" title="">
+            <!--@elseif($node->type == 'parent')-->
+                <img src="img/icon_arrow.png" alt="+" title="">
+            <!--@elseif($node->type == 'sibling')-->
+                <img src="img/icon_right.png" alt="+" title="">
+            <!--@elseif($node->type == 'child')-->
+                <img src="img/down-to-right-arrow.png" alt="-" title=""/>
+            <!--@elseif($node->type == 'current')-->
+                <img src="img/icon_right.png" alt="+" title="">
+            <!--@end-->
+            {$node->title}
+            </a>
+        </li>
+        <!--@end-->
 
-	     	<li class="xedocsparentnode" style="list-style-type:none;">
-			<a href="{$parents[$_i]->href}" style="color: #000;"><img src="img/icon_right.png"/ alt="+" title="">
-			{$parents[$_i]->title}
-			</a>
-			</li>
-
-
-	        <!--@for($_i=0; $_i<count($children); $_i++)-->
-	        <li class="xedocstreenode" style="list-style-type:none;">
-				<a href="{$children[$_i]->href}"><img src="img/down-to-right-arrow.png" alt="-" title=""/> {$children[$_i]->title} </a>
-			</li>
-	    	<!--@end-->
-
-		<!--@end-->
-
-
-       	<!--@for($_j=0; $_j<count($siblings); $_j++)-->
-
-
-        <li class="xedocsparentnode" style="list-style-type:none;">
-			<a href="{$siblings[$_j]->href}"><img src="img/icon_right.png" alt="+" title=""/> {$siblings[$_j]->title} </a>
-		</li>
-
-			<!--@if($siblings[$_j]->document_srl==$document_srl)-->
-		        <!--@for($_i=0; $_i<count($children); $_i++)-->
-		        <li class="xedocstreenode" style="list-style-type:none;">
-					<a href="{$children[$_i]->href}"><img src="img/down-to-right-arrow.png" alt="-" title=""/> {$children[$_i]->title} </a>
-				</li>
-		    	<!--@end-->
-       		<!--@end-->
-
-
-       	<!--@end-->
 
 	</ul>
 </div>

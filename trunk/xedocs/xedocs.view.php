@@ -261,11 +261,16 @@ class xedocsView extends xedocs {
 
             /* Retrieve current document_srl */
             $document_srl = Context::get('document_srl');
+            $entry = Context::get('entry');
 
-            if (!isset($document_srl) )
+            if (!isset($document_srl))
             {
-                // If no document_srl is explicitly specified in current request, get tree root
-                $document_srl = $oXedocsModel->get_first_node_srl($this->module_srl);
+                // If document_srl is not set, get document by alias (entry)
+                $oDocumentModel = getModel('document');
+                $document_srl = $oDocumentModel->getDocumentSrlByAlias($this->module_info->mid, $entry);
+                // If no document was found, just retrieve the root
+                if(!$document_srl)
+                    $document_srl = $oXedocsModel->get_first_node_srl($this->module_srl);
             }else{
                 // Check if given document_srl exists (is valid)
                 if(!$oXedocsModel->check_document_srl($document_srl, $this->module_info))
@@ -273,26 +278,6 @@ class xedocsView extends xedocs {
                     // Mark this view as invalid if the document_srl is wrong
                     unset($document_srl);
                     // Get document_srl of root document
-                }
-            }
-
-            /* Retrieve srl of document which will render tree */
-            /* If a document exists for request, render tree for it */
-            if(isset($document_srl)){
-                $tree_document_srl = $document_srl;
-            }
-            else {
-                /* Otherwise, render tree for root (= show all nodes) */
-                if(!isset($this->module_info->first_node_srl))
-                {
-                    $documents_tree = $oXedocsModel->readXedocsTreeCache($this->module_srl);
-                    if($documents_tree)
-                        foreach($documents_tree as $i=>$obj){
-                                $tree_document_srl = $obj->document_srl;
-                                break;
-                        }
-                }else{
-                    $tree_document_srl = $this->module_info->first_node_srl;
                 }
             }
 
@@ -329,18 +314,10 @@ class xedocsView extends xedocs {
             /* Get manual tree */
             $module_srl=$oDocument->get('module_srl');
 
-            if($tree_document_srl){
-                $parents = $oXedocsModel->getParents($tree_document_srl, $module_srl);
-                $children = $oXedocsModel->getChildren($tree_document_srl, $module_srl);
-                $siblings = $oXedocsModel->getSiblings($tree_document_srl, $module_srl);
+            if($document_srl){
+                $documents_tree = $oXedocsModel->getMenuTree($module_srl, $document_srl);
             }
-            else {
-                $parents = $siblings = $children = array();
-            }
-
-            Context::set("parents", $parents);
-            Context::set("children", $children);
-            Context::set("siblings", $siblings);
+            Context::set("documents_tree", $documents_tree);
 
             /* Get versioning information */
             $versions = $oXedocsModel->get_versions($module_srl, $oDocument);
