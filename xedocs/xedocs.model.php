@@ -166,11 +166,15 @@ class xedocsModel extends xedocs {
 			$obj->depth = $m[3];
 			$obj->childs = $m[4];
 			$obj->title = $m[5];
-			$list[] = $obj;
+			$list[$obj->document_srl] = $obj;
 		}
 		return $list;
 	}
 
+        /**
+         * Reads document hierarchy from database and converts it to
+         * a serializable list (used for caching)
+         */
 	function loadXedocsTreeList($module_srl)
 	{
 
@@ -182,21 +186,25 @@ class xedocsModel extends xedocs {
 		}
 
 		$list = array();
-		$root_node = null;
+		$root_nodes = array();
 		foreach($output->data as $node) {
-                        if($node->parent_srl == 0) {
-				$root_node = $node;
-				$root_node->parent_srl = 0;
-				continue;
-			}
-			unset($obj);
-			$obj->parent_srl = (int)$node->parent_srl;
-			$obj->document_srl = (int)$node->document_srl;
-			$obj->title = $node->title;
-			$list[$obj->document_srl] = $obj;
+                    if($node->parent_srl == 0) {
+                        unset($root_node);
+                        $root_node = $node;
+                        $root_node->parent_srl = 0;
+                        $root_nodes[] = $root_node;
+                        continue;
+                    }
+                    unset($obj);
+                    $obj->parent_srl = (int)$node->parent_srl;
+                    $obj->document_srl = (int)$node->document_srl;
+                    $obj->title = $node->title;
+                    $list[$obj->document_srl] = $obj;
 		}
 
-		$tree[$root_node->document_srl]->node = $root_node;
+                foreach($root_nodes as $root_node) {
+                    $tree[$root_node->document_srl]->node = $root_node;
+                }
 
 		foreach($list as $document_srl => $node) {
 			if(!$list[$node->parent_srl]) {
@@ -206,10 +214,11 @@ class xedocsModel extends xedocs {
 			$tree[$document_srl]->node = $node;
 		}
 
-		$result[$root_node->document_srl] = $tree[$root_node->document_srl]->node;
-		$result[$root_node->document_srl]->childs = count($tree[$root_node->document_srl]->childs);
-
-		$this->getTreeToList($tree[$root_node->document_srl]->childs, $result,1);
+                foreach($root_nodes as $root_node) {
+                    $result[$root_node->document_srl] = $tree[$root_node->document_srl]->node;
+                    $result[$root_node->document_srl]->childs = count($tree[$root_node->document_srl]->childs);
+                    $this->getTreeToList($tree[$root_node->document_srl]->childs, $result,1);
+                }
 
 		return $result;
 	}
@@ -315,7 +324,7 @@ class xedocsModel extends xedocs {
 			return $url;
 	}
 
-	function make_links( $nodes , $module_srl)
+	function make_links($nodes)
 	{
 
 		foreach($nodes as $node){
@@ -457,7 +466,13 @@ class xedocsModel extends xedocs {
 		$result = array();
 		$doc_srl = $document_srl;
 		//get all nodes in a list
-		$list[] = $this->readXedocsTreeCache($module_srl);
+		$documents_tree = $this->readXedocsTreeCache($module_srl);
+
+                foreach($documents_tree as $node){
+
+
+
+                }
 
 		while(0 < $doc_srl){
 			$node = $this->getNode($list, $doc_srl);
@@ -1488,5 +1503,44 @@ class xedocsModel extends xedocs {
 		return $ISconfig;
 
 	}
+
+        /**
+         * Prepares the documents tree for display
+         * by describing the relationship of each node
+         * with the page being viewed: parent, sibling, child etc.
+         *
+         * Used for displaying the sidebar tree menu of the documentation
+         */
+        function getMenuTree($module_srl, $document_srl){
+                /** Create menu tree */
+                $documents_tree = $this->readXedocsTreeCache($module_srl);
+                $current_node = $documents_tree[$document_srl];
+
+                /* Mark current node as type 'active' */
+                $documents_tree[$document_srl]->type = 'current';
+
+                /* Find and mark parents */
+                $node_srl_iterator = $current_node->parent_srl;
+                while($node_srl_iterator > 0){
+                    if($documents_tree[$node_srl_iterator] != 0)
+                        $documents_tree[$node_srl_iterator]->type = 'parent';
+                    $node_srl_iterator =  $documents_tree[$node_srl_iterator]->parent_srl;
+                }
+
+                foreach($documents_tree as $node){
+                    if(!isset($documents_tree[$node->document_srl]->type)){
+                        if($node->parent_srl == 0)
+                                $documents_tree[$node->document_srl]->type = 'root';
+                        else if($node->parent_srl == $current_node->parent_srl)
+                                $documents_tree[$node->document_srl]->type = 'sibling';
+                        else if($node->parent_srl == $current_node->document_srl)
+                                $documents_tree[$node->document_srl]->type = 'child';
+                        else unset($documents_tree[$node->document_srl]);
+                    }
+                }
+
+                $this->make_links($documents_tree);
+                return $documents_tree;
+        }
 }
 ?>
