@@ -155,6 +155,7 @@ class xedocsModel extends xedocs {
 			return array();
 		}
 
+                $list = array();
 		foreach($buff as $val) {
 			if(!preg_match('/^([0-9]+),([0-9]+),([0-9]+),([0-9]+),(.+)$/i', $val, $m)){
 				continue;
@@ -360,7 +361,7 @@ class xedocsModel extends xedocs {
 
 		$parent_srl = $this->getParentSrl($document_srl, $module_srl, $list);
 
-		$result = $this->getNodeSiblings($document_srl, $module_srl, $parent_srl, $list);
+		$result[] = $this->getNodeSiblings($document_srl, $module_srl, $parent_srl, $list);
 
 
 		return $result;
