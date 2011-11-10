@@ -71,7 +71,7 @@ class xedocsController extends xedocs {
 
 
 		} else {
-	
+
 			$output = $oDocumentController->insertDocument($obj,false);
 			$msg_code = 'success_registed';
 			$obj->document_srl = $output->get('document_srl');
@@ -86,7 +86,7 @@ class xedocsController extends xedocs {
 		$entry = $oDocumentModel->getAlias($output->get('document_srl'));
 
 		$site_module_info = Context::get('site_module_info');
-		if($entry) {			
+		if($entry) {
 			$url = getSiteUrl($site_module_info->document,'','mid',$this->module_info->mid,'entry',$entry);
 		} else {
 			$url = getSiteUrl($site_module_info->document,'','document_srl',$output->get('document_srl'));
@@ -113,9 +113,9 @@ class xedocsController extends xedocs {
 
 		for($i=0;$i<count($target_mail);$i++) {
 			$email_address = trim($target_mail[$i]);
-				
+
 			if(!$email_address) continue;
-				
+
 			$oMail->setReceiptor($email_address, $email_address);
 			$oMail->send();
 		}
@@ -123,81 +123,69 @@ class xedocsController extends xedocs {
 	}
 
 	function procXedocsInsertComment() {
+            if(!$this->grant->write_comment){
+                    return new Object(-1, 'msg_not_permitted');
+            }
 
-		debug_syslog(1, "procXedocsInsertComment\n");
-		
-		if(!$this->grant->write_comment){
-			return new Object(-1, 'msg_not_permitted');
-		}
+            $obj = Context::gets('document_srl','comment_srl','parent_srl','content','password',
+                                 'nick_name','nick_name','member_srl','email_address','homepage',
+                                 'is_secret','notify_message');
 
+            $obj->module_srl = $this->module_srl;
 
-		$obj = Context::gets('document_srl','comment_srl','parent_srl','content','password',
-				     'nick_name','nick_name','member_srl','email_address','homepage',
-				     'is_secret','notify_message');
+            //force links in new browser window
+            $obj->content = str_replace('<a', '<a target="_blank" ', $obj->content);
 
-		$obj->module_srl = $this->module_srl;
+            $oDocumentModel = &getModel('document');
+            $oDocument = $oDocumentModel->getDocument($obj->document_srl);
 
-		//force links in new browser window
-		debug_syslog(1, "procXedocsInsertComment: content:".$obj->content."\n");
-		
-		$obj->content = str_replace('<a', '<a target="_blank" ', $obj->content);
-		
-		debug_syslog(1, "procXedocsInsertComment: new content:".$obj->content."\n");
-		
-		$oDocumentModel = &getModel('document');
-		$oDocument = $oDocumentModel->getDocument($obj->document_srl);
+            if(!$oDocument->isExists()) {
+                    return new Object(-1,'msg_not_permitted');
+            }
 
-		if(!$oDocument->isExists()) {
-			return new Object(-1,'msg_not_permitted');
-		}
+            $oCommentModel = &getModel('comment');
 
+            $oCommentController = &getController('comment');
 
-		$oCommentModel = &getModel('comment');
+            if(!$obj->comment_srl) {
+                    $obj->comment_srl = getNextSequence();
+            } else {
+                    $comment = $oCommentModel->getComment($obj->comment_srl, $this->grant->manager);
+            }
 
-		$oCommentController = &getController('comment');
+            if($comment->comment_srl != $obj->comment_srl) {
+                    if($obj->parent_srl) {
+                            $parent_comment = $oCommentModel->getComment($obj->parent_srl);
+                            if(!$parent_comment->comment_srl){
+                                    return new Object(-1, 'msg_invalid_request');
+                            }
 
-		if(!$obj->comment_srl) {
-			$obj->comment_srl = getNextSequence();
-		} else {
-			$comment = $oCommentModel->getComment($obj->comment_srl, $this->grant->manager);
-		}
-
-
-		if($comment->comment_srl != $obj->comment_srl) {
+                            $output = $oCommentController->insertComment($obj);
 
 
-			if($obj->parent_srl) {
-				$parent_comment = $oCommentModel->getComment($obj->parent_srl);
-				if(!$parent_comment->comment_srl){
-					return new Object(-1, 'msg_invalid_request');
-				}
-
-				$output = $oCommentController->insertComment($obj);
+                    } else {
+                            $output = $oCommentController->insertComment($obj);
+                    }
 
 
-			} else {
-				$output = $oCommentController->insertComment($obj);
-			}
+                    if($output->toBool() && $this->module_info->admin_mail) {
+                            $this->sendCommentChangeNotification($oDocument, $obj);
+                    }
 
+            } else {
+                    $obj->parent_srl = $comment->parent_srl;
+                    $output = $oCommentController->updateComment($obj, $this->grant->manager);
+                    $comment_srl = $obj->comment_srl;
+            }
 
-			if($output->toBool() && $this->module_info->admin_mail) {
-				$this->sendCommentChangeNotification($oDocument, $obj);
-			}
+            if(!$output->toBool()){
+                    return $output;
+            }
 
-		} else {
-			$obj->parent_srl = $comment->parent_srl;
-			$output = $oCommentController->updateComment($obj, $this->grant->manager);
-			$comment_srl = $obj->comment_srl;
-		}
-
-		if(!$output->toBool()){
-			return $output;
-		}
-
-		$this->setMessage('success_registed');
-		$this->add('mid', Context::get('mid'));
-		$this->add('document_srl', $obj->document_srl);
-		$this->add('comment_srl', $obj->comment_srl);
+            $this->setMessage('success_registed');
+            $this->add('mid', Context::get('mid'));
+            $this->add('document_srl', $obj->document_srl);
+            $this->add('comment_srl', $obj->comment_srl);
 	}
 
 	function procXedocsDeleteDocument()
@@ -205,7 +193,7 @@ class xedocsController extends xedocs {
 		if(!$this->grant->is_admin){
 			return $this->setMessage('msg_not_permitted');
 		}
-		
+
 		$oDocumentController = &getController('document');
 		$oDocumentModel = &getModel('document');
 

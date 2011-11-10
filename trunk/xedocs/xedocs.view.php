@@ -333,6 +333,9 @@
                         Context::set('oDocumentNext', $oDocumentModel->getDocument($next_document_srl));
 
                 }
+
+                /* Add XML filter for comment */
+                Context::addJsFilter($this->module_path.'tpl/filter', 'insert_comment.xml');
             }
 
 

@@ -1,12 +1,5 @@
 	<!--#include("header.html")-->
 
-	<script type="text/javascript">
-		function show_comment_editor(which){
-			document.getElementById('comment_editor').innerHTML = '<'+'object id="addComment" name="foo" type="text/html" style="visibility:visible;" data="'+which.href+'"><\/object>';
-			document.getElementById('show_comments').style.visibility='hidden';
-		}
-	</script>
-
 	<div id="xeDocsBody">
 		<div id="xeDocsTree">
 			<div id="xeDocsSearch">
@@ -16,7 +9,7 @@
 					<input type="hidden" name="category" value="" />
 					<input type="hidden" name="search_target" value="title_content" />
 					<input type="hidden" name="act" value="dispXedocsSearchResults" />
-					
+
 					<input id="xeDocsSearchText" type="text" name="search_keyword" />
 					<input id="xeDocsSearchButton" src="img/search_button.png" type="image" value="{$lang->Search}" alt="{$lang->Search}" title="{$lang->Search}" />
 				</form>
@@ -62,7 +55,7 @@
 
 				<!--@end-->
 			</p>
-			
+
 			<!--@if($oDocument && $oDocument->isExists())-->
 			<!--@if($oDocument->isExists()&&$act!='dispXedocsEditPage'&&$grant->manager)-->
 			<div class="wikiRead">
@@ -112,7 +105,7 @@
 				<div class="wikiRead">
 					<div class="wikiReadHeader">
 						<div class="titleArea">
-							
+
 						</div>
 					</div>
 				</div>
@@ -126,7 +119,9 @@
 				<!--@end-->
 			<!--@end-->
 		</div>
+
 		<h2>{$oDocument->get('title')}</h2>
+
 		<!--@if(!$oDocument->isExists())-->
 		<div id="rightContainer">
 				<div id="rightcontent" style='margin:2px; color:red; margin-right:20px; font-size:16px; font-weight:bold;' >
@@ -144,8 +139,6 @@
 		<div id="rightContainer">
 			<!--#include("breadcrumbs.html")-->
 			<div class="cleared"></div>
-
-				<div>{$oDocument->get('title')}</div>
 			<div id="rightcontent">{$oDocument->get('content')}
 
 			<!--@if($module_info->toc_location=='Left')-->
@@ -180,20 +173,45 @@
 			</div> <!--end of div right content-->
 			<!--@end-->
 
-			<!--@if($has_page)-->
-
+			<!--@if($oDocument->isExists())-->
 				<div id="comments">
-
-
 				<!--@if($oDocument->allowComment())-->
-					<!--@if($grant->write_comment && $oDocument->isEnableComment() )-->
-						<a id="show_comments" onclick="show_comment_editor(this); return false;" href="{getSiteUrl($site_module_info->domain, '', 'mid', $mid, 'document_srl', $document_srl, 'act', 'dispXedocsCommentEditor')}">
-						Show Comments ({$oDocument->getCommentcount()})</a>
-						</div>
+                                    <a name="comment"></a>
+                                    <!--#include("./comment.html")-->
 
-						<div id="comment_editor">
+                                    <!--@if($grant->write_comment && $oDocument->isEnableComment() )-->
+                                      <form action="./" method="post" onsubmit="return procFilter(this, insert_comment)" class="wikiEditor" >
+                                        <input type="hidden" name="mid" value="{$mid}" />
+                                        <input type="hidden" name="document_srl" value="{$oDocument->document_srl}" />
+                                        <input type="hidden" name="comment_srl" value="" />
+                                        <input type="hidden" name="content" value="" />
+                                            <div class="wikiWrite commentEditor">
+                                                <div class="editor">{$oDocument->getCommentEditor()}</div>
 
-					<!--@end-->
+                                                <div class="editorOption">
+                                                <!--@if(!$is_logged)-->
+                                                   <input type="text" name="nick_name" class="inputText userName" value="{$lang->writer}" onfocus="this.value=''" />
+                                                                   <input type="password" name="password" class="inputText userPw" value="{$lang->password}" onfocus="this.value=''" />
+                                                                   <input type="text" name="email_address" class="inputText emailAddress" value="{$lang->email_address}" onfocus="this.value=''" />
+                                                                   <input type="text" name="homepage" class="inputText homePage" value="{$lang->homepage}" onfocus="this.value=''" />
+                                                <!--@end-->
+
+                                                                <!--@if($is_logged)-->
+                                                                        <input type="checkbox" name="notify_message" value="Y" id="notify_message" class="inputCheck" />
+                                                                        <label for="notify_message">{$lang->notify}</label>
+                                                                <!--@end-->
+                                                                        <input type="checkbox" name="is_secret" value="Y" id="is_secret" class="inputCheck" />
+                                                                        <label for="is_secret">{$lang->secret}</label>
+                                                </div>
+
+                                                <div class="wikiNavigation">
+                                                    <span class="buttonOfficial"><input type="submit" value="{$lang->cmd_comment_registration}" accesskey="s" /></span>
+                                                </div>
+
+                                            </div>
+
+                                        </form>
+                                    <!--@end-->
 				<!--@end-->
 				</div>
 			<!--@end--> <!--has_page-->
