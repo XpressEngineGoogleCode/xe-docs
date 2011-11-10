@@ -2,6 +2,8 @@
 
 class xedocsModel extends xedocs {
 
+        var $manual_ids = array();
+
 	function init(){
 	}
 
