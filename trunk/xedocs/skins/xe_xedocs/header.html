@@ -63,7 +63,8 @@
 			<div id="adminActions">
 				<a class="xeDocsHeaderButtonConfig" id="toc_structure" href="{getUrl('act','dispXedocsModifyTree')}"><span>{$lang->cmd_modify}</span></a>
 				<a class="xeDocsHeaderButtonConfig" id="config" href="{getUrl('act','dispXedocsAdminInsertManual')}"><span>{$lang->cmd_setup}</span></a>
-				<a class="xeDocsHeaderButtonConfig" id="editPage" href="{getUrl('act','dispXedocsEditPage')}"><span>Add / {$lang->edit_page}</span></a>
+				<a class="xeDocsHeaderButtonConfig" id="editPage" href="{getUrl('act','dispXedocsEditPage')}"><span>{$lang->edit_page}</span></a>
+                                <a class="xeDocsHeaderButtonConfig" id="addPage" href="{getUrl('act','dispXedocsEditPage', 'entry', '')}"><span>Add page</span></a>
 				<a class="xeDocsHeaderButtonConfig" href="#" onclick="if(confirm('{$lang->confirm_delete}')) { doDeleteManual('{$oDocument->document_srl}'); }; return false;"><span>{$lang->delete_page}</span></a>
 			</div>
 		</div>
