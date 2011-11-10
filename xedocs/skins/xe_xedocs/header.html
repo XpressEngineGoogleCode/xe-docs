@@ -1,55 +1,50 @@
 <!--%import("css/xedocs.css")-->
-
-<!--%import("css/robohelp.css")-->
 <!--%import("js/manual.js")-->
 <!--%import("js/xedocs.js")-->
 <!--%import("js/show_hide_div.js")-->
 
-<!--@if(!$module_info->colorset)-->
-    {@$module_info->colorset = "white"}
-<!--@end-->
-
-{$module_info->header_text}
-
-<div class="xeDocs">
-    <div class="wikiHeader" style='color=green; display:none;'>
-		<!--@if($module_info->title)-->
-		<div class="wikiTitle">
-			<h2 class="wikiTitleText">
-	      <a href="{getUrl('','mid',$mid,'listStyle',$listStyle)}">{$module_info->title}
-                <!--@if($module_info->sub_title)--> : <em>{$module_info->sub_title}</em><!--@end--></a></h2>
-		</div>
+<!-- open xeDocs global container -->
+<div id="xeDocs">
+	
+	<div id="xeDocsCustomHeader">
+		<!--@if( $module_info->header_text )-->
+			{$module_info->header_text}
 		<!--@end-->
-
-		<!--@if($module_info->comment)-->
-		<p class="wikiDescription">{$module_info->comment}</p>
+	</div>
+	
+	<div id="xeDocsHeader">
+		<!--@if($module_info->logo_image)-->
+			<h1><a href="{getUrl('','mid',$mid)}"><img src="{$module_info->logo_image}" alt="{$module_info->title}" /></a></h1>
+		<!--@else-->
+			<h1><a href="{getUrl('','mid',$mid)}">
+				<!--@if($module_info->title)-->
+					{$module_info->title}
+				<!--@else-->
+					Title
+				<!--@end-->
+			</a></h1>
 		<!--@end-->
-    </div>
-
-	<div id="header">
-		<a href="http://www.cubrid.org/" id="logo"><img border="0" class="iePngFix" alt="logo" src="http://www.cubrid.org/files/attach/images/50/logo.gif"></a>
-		<div id="headerRight">
-			<div id="topMenu">
-				<div id="headerMenu">
-					<a target="_blank" href="http://blog.cubrid.org">BLOG</a><span class="topMenuSeparator"> | </span><a target="_blank" href="http://forum.cubrid.org">FORUM</a><span class="topMenuSeparator"> | </span><a target="_blank" href="http://www.cubrid.org/manual">MANUAL</a><span class="topMenuSeparator"> | </span><a href="http://www.cubrid.org/faq">F.A.Q.</a><span class="topMenuSeparator"> | </span><a href="http://www.cubrid.org/contact">CONTACTS</a>
-				</div>
-			</div>
-		</div>
-		<div class="cleared"></div>
-    </div>
-
-	<div id="neck">
-		<ul class="widget_navigator_51 navigator">
-			<li class="node_63"><a href="http://www.cubrid.org/about">About CUBRID</a></li>
-			<li class="node_65"><a href="http://www.cubrid.org/downloads">Downloads</a></li>
-			<li class="node_66"><a href="http://www.cubrid.org/documentation">Documentation</a></li>
-			<li class="node_277"><a href="http://www.cubrid.org/developers">Developers</a></li>
-			<li class="node_67"><a href="http://www.cubrid.org/community">Community</a></li>
-			<li class="node_68"><a target="_blank" href="http://blog.cubrid.org/categories/news/">News</a></li>
-			<li class="node_69"><a href="http://www.cubrid.org/projects">Projects</a></li>
+		
+		<ul id="navMenu">
+			<li>
+				<a class="xeDocsButton" href=""><span>Manual Index</span></a>
+			</li>
+			<li>
+				<a class="xeDocsButton" href=""><span>Sign In</span></a>
+			</li>
+			<!--@if($grant->manager)-->
+				<li>
+					<a class="xeDocsButtonAdmin" id="toc_structure" href="{getUrl('act','dispXedocsModifyTree')}"><span>{$lang->cmd_modify}</span></a>
+				</li>
+				<li>
+					<a class="xeDocsButtonAdmin" id="config" href="{getUrl('act','dispXedocsAdminInsertManual')}"><span>{$lang->cmd_setup}</span></a>
+				</li>
+			<!--@end-->
 		</ul>
+		
 		<div class="cleared"></div>
 	</div>
+
 	<!--@if($grant->manager)-->
     <div class="wikiInformation">
 		<div class="wikiInformationPadding">

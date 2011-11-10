@@ -1,166 +1,204 @@
-<!--#include("header.html")-->
-<!--%import("js/show_hide_div.js")-->
+	<!--#include("header.html")-->
 
-<script type="text/javascript">
-	function show_comment_editor(which){
-		document.getElementById('comment_editor').innerHTML = '<'+'object id="addComment" name="foo" type="text/html" style="visibility:visible;" data="'+which.href+'"><\/object>';
-		document.getElementById('show_comments').style.visibility='hidden';
-	}
-</script>
+	<script type="text/javascript">
+		function show_comment_editor(which){
+			document.getElementById('comment_editor').innerHTML = '<'+'object id="addComment" name="foo" type="text/html" style="visibility:visible;" data="'+which.href+'"><\/object>';
+			document.getElementById('show_comments').style.visibility='hidden';
+		}
+	</script>
 
-<div id="treeList" >
-	<div id="searchBox">
-
-
-<!-- Integrated search form-->
-<!--
-		<form action="{getUrl()}" method="get">
-			<label><span>{$lang->Search}</span>
-				<input type="hidden" name="vid" value="{$vid}" /><input type="hidden" name="mid" value="{$mid}" /><input type="hidden" name="act" value="IS" />
-				<input type="text" name="is_keyword" class="xeDocsInputText" value="{$is_keyword}" />
-				<input class="xeDocsSearchButton" src="img/icon_search.png" type="image" value="{$lang->cmd_search}" />
-			</label>
-		</form>
-
--->
-
-<!-- Custom search -->
-
-			<form action="{getUrl()}" method="get" >
-				<input type="hidden" name="vid" value="{$vid}" />
-
-				<input type="hidden" name="mid" value="{$mid}" />
-
-      			<input type="hidden" name="category" value="" />
-        		<input type="hidden" name="search_target" value="title_content" />
-
-				<input class="xeDocsInputText" type="text" name="search_keyword" />
-				<input type="hidden" name="act" value="dispXedocsSearchResults" />
-
-				<input class="xeDocsSearchButton" src="img/icon_search.png"
-				type="image" value="{$lang->Search}" alt ="{$lang->Search}" title = "{$lang->Search}" />
-			</form>
-
-<!-- Custom search end-->
-
-
-	</div>
-
-
-
-	<ul>
-
-        <!--@foreach($documents_tree as $node)-->
-        <li class="xedocsTreeNode">
-            <a href="{$node->href}">
-            <!--@if($node->type == 'root')-->
-                <img src="img/icon_root.png" alt="+" title="">
-            <!--@elseif($node->type == 'parent')-->
-                <img src="img/icon_arrow.png" alt="+" title="">
-            <!--@elseif($node->type == 'sibling')-->
-                <img src="img/icon_right.png" alt="+" title="">
-            <!--@elseif($node->type == 'child')-->
-                <img src="img/down-to-right-arrow.png" alt="-" title=""/>
-            <!--@elseif($node->type == 'current')-->
-                <img src="img/icon_right.png" alt="+" title="">
-            <!--@end-->
-            {$node->title}
-            </a>
-        </li>
-        <!--@end-->
-
-
-	</ul>
-</div>
-
-<!--@if(!$oDocument->isExists())-->
-<div id="rightContainer">
-		<div id="rightcontent" style='margin:2px; color:red; margin-right:20px; font-size:16px; font-weight:bold;' >
-		<br />
-		<br />
-	    We could not find your requested manual page. Please click on a node in content tree to see other manual pages.
-	    <br />
-	    <br />
-	</div>
-</div>
-<!--@else-->
-
-<div id="showHideTree" onclick="hidediv1('treeList'); return false;" alt="Close Tree" title="Close tree"></div>
-
-
-<div id="rightContainer">
-
-
-	<div id="versions">
-		<p>{$lang->versions}
-			<!--@foreach($version_labels as $value)-->
-
-				<!--@if($value->is_current_version)-->
-					<span>{$value->vlabel}</span>&nbsp;|&nbsp;
-				<!--@else-->
-					<a href='{$value->href}'> {$value->vlabel} </a>&nbsp;|&nbsp;
+	<div id="xeDocsBody">
+		<div id="xeDocsTree">
+			<div id="xeDocsSearch">
+				<form action="{getUrl()}" method="get" >
+					<input type="hidden" name="vid" value="{$vid}" />
+					<input type="hidden" name="mid" value="{$mid}" />
+					<input type="hidden" name="category" value="" />
+					<input type="hidden" name="search_target" value="title_content" />
+					<input type="hidden" name="act" value="dispXedocsSearchResults" />
+					
+					<input id="xeDocsSearchText" type="text" name="search_keyword" />
+					<input id="xeDocsSearchButton" src="img/search_button.png" type="image" value="{$lang->Search}" alt="{$lang->Search}" title="{$lang->Search}" />
+				</form>
+			</div>
+			<h3>Table of contents:</h3>
+			<!--@if(count($documents_tree))-->
+			<ul>
+				<!--@foreach($documents_tree as $node)-->
+				<li class="xedocsTreeNode">
+					<!--@if($node->type == 'root')-->
+						<img src="img/icon_root.png" alt="+" title="">
+					<!--@elseif($node->type == 'parent')-->
+						<img src="img/icon_arrow.png" alt="+" title="">
+					<!--@elseif($node->type == 'sibling')-->
+						<img src="img/icon_right.png" alt="+" title="">
+					<!--@elseif($node->type == 'child')-->
+						<img src="img/down-to-right-arrow.png" alt="-" title=""/>
+					<!--@elseif($node->type == 'current')-->
+						<img src="img/icon_right.png" alt="+" title="">
+					<!--@end-->
+					<a href="{$node->href}">
+						{$node->title}
+					</a>
+				</li>
 				<!--@end-->
-
+			</ul>
 			<!--@end-->
-		</p>
-	</div>
-	<div class="cleared"></div>
-
-	<!--#include("breadcrumbs.html")-->
-	<div class="cleared"></div>
-
-        <div>{$oDocument->get('title')}</div>
-	<div id="rightcontent">{$oDocument->get('content')}
-
-	<!--@if($module_info->toc_location=='Left')-->
-		<div id='footer_links' class="wikiReadFooter">
-	<!--@else-->
-	<!--@end-->
-			<div class="manualNavigation" >
-
-			<!--@if($oDocumentPrev)-->
-				<p class="wikiPrev" style="width: 50%;">
-					<span>Previous document:</span>
-
-					<a href="{getSiteUrl($site_module_info->domain, '','mid',$mid,'entry',$oPrevDocEntry)}">
-
-					{$oDocumentPrev->getTitle()}</a>
-				</p>
-			<!--@end-->
-
-			<!--@if($oDocumentNext)-->
-				<p class="wikiNext" style="width: 50%; text-align: right;">
-					<span>Next document:</span>
-
-
-					<a href="{getSiteUrl($site_module_info->domain, '','mid',$mid,'entry',$oNextDocEntry)}">
-
-					{$oDocumentNext->getTitle()}</a>
-				</p>
-			<!--@end-->
-				<div class="cleared"></div>
-			</div> <!--end of div manualNavigation-->
-		</div> <!-- end of footer_links-->
-	</div> <!--end of div right content-->
-	<!--@end-->
-
-	<!--@if($has_page)-->
-
-		<div id="comments">
-
-
-		<!--@if($oDocument->allowComment())-->
-			<!--@if($grant->write_comment && $oDocument->isEnableComment() )-->
-				<a id="show_comments" onclick="show_comment_editor(this); return false;" href="{getSiteUrl($site_module_info->domain, '', 'mid', $mid, 'document_srl', $document_srl, 'act', 'dispXedocsCommentEditor')}">
-				Show Comments ({$oDocument->getCommentcount()})</a>
-				</div>
-
-				<div id="comment_editor">
-
-			<!--@end-->
-		<!--@end-->
 		</div>
-	<!--@end--> <!--has_page-->
-</div>
+		<div id="xeDocsVersion">
+			<div id="xeDocsEditorActions">
+				<a href=""><img src="img/icon_add_page.png" alt="Add new page" title="Add new page"/></a>
+				<a href="{getUrl('act','dispXedocsEditPage')}"><img src="img/icon_edit_page.png" alt="Edit page" title="Edit page"/></a>
+				<a href="#" onclick="if(confirm('{$lang->confirm_delete}')) { doDeleteManual('{$oDocument->document_srl}'); }; return false;"><img src="img/icon_delete_page.png" alt="Delete page" title="Delete page"/></a>
+			</div>
+			<p>{$lang->versions}
+				<!--@foreach($version_labels as $value)-->
+
+					<!--@if($value->is_current_version)-->
+						<span>{$value->vlabel}</span>&nbsp;|&nbsp;
+					<!--@else-->
+						<a href='{$value->href}'> {$value->vlabel} </a>&nbsp;|&nbsp;
+					<!--@end-->
+
+				<!--@end-->
+			</p>
+			
+			<!--@if($oDocument && $oDocument->isExists())-->
+			<!--@if($oDocument->isExists()&&$act!='dispXedocsEditPage'&&$grant->manager)-->
+			<div class="wikiRead">
+				<div class="wikiReadPadding">
+
+				<!--
+					<form action="{getUrl('act','dispXedocsContent','entry','','document_srl','')}" method="get" class="xeDocsSearchForm">
+						<input type="hidden" name="mid" value="{$mid}" />
+						<input type="hidden" name="vid" value="{$vid}" />
+						<input class="xeDocsInputText" type="text" name="entry" />
+						<input class="xeDocsSearchButton" src="img/icon_search.png" type="image" value="{$lang->cmd_move}" alt="{$lang->cmd_move}" />
+					</form>
+				-->
+
+					<!--@if($visit_log)-->
+					<div class="visitLog">
+						{@ $bFirst = true; }
+						<!--@foreach($visit_log as $_entry)-->
+							<!--@if(!$bFirst)--> > <!--@else-->{@ $bFirst = false; }<!--@end--> <a href="{getUrl('entry',$_entry,'document_srl','')}">{$_entry}</a>
+						<!--@end-->
+					</div>
+					<!--@end-->
+
+					<div style='display: none;'>
+						<!--@if($history)-->
+							<a href="#" class="author member_{$history->member_srl}" onclick="return false;">{$history->nick_name}</a>
+						<!--@else-->
+							<!--@if(!$oDocument->getMemberSrl())-->
+								<!--@if($oDocument->isExistsHomepage())-->
+									<a href="{$oDocument->getHomepageUrl()}" onclick="window.open(this.href);return false;" class="author">{$oDocument->getNickName()}</a>
+								<!--@else-->
+									{$oDocument->getNickName()}
+								<!--@end-->
+							<!--@else-->
+								<a href="#popup_menu_area" class="member_{$oDocument->get('member_srl')} author" onclick="return false">{$oDocument->getNickName()}</a>
+							<!--@end-->
+						<!--@end-->
+
+						<span class="ipAddress"><!--@if($grant->manager || $module_info->display_ip_address!='N')-->{$oDocument->getIpaddress()}<!--@end--></span>
+					</div>
+
+
+				</div>
+			</div>
+			<!--@end-->
+			<!--@else-->
+				<div class="wikiRead">
+					<div class="wikiReadHeader">
+						<div class="titleArea">
+							
+						</div>
+					</div>
+				</div>
+				<!--@if($visit_log)-->
+				<div class="visitLog">
+					{@ $bFirst = true; }
+					<!--@foreach($visit_log as $_entry)-->
+						<!--@if(!$bFirst)--> > <!--@else-->{@ $bFirst = false; }<!--@end--> <a href="{getUrl('entry',$_entry)}">{$_entry}</a>
+					<!--@end-->
+				</div>
+				<!--@end-->
+			<!--@end-->
+		</div>
+		<h2>{$oDocument->get('title')}</h2>
+		<!--@if(!$oDocument->isExists())-->
+		<div id="rightContainer">
+				<div id="rightcontent" style='margin:2px; color:red; margin-right:20px; font-size:16px; font-weight:bold;' >
+				<br />
+				<br />
+				We could not find your requested manual page. Please click on a node in content tree to see other manual pages.
+				<br />
+				<br />
+			</div>
+		</div>
+		<!--@else-->
+
+		<div id="showHideTree" onclick="hidediv1('treeList'); return false;" alt="Close Tree" title="Close tree"></div>
+
+		<div id="rightContainer">
+			<!--#include("breadcrumbs.html")-->
+			<div class="cleared"></div>
+
+				<div>{$oDocument->get('title')}</div>
+			<div id="rightcontent">{$oDocument->get('content')}
+
+			<!--@if($module_info->toc_location=='Left')-->
+				<div id='footer_links' class="wikiReadFooter">
+			<!--@else-->
+			<!--@end-->
+					<div class="manualNavigation" >
+
+					<!--@if($oDocumentPrev)-->
+						<p class="wikiPrev" style="width: 50%;">
+							<span>Previous document:</span>
+
+							<a href="{getSiteUrl($site_module_info->domain, '','mid',$mid,'entry',$oPrevDocEntry)}">
+
+							{$oDocumentPrev->getTitle()}</a>
+						</p>
+					<!--@end-->
+
+					<!--@if($oDocumentNext)-->
+						<p class="wikiNext" style="width: 50%; text-align: right;">
+							<span>Next document:</span>
+
+
+							<a href="{getSiteUrl($site_module_info->domain, '','mid',$mid,'entry',$oNextDocEntry)}">
+
+							{$oDocumentNext->getTitle()}</a>
+						</p>
+					<!--@end-->
+						<div class="cleared"></div>
+					</div> <!--end of div manualNavigation-->
+				</div> <!-- end of footer_links-->
+			</div> <!--end of div right content-->
+			<!--@end-->
+
+			<!--@if($has_page)-->
+
+				<div id="comments">
+
+
+				<!--@if($oDocument->allowComment())-->
+					<!--@if($grant->write_comment && $oDocument->isEnableComment() )-->
+						<a id="show_comments" onclick="show_comment_editor(this); return false;" href="{getSiteUrl($site_module_info->domain, '', 'mid', $mid, 'document_srl', $document_srl, 'act', 'dispXedocsCommentEditor')}">
+						Show Comments ({$oDocument->getCommentcount()})</a>
+						</div>
+
+						<div id="comment_editor">
+
+					<!--@end-->
+				<!--@end-->
+				</div>
+			<!--@end--> <!--has_page-->
+		</div>
+		<div class="cleared"></div>
+	</div>
 
 <!--#include("footer.html")-->
