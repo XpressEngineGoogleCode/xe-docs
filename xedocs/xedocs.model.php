@@ -32,13 +32,11 @@ class xedocsModel extends xedocs {
                         if(!$value) return;
 			foreach( $value as $i=>$obj){
 				$document_srl = $obj->document_srl;
-				debug_syslog(1, "get_first_node_srl setting document_srl to first_node_srl 0\n" );
 				break;
 			}
 		}else{
 			$document_srl = $module_info->first_node_srl;
-			debug_syslog(1, "get_first_node_srl setting document_srl to first_node_srl 1\n" );
-		}
+        	}
 
 		return $document_srl;
 	}
