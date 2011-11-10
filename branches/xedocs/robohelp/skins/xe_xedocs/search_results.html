@@ -1,0 +1,94 @@
+<!--#include("header.html")-->
+
+<div id="treeList">        
+	<div id="searchBox">
+		<form action="{getUrl()}" method="get" >
+			<input type="hidden" name="vid" value="{$vid}" />
+			
+			<input type="hidden" name="mid" value="{$mid}" />
+			
+			<input type="hidden" name="category" value="" />
+			<input type="hidden" name="search_target" value="title_content" />
+			
+			<input class="xeDocsInputText" type="text" name="search_keyword" value="{$search_keyword}" />				
+			<input type="hidden" name="act" value="dispXedocsSearchResults" />
+			
+			<input class="xeDocsSearchButton" src="img/icon_search.png" 
+			type="image" value="{$lang->Search}" alt ="{$lang->Search}" title = "{$lang->Search}" />
+		</form>
+	</div>
+</div>
+
+<div id="showHideTree" onclick="hidediv1('treeList'); return false;" alt="Close Tree" title="Close tree"></div>
+
+ <div id="rightContainer">
+	<div id="rightcontent">
+		
+		<ul id="tabSystem">
+			<!--@foreach($module_list as $modul)-->
+			<li>
+				<form action="{getUrl()}" method="get" >
+					<input type="hidden" name="vid" value="{$vid}" />
+
+					<input type="hidden" name="mid" value="{$modul->mid}" />
+
+					<input type="hidden" name="category" value="" />
+					<input type="hidden" name="search_target" value="title_content" />
+					<input class="xeDocsInputText" type="hidden" name="search_keyword" value="{$search_keyword}"/>	
+									
+					<input type="hidden" name="act" value="dispXedocsSearchResults" />
+					
+					<input class="<!--@if($mid==$modul->mid)-->on<!--@end-->" type="submit" value = "{$lang->ResultsFrom.$modul->browser_title}" />
+				</form>
+			</li>
+			<!--@end-->
+		</ul>
+
+		<div class="cleared"></div>
+		
+		<!--@if(!count($document_list))-->
+		<div id="noResult">
+			<p>{$lang->msg_no_result}</p>
+			<!--@if($last_division)-->
+			<p>{$lang->msg_document_more_search}</p>
+			<!--@end-->
+		</div>
+		<!--@else-->
+		
+		<p id="articleCount"><img src="img/iconH2.gif" />Article ({number_format($total_count)})</p>
+
+		<ul class="searchResult">
+			<!--@foreach($document_list as $document)-->
+				<li>
+					<dl>
+						<dt>
+							<a href="{getFullUrl( '','mid',$document->mid).'/entry/'.$document->entry}">{$document->entry}</a>
+							<span><em>( {$document->browser_title} )</em></span>
+						</dt>
+						<dd>{preg_replace('/^[ \t]*[\r\n]+/m', '', $document->getSummary(400))}</dd>
+						<p class="search-url">{getFullUrl( '','mid',$document->mid).'/entry/'.$document->entry}{$itemURL}</p>
+					</dl>
+				</li>
+			<!--@end-->
+		</ul>
+		
+		<div class="pagination a1">
+			<a href="{getUrl('page','','document_srl','','division',$division,'last_division',$last_division,'entry','')}" class="prevEnd">{$lang->first_page}</a> 
+			<!--@while($page_no = $page_navigation->getNextPage())-->
+				<!--@if($page == $page_no)-->
+					<strong>{$page_no}</strong> 
+				<!--@else-->
+					<a href="{getUrl('page',$page_no,'document_srl','','division',$division,'last_division',$last_division,'entry','')}">{$page_no}</a>
+				<!--@end-->
+			<!--@end-->
+			<a href="{getUrl('page',$page_navigation->last_page,'document_srl','','division',$division,'last_division',$last_division,'entry','')}" class="nextEnd">{$lang->last_page}</a>
+		</div>
+
+		<!--@end-->
+	</div>
+</div>
+
+
+
+
+<!--#include("footer.html")-->

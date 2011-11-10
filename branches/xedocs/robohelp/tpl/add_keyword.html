@@ -1,0 +1,92 @@
+<!--%import("filter/add_keyword.xml")-->
+<!--%import("js/manual_admin.js")-->
+
+
+<script type="text/javascript">
+    function insertSelectedManualPage(id, document_srl, mid, browser_title) {
+        var obj= xGetElementById(id);
+        obj.value = document_srl;
+        var sObj = xGetElementById('link_'+id);
+
+        href_value = '/xe/?document_srl='+document_srl; 	
+        sObj.href = href_value;
+        sObj.innerText = browser_title;
+        var previewObj = xGetElementById('preview'); 
+        previewObj.innerHTML = '<'+'object width="100%" height="100%" id="preview_content" type="text/html" style="visibility:visible;" data="'+href_value+'"><\/object>';
+                
+    }
+    var xe_root = "{_XE_PATH_}";
+</script>
+
+
+<h3 class="xeAdmin">{$lang->xedocs} <span class="gray">{$lang->cmd_management}</span></h3>
+
+<div class="infoText">{nl2br($lang->about_xedocs)}</div>
+
+
+
+<div class="header4">
+    
+    <h4 class="xeAdmin">{$lang->add_keyword}&nbsp:&nbsp{$keyword}  
+    </h4>
+     
+</div>          
+
+<form action="./" method="get" onsubmit="return procFilter(this, add_keyword)" >
+	<input type="hidden" name="page" value="{$page}" />
+	<input type="hidden" name="module_srl" value="{$module_info->module_srl}" />
+	<input type="hidden" name="orig_title" value="{$keyword}" />
+	
+    <table cellspacing="0" class="rowTable">
+	    <tr>
+	        <th scope="row"><div>{$lang->keyword}</div></th>
+	        <td class="wide"><input class="inputTypeText w200" name='title' type="text" value='{$keyword}'></input> </td>
+	    </tr>
+	    <tr>
+	    	
+	        	<th scope="row"><p><div>Target Manual Page</div></p></th>
+	        
+	        
+	        <td>
+	        	<p>
+	        		<input type="text", value='{$target_document_srl}' name="target_document_srl" id='target_document_srl' />
+		        	<a id='link_target_document_srl' href="{getSiteUrl( 'mid', $mid,  'module_srl',$module_srl,'document_srl', $target_document_srl, 'act', 'dispXedocsTreeIndex')}" onclick="window.open(this.href); return false;">{$keyword} -> {$target_title}</a>
+						
+	        	</p>
+	        </td>
+	        <td> 
+	        
+	        <p>
+	        		<a class ="button blue" href="{getSiteUrl('mid', $mid, 'module_srl',$module_srl,'document_srl', $target_document_srl, 'act', 'dispXedocsAdminManualPageSelect', 'search_keyword', $keyword, 'id', 'target_document_srl')}" 
+						onclick="popopen(this.href, 'Select Manual Page');return false;" 
+						style='height: 25px; width:120px; text-align: center; vertical-align: middle;'><span>Select manual page</span></a>
+	        </p>
+	        </td>
+	        
+	    </tr>
+    <tr>
+        <th colspan="2" class="button">
+            <span class="button black strong"><input type="submit" value="{$lang->cmd_update_keyword}" /></span>
+            <a href="{getUrl('act','dispXedocsAdminCompileKeywords')}" class="button"><span>{$lang->cmd_back}</span></a>
+        </th>
+    </tr>
+
+	</table>	
+</form>
+
+
+
+
+<div id="preview" >
+<!--@if($has_target_page)-->
+
+ 
+<object id="preview_content" width="100%" height="100%"  type="text/html" style="visibility:visible;" data="/xe/?document_srl={$target_document_srl}"></object>
+  
+<!--@else-->
+
+No Target Manual Page.
+</hr>
+
+<!--@end-->
+</div>

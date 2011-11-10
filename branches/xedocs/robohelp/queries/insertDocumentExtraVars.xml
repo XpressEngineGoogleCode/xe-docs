@@ -1,0 +1,13 @@
+<query id="insertDocumentExtraVars" action="insert">
+    <tables>
+        <table name="document_extra_vars" alias="extra_vars" />
+    </tables>
+    <columns>
+        <column name="module_srl" var="module_srl" filter="number" default="0" notnull="notnull" />
+        <column name="document_srl" var="document_srl" filter="number" default="0" notnull="notnull" />
+        <column name="var_idx" var="var_idx" filter="number" default="0" notnull="notnull" />
+        <column name="lang_code" var="lang_code" default="en" notnull="notnull" minlength="1" maxlength="10" />
+        <column name="value" var="value" default="" />
+        <column name="eid" var="eid" default="" />
+    </columns>
+</query>

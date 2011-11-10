@@ -1,0 +1,268 @@
+@charset "utf-8";
+/* ----- NEW CSS ----- */
+/* 
+	author:	 Daniel Ionescu
+	email:	 daniel.ionescu@arnia.ro
+*/
+body {
+	margin: 0;
+}
+
+#xeDocs .cleared {
+	clear: both;
+}
+
+#xeDocs {
+	font-size: 13px;
+	font-family: Arial, Helvetica, sans;
+	color: #000;
+}
+
+#xeDocsHeader {
+	background: #424242;
+	border-bottom: 1px solid #8a8a8a;
+	padding: 10px;
+}
+
+#xeDocsHeader h1 {
+	float: left;
+	margin: 0;
+}
+
+.xeDocsButton {
+	border-radius: 20px;
+	-moz-border-radius: 20px;
+	-webkit-border-radius: 20px;
+	background: #f1f1f1;
+	background-image: -webkit-gradient(
+		linear,
+		left bottom,
+		left top,
+		color-stop(0, rgb(228,228,228)),
+		color-stop(1, rgb(255,255,255))
+	);
+	background-image: -moz-linear-gradient(
+		center bottom,
+		rgb(228,228,228) 0%,
+		rgb(255,255,255) 100%
+	);
+	border: 3px solid #7e7e7e;
+	line-height: 30px;
+	padding: 7px 4px;
+	margin: 2px;
+}
+
+.xeDocsButton:active {
+	background-image: -webkit-gradient(
+		linear,
+		left bottom,
+		left top,
+		color-stop(0, rgb(255,255,255)),
+		color-stop(1, rgb(228,228,228))
+	);
+	background-image: -moz-linear-gradient(
+		center bottom,
+		rgb(255,255,255) 0%,
+		rgb(228,228,228) 100%
+	);
+	border-color: #c7c7c7;
+	box-shadow: inset 0px 0px 1px 1px rgba(0, 0, 0, 0.4);
+	-moz-box-shadow: inset 0px 0px 1px 1px rgba(0, 0, 0, 0.4);
+	-webkit-box-shadow: inset 0px 0px 1px 1px rgba(0, 0, 0, 0.4);
+}
+
+.xeDocsButton:hover {
+	border-color: #c7c7c7;
+}
+
+.xeDocsButton span {
+	font-family: Arial;
+	padding: 10px;
+	color: #000;
+	font-weight: bold;
+}
+
+.xeDocsButtonAdmin {
+	border-radius: 20px;
+	-moz-border-radius: 20px;
+	-webkit-border-radius: 20px;
+	background: #c40000;
+	background-image: -webkit-gradient(
+		linear,
+		left bottom,
+		left top,
+		color-stop(0, rgb(170,0,0)),
+		color-stop(1, rgb(226,0,0))
+	);
+	background-image: -moz-linear-gradient(
+		center bottom,
+		rgb(170,0,0) 0%,
+		rgb(226,0,0) 100%
+	);
+	border: 3px solid #831818;
+	line-height: 30px;
+	padding: 7px 4px;
+	margin: 2px;
+}
+
+.xeDocsButtonAdmin:active {
+	background-image: -webkit-gradient(
+		linear,
+		left bottom,
+		left top,
+		color-stop(0, rgb(226,0,0)),
+		color-stop(1, rgb(170,0,0))
+	);
+	background-image: -moz-linear-gradient(
+		center bottom,
+		rgb(226,0,0) 0%,
+		rgb(170,0,0) 100%
+	);
+	border-color: #c61010;
+	box-shadow: inset 0px 0px 1px 1px rgba(0, 0, 0, 0.3);
+	-moz-box-shadow: inset 0px 0px 1px 1px rgba(0, 0, 0, 0.3);
+	-webkit-box-shadow: inset 0px 0px 1px 1px rgba(0, 0, 0, 0.3);
+}
+
+.xeDocsButtonAdmin:hover {
+	border-color: #c61010;
+}
+
+.xeDocsButtonAdmin span {
+	font-family: Arial;
+	padding: 10px;
+	color: #fff;
+	font-weight: bold;
+}
+
+a.xeDocsButtonAdmin, a.xeDocsButton  {
+	text-decoration: none;
+}
+
+#xeDocsHeader #toc_structure span {
+	background: url('../img/icon_change_toc_structure.png') 10px 0 no-repeat;
+	padding: 1px 15px 2px 36px;
+}
+
+#xeDocs #navMenu {
+	float: right;
+	list-style-type: none;
+	margin: 4px 0 0 0;
+}
+
+#xeDocs #navMenu  li {
+	float: left;
+}
+
+#xeDocsTree {
+	float: left;
+	width: 250px;
+	margin-left: -250px;
+	border-right: 1px solid #dfdfdf;
+}
+
+#xeDocsTree ul {
+	list-style-type: none;
+	margin: 5px;
+	padding: 0;
+}
+
+#xeDocsTree ul li {
+	margin: 5px 0;
+}
+
+#xeDocsTree ul a {
+	text-decoration: none;
+}
+
+#xeDocsContent {
+	float: left;
+}
+
+#xeDocsBody {
+	padding-left: 250px;
+}
+
+#xeDocsVersion {
+	background: #f4f4f4;
+	border-bottom: 1px solid #dfdfdf;
+	padding: 10px;
+}
+
+#xeDocsVersion p {
+	margin: 8px 0;
+	font-weight: bold;
+}
+
+#xeDocsTree h3 {
+	font-size: 18px;
+	font-weight: normal;
+	border-bottom: 1px dotted #b9b8b8;
+	padding-bottom: 4px;
+	margin: 8px;
+}
+
+#xeDocsSearch {
+	height: 50px;
+	overflow: hidden;
+}
+
+#xeDocsSearchText {
+	border: 1px solid #c1c1c1;
+	border-radius: 4px;
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+	padding: 9px 35px 8px 9px;
+	font-size: 13px;
+	background-image: -webkit-gradient(
+		linear,
+		left bottom,
+		left top,
+		color-stop(0, rgb(255,255,255)),
+		color-stop(1, rgb(235,235,235))
+	);
+	background-image: -moz-linear-gradient(
+		center bottom,
+		rgb(255,255,255) 0%,
+		rgb(235,235,235) 100%
+	);
+	box-shadow: inset 1px 1px 1px rgba(0, 0, 0, 0.2);
+	-moz-box-shadow: inset 1px 1px 1px rgba(0, 0, 0, 0.2);
+	-webkit-box-shadow: inset 1px 1px 1px rgba(0, 0, 0, 0.2);
+	margin: 8px;
+	width: 188px
+}
+
+#xeDocsSearchText:focus {
+	background: #fff7dd;
+	border: 1px solid #a6840e;
+}
+
+#xeDocsSearchButton {
+	position: relative;
+	top: -36px;
+	left: 214px;
+}
+
+#xeDocsFooter {
+	text-align: right;
+	padding: 10px;
+	border-top: 1px solid #dfdfdf;
+	border-bottom: 1px solid #dfdfdf;
+	background: #f8f8f8;
+}
+
+#xeDocsToP {
+	padding: 0 0 0 14px;
+	background: url('../img/icon_arrow_top.png') 0 0 no-repeat;
+}
+
+#xeDocsEditorActions {
+	float: right;
+	margin-top: 4px;
+}
+
+#xeDocsEditorActions img {
+	margin: 0 5px 0 0;
+	vertical-align: top;
+}
