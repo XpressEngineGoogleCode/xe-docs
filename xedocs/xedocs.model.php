@@ -192,7 +192,7 @@ class xedocsModel extends xedocs {
                         unset($root_node);
                         $root_node = $node;
                         $root_node->parent_srl = 0;
-                        $root_nodes[] = $root_node;
+                        $root_nodes[$node->document_srl] = $root_node;
                         continue;
                     }
                     unset($obj);
@@ -207,8 +207,8 @@ class xedocsModel extends xedocs {
                 }
 
 		foreach($list as $document_srl => $node) {
-			if(!$list[$node->parent_srl]) {
-				$node->parent_srl = $root_node->document_srl;
+			if(!$list[$node->parent_srl] && !$root_nodes[$node->parent_srl]) {
+				$node->parent_srl = 0;
 			}
 			$tree[$node->parent_srl]->childs[$document_srl] = &$tree[$document_srl];
 			$tree[$document_srl]->node = $node;
