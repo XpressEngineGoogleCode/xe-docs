@@ -1152,7 +1152,6 @@ class xedocsModel extends xedocs {
 
 	function _is_search($is_keyword, $target_module_srl, $search_target, $page, $items_per_page= 10)
 	{
-		debug_syslog(1, "_is_search search target_module_srl=".$target_module_srl."\n");
 		$oDocumentModel = &getModel('document');
 
 		$obj = null;
@@ -1207,7 +1206,6 @@ class xedocsModel extends xedocs {
 
 	function search($is_keyword, $target_module_srl, $search_target, $page, $items_per_page= 10)
 	{
-		debug_syslog(1, "search search keyword=".$is_keyword."\n");
 		$oLuceneModule = &getModule('lucene');
 
 		if( !isset($oLuceneModule) ){

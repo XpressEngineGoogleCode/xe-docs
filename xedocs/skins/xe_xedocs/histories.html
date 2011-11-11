@@ -22,7 +22,6 @@
             <td class="title">
                 <span class="buttonOfficial"><button type="button" onclick="jQuery('#historyContent{$val->history_srl}').toggleClass('hide');return false;">{$lang->cmd_view}</button></span>
                 <span class="buttonOfficial"><button type="button" onclick="location.href='{getUrl('act','dispXedocsEditPage','history_srl',$val->history_srl)}';return false;">{$lang->cmd_edit_page}</button></span>
-                <div id="historyContent{$val->history_srl}" class="hide">{$val->content}</div>
             </td>
             <td class="author"><a href="#" onclick="return false;" class="member_{$val->member_srl}">{$val->nick_name}</a></td>
             <td class="date">{zdate($val->regdate, 'Y.m.d H:i:s')}</td>
@@ -34,10 +33,10 @@
 
 <!--@if($page_navigation)-->
     <div class="pagination a1">
-        <a href="{getUrl('page','')}" class="prevEnd">{$lang->first_page}</a> 
+        <a href="{getUrl('page','')}" class="prevEnd">{$lang->first_page}</a>
         <!--@while($page_no = $page_navigation->getNextPage())-->
             <!--@if($page == $page_no)-->
-                <strong>{$page_no}</strong> 
+                <strong>{$page_no}</strong>
             <!--@else-->
                 <a href="{getUrl('page',$page_no)}">{$page_no}</a>
             <!--@end-->
