@@ -40,34 +40,112 @@
             }
 
             /**
-             * @brief View used for displaying document history - a log of all edits made on a document
+             * Default module action
+             * Shows manual homepage if no document is specified.
+             * Otherwise, it displays document content
+             *
+             * $entry - Represents document alias - the value supplied in the URL
+             * $document_srl - Current document srl. It is either retrieved from the
+             *                  request URL or identified based on document alias
              */
-            function dispXedocsHistory()
+            function dispXedocsIndex()
             {
-                    $oDocumentModel = &getModel('document');
-                    $document_srl = Context::get('document_srl');
-                    $page = Context::get('page');
+                $oXedocsModel = &getModel('xedocs');
+
+                /* Retrieve current document_srl */
+                $document_srl = Context::get('document_srl');
+                $entry = Context::get('entry');
+
+                if (!isset($document_srl))
+                {
+                    // If document_srl is not set, get document by alias (entry)
+                    $oDocumentModel = getModel('document');
+                    $document_srl = $oDocumentModel->getDocumentSrlByAlias($this->module_info->mid, $entry);
+                    // If no document was found, just retrieve the root
+                    if(!$document_srl)
+                        $document_srl = $oXedocsModel->get_first_node_srl($this->module_srl);
+                }else{
+                    // Check if given document_srl exists (is valid)
+                    if(!$oXedocsModel->check_document_srl($document_srl, $this->module_info))
+                    {
+                        // Mark this view as invalid if the document_srl is wrong
+                        unset($document_srl);
+                        // Get document_srl of root document
+                    }
+                }
+
+                $oDocumentModel = &getModel("document");
+                if($document_srl){
+                    $this->setTemplateFile('tree_list');
+
                     $oDocument = $oDocumentModel->getDocument($document_srl);
+                    // TODO Check that visit log is properly setup and works
+                    $this->_addToVisitLog($entry);
 
-                    if(!$oDocument->isExists()){
-                            return $this->stop('msg_invalid_request');
+                    // If current document exists and has keywords, replace keywords with links to corresponding articles
+                    if(isset($this->module_info->keywords)){
+                        $keywords = $oXedocsModel->string_to_keyword_list($this->module_info->keywords);
+                        $kcontent = $oXedocsModel->get_document_content_with_keywords($oDocument, $keywords);
+                        if( 0 < $kcontent->fcount ){
+                                $content = $kcontent->content;
+                        }
                     }
-
-                    $entry = $oDocument->getTitleText();
-                    Context::set('entry',$entry);
-                    $output = $oDocumentModel->getHistories($document_srl, 10, $page);
-                    if(!$output->toBool() || !$output->data) {
-
-                            Context::set('histories', array());
+                    else{
+                        // Get content without popup menu
+                        $content = $oDocument->getContent(false);
                     }
-                    else {
-                            Context::set('histories',$output->data);
-                            Context::set('page', $output->page);
-                            Context::set('page_navigation', $output->page_navigation);
-                    }
+                    $oDocument->add('content', $content);
 
-                    Context::set('oDocument', $oDocument);
-                    $this->setTemplateFile('histories');
+                } else {
+                    $this->setTemplateFile('create_document');
+
+                    $oDocument = $oDocumentModel->getDocument(0);
+                    $oDocument->add('title', 'Create new page');
+                }
+
+                Context::set('oDocument', $oDocument);
+
+
+                /* Get manual tree */
+                $module_srl=$oDocument->get('module_srl');
+
+                if($document_srl){
+                    $documents_tree = $oXedocsModel->getMenuTree($module_srl, $document_srl);
+                }
+                Context::set("documents_tree", $documents_tree);
+
+                /* Get versioning information */
+                $versions = $oXedocsModel->get_versions($module_srl, $oDocument);
+                $version_labels = $this->_formatVersions(trim($versions), $document_srl);
+                Context::set("version_labels",  $version_labels );
+
+
+                $meta = $oXedocsModel->get_meta($module_srl, $document_srl);
+                Context::set("meta", $meta);
+
+                Context::setBrowserTitle($this->module_info->browser_title." - ".$oDocument->getTitle());
+
+                /* Load navigation data */
+                list($prev_document_srl, $next_document_srl) = $oXedocsModel->getPrevNextDocument($this->module_srl, $document_srl);
+
+                if($prev_document_srl){
+
+                        $oPrevDocEntry = $oDocumentModel->getAlias($prev_document_srl);
+                        Context::set('oPrevDocEntry', $oPrevDocEntry);
+                        Context::set('oDocumentPrev', $oDocumentModel->getDocument($prev_document_srl));
+                }
+
+                if($next_document_srl)
+                {
+                        $oNextDocEntry = $oDocumentModel->getAlias($next_document_srl);
+
+                        Context::set('oNextDocEntry', $oNextDocEntry);
+                        Context::set('oDocumentNext', $oDocumentModel->getDocument($next_document_srl));
+
+                }
+
+                /* Add XML filter for comment */
+                Context::addJsFilter($this->module_path.'tpl/filter', 'insert_comment.xml');
             }
 
             /**
@@ -103,89 +181,34 @@
             }
 
             /**
-             * @brief Displaying message
-             **/
-            function dispXedocsMessage($msg_code)
+             * @brief View used for displaying document history - a log of all edits made on a document
+             */
+            function dispXedocsHistory()
             {
-                    $msg = Context::getLang($msg_code);
-                    if(!$msg){
-                            $msg = $msg_code;
-                    }
-                    Context::set('message', $msg);
-                    $this->setTemplateFile('message');
-            }
-
-            /**
-             * @brief Sorts array descending by key
-             * // TODO See if can be removed and replaced with a query
-             */
-            function sortArrayByKeyDesc($object_array, $key ){
-                    $key_array = array();
-                    foreach($object_array as $obj ){
-                            $key_array[$obj->{$key}] = $obj;
-                    }
-
-                    krsort($key_array);
-
-                    $result = array();
-                    foreach($key_array as $rank => $obj ){
-                            $result[] = $obj;
-                    }
-                    return $result;
-            }
-
-            /**
-             * @brief Adds info to document - user friendly url and others
-             * for pretty displaying in search results
-             * // TODO See if it can be replaced / removed
-             */
-            function resolveDocumentDetails($oModuleModel, $oDocumentModel, $doc){
-
-                    $entry = $oDocumentModel->getAlias($doc->document_srl);
-
-                    $module_info = $oModuleModel->getModuleInfoByDocumentSrl($doc->document_srl);
-                    $doc->browser_title = $module_info->browser_title;
-                    $doc->mid = $module_info->mid;
-
-
-                    if ( isset($entry) ){
-                            $doc->entry = $entry;
-                    }else{
-                            $doc->entry = "bugbug";
-                    }
-            }
-
-            /**
-             * @brief Helper method for search
-             */
-            function _searchKeyword($target_mid, $is_keyword){
-                    $page =  Context::get('page');
-                    if (!isset($page)) $page = 1;
-
-                    $search_target = Context::get('search_target');
-                    if(isset($search_target)){
-                            if ($search_target == 'tag') $search_target = 'tags';
-                    }
-                    $oXedocsModel = &getModel('xedocs');
-                    $oModuleModel = &getModel('module');
                     $oDocumentModel = &getModel('document');
+                    $document_srl = Context::get('document_srl');
+                    $page = Context::get('page');
+                    $oDocument = $oDocumentModel->getDocument($document_srl);
 
-
-                    $output = $oXedocsModel->search($is_keyword, $target_mid, $search_target, $page, 10);
-
-                    if($output->data)
-                    foreach($output->data as $doc){
-                            $this->resolveDocumentDetails($oModuleModel, $oDocumentModel, $doc);
+                    if(!$oDocument->isExists()){
+                            return $this->stop('msg_invalid_request');
                     }
 
-                    Context::set('document_list', $output->data);
-                    Context::set('total_count', $output->total_count);
-                    Context::set('total_page', $output->total_page);
+                    $entry = $oDocument->getTitleText();
+                    Context::set('entry',$entry);
+                    $output = $oDocumentModel->getHistories($document_srl, 10, $page);
+                    if(!$output->toBool() || !$output->data) {
 
-                    Context::set('page', $page);
-                    Context::set('page_navigation', $output->page_navigation);
+                            Context::set('histories', array());
+                    }
+                    else {
+                            Context::set('histories',$output->data);
+                            Context::set('page', $output->page);
+                            Context::set('page_navigation', $output->page_navigation);
+                    }
 
-                    return $output;
+                    Context::set('oDocument', $oDocument);
+                    $this->setTemplateFile('histories');
             }
 
             /**
@@ -198,7 +221,7 @@
                     $oModuleModel = &getModel('module');
 
                     $moduleList = $oXedocsModel->getModuleList(true);
-                    $moduleList = $this->sortArrayByKeyDesc($moduleList, 'search_rank');
+                    $moduleList = $this->_sortArrayByKeyDesc($moduleList, 'search_rank');
                     Context::set('module_list', $moduleList);
 
                     $target_mid = $this->module_info->module_srl;
@@ -242,168 +265,7 @@
             }
 
             /**
-             * Default module action
-             * Shows manual homepage if no document is specified.
-             * Otherwise, it displays document content
-             *
-             * $entry - Represents document alias - the value supplied in the URL
-             * $document_srl - Current document srl. It is either retrieved from the
-             *                  request URL or identified based on document alias
-             */
-            function dispXedocsIndex()
-            {
-                $oXedocsModel = &getModel('xedocs');
-
-                /* Retrieve current document_srl */
-                $document_srl = Context::get('document_srl');
-                $entry = Context::get('entry');
-
-                if (!isset($document_srl))
-                {
-                    // If document_srl is not set, get document by alias (entry)
-                    $oDocumentModel = getModel('document');
-                    $document_srl = $oDocumentModel->getDocumentSrlByAlias($this->module_info->mid, $entry);
-                    // If no document was found, just retrieve the root
-                    if(!$document_srl)
-                        $document_srl = $oXedocsModel->get_first_node_srl($this->module_srl);
-                }else{
-                    // Check if given document_srl exists (is valid)
-                    if(!$oXedocsModel->check_document_srl($document_srl, $this->module_info))
-                    {
-                        // Mark this view as invalid if the document_srl is wrong
-                        unset($document_srl);
-                        // Get document_srl of root document
-                    }
-                }
-
-                $oDocumentModel = &getModel("document");
-                if($document_srl){
-                    $this->setTemplateFile('tree_list');
-
-                    $oDocument = $oDocumentModel->getDocument($document_srl);
-
-                    // If current document exists and has keywords, replace keywords with links to corresponding articles
-                    if(isset($this->module_info->keywords)){
-                        $keywords = $oXedocsModel->string_to_keyword_list($this->module_info->keywords);
-                        $kcontent = $oXedocsModel->get_document_content_with_keywords($oDocument, $keywords);
-                        if( 0 < $kcontent->fcount ){
-                                $content = $kcontent->content;
-                        }
-                    }
-                    else{
-                        // Get content without popup menu
-                        $content = $oDocument->getContent(false);
-                    }
-                    $oDocument->add('content', $content);
-
-                } else {
-                    $this->setTemplateFile('create_document');
-
-                    $oDocument = $oDocumentModel->getDocument(0);
-                    $oDocument->add('title', 'Create new page');
-                }
-
-                Context::set('oDocument', $oDocument);
-
-
-                /* Get manual tree */
-                $module_srl=$oDocument->get('module_srl');
-
-                if($document_srl){
-                    $documents_tree = $oXedocsModel->getMenuTree($module_srl, $document_srl);
-                }
-                Context::set("documents_tree", $documents_tree);
-
-                /* Get versioning information */
-                $versions = $oXedocsModel->get_versions($module_srl, $oDocument);
-                $version_labels = $this->format_versions(trim($versions), $document_srl);
-                Context::set("version_labels",  $version_labels );
-
-
-                $meta = $oXedocsModel->get_meta($module_srl, $document_srl);
-                Context::set("meta", $meta);
-
-                Context::setBrowserTitle($this->module_info->browser_title." - ".$oDocument->getTitle());
-
-                /* Load navigation data */
-                list($prev_document_srl, $next_document_srl) = $oXedocsModel->getPrevNextDocument($this->module_srl, $document_srl);
-
-                if($prev_document_srl){
-
-                        $oPrevDocEntry = $oDocumentModel->getAlias($prev_document_srl);
-                        Context::set('oPrevDocEntry', $oPrevDocEntry);
-                        Context::set('oDocumentPrev', $oDocumentModel->getDocument($prev_document_srl));
-                }
-
-                if($next_document_srl)
-                {
-                        $oNextDocEntry = $oDocumentModel->getAlias($next_document_srl);
-
-                        Context::set('oNextDocEntry', $oNextDocEntry);
-                        Context::set('oDocumentNext', $oDocumentModel->getDocument($next_document_srl));
-
-                }
-
-                /* Add XML filter for comment */
-                Context::addJsFilter($this->module_path.'tpl/filter', 'insert_comment.xml');
-            }
-
-            function get_document_link($document_srl)
-            {
-
-            }
-
-
-            function format_versions($versions, $document_srl)
-            {
-                    $oXedocsModel = &getModel('xedocs');
-
-                    if( !isset($versions) || 0 == strcmp('', $versions)){
-                            return array();
-                    }
-
-                    $result = array();
-
-                    $varr = explode("|", $versions);
-                    $labels = array();
-                    $sversions = array();
-                    foreach($varr as $v){
-                            $values = explode("->", $v);
-
-                            $label = $values[0];
-                            $doc_srl = $values[1];
-                            $labels[] = $label;
-                            $sversions[$label] = $doc_srl;
-                    }
-
-                    sort($labels);
-
-                    foreach($labels as  $l)
-                    {
-                            $doc_srl = $sversions[$l];
-
-                            $obj = null;
-
-                            $obj->{'is_current_version'}= $doc_srl == $document_srl;
-
-                            $obj->{'doc_srl'} = $doc_srl;
-                            $obj->{'vlabel'} = $l;
-
-                            if( $doc_srl != $document_srl ){
-                                    $obj->{'href'} = $oXedocsModel->get_document_link($doc_srl);
-                            }else{
-                                    $obj->{'href'} = "";
-                            }
-
-                            $result[] = $obj;
-                    }
-                    //debug_syslog(1,"Result versions: ".print_r($result, true)."\n");
-                    return $result;
-
-            }
-
-            /**
-             * Opens view for changing documents hierarchy (tree)
+             * @brief Opens view for changing documents hierarchy (tree)
              */
             function dispXedocsModifyTree()
             {
@@ -416,47 +278,9 @@
                     $this->setTemplateFile('modify_tree');
             }
 
-            function addToVisitLog($entry)
-            {
-                    $module_srl = $this->module_info->module_srl;
-                    $visit_log = $_SESSION['xedocs_visit_log'];
-                    if(! $visit_log) {
-
-                            $visit_log =   $_SESSION['xedocs_visit_log'] = array();
-                    }
-                    if(!$visit_log[$module_srl]
-                    || !is_array($visit_log[$module_srl])) {
-
-                            $visit_log[$module_srl] = array();
-                    }
-                    else {
-
-                            foreach($visit_log[$module_srl] as $key => $value){
-
-                                    if($value == $entry){
-
-                                            unset($visit_log[$module_srl][$key]);
-                                    }
-                            }
-
-                            if( 5 <= count($visit_log[$module_srl]) ) {
-
-                                    array_shift($visit_log[$module_srl]);
-                            }
-                    }
-                    $visit_log[$module_srl][] = $entry;
-            }
-
-            function callback_xedocslink($matches)
-            {
-                    $names = explode("|", $matches[1]);
-                    if(count($names) == 2)
-                    {
-                            return "<a href=\"".getUrl('entry',$names[0])."\" class=\"inlink\" >".$names[1]."</a>";
-                    }
-                    return "<a href=\"".getUrl('entry',$matches[1])."\" class=\"inlink\" >".$matches[1]."</a>";
-            }
-
+            /**
+             * @brief Opens view for reply-ing to an existing comment
+             */
             function dispXedocsReplyComment()
             {
 
@@ -501,6 +325,9 @@
                     $this->setTemplateFile('comment_form');
             }
 
+            /**
+             * Opens view for editing existing comment
+             */
             function dispXedocsModifyComment()
             {
 
@@ -538,6 +365,9 @@
                     $this->setTemplateFile('comment_form');
             }
 
+            /**
+             * @brief Opens view for confirming deletion of a comment
+             */
             function dispXedocsDeleteComment()
             {
 
@@ -568,6 +398,176 @@
 
                     $this->setTemplateFile('delete_comment_form');
             }
+
+            /**
+             * @brief Displaying message
+             **/
+            function dispXedocsMessage($msg_code)
+            {
+                    $msg = Context::getLang($msg_code);
+                    if(!$msg){
+                            $msg = $msg_code;
+                    }
+                    Context::set('message', $msg);
+                    $this->setTemplateFile('message');
+            }
+
+            /**
+             * @brief Sorts array descending by key
+             * // TODO See if can be removed and replaced with a query
+             */
+            function _sortArrayByKeyDesc($object_array, $key ){
+                    $key_array = array();
+                    foreach($object_array as $obj ){
+                            $key_array[$obj->{$key}] = $obj;
+                    }
+
+                    krsort($key_array);
+
+                    $result = array();
+                    foreach($key_array as $rank => $obj ){
+                            $result[] = $obj;
+                    }
+                    return $result;
+            }
+
+            /**
+             * @brief Adds info to document - user friendly url and others
+             * for pretty displaying in search results
+             * // TODO See if it can be replaced / removed
+             */
+            function _resolveDocumentDetails($oModuleModel, $oDocumentModel, $doc){
+
+                    $entry = $oDocumentModel->getAlias($doc->document_srl);
+
+                    $module_info = $oModuleModel->getModuleInfoByDocumentSrl($doc->document_srl);
+                    $doc->browser_title = $module_info->browser_title;
+                    $doc->mid = $module_info->mid;
+
+
+                    if ( isset($entry) ){
+                            $doc->entry = $entry;
+                    }else{
+                            $doc->entry = "bugbug";
+                    }
+            }
+
+            /**
+             * @brief Helper method for search
+             */
+            function _searchKeyword($target_mid, $is_keyword){
+                    $page =  Context::get('page');
+                    if (!isset($page)) $page = 1;
+
+                    $search_target = Context::get('search_target');
+                    if(isset($search_target)){
+                            if ($search_target == 'tag') $search_target = 'tags';
+                    }
+                    $oXedocsModel = &getModel('xedocs');
+                    $oModuleModel = &getModel('module');
+                    $oDocumentModel = &getModel('document');
+
+
+                    $output = $oXedocsModel->search($is_keyword, $target_mid, $search_target, $page, 10);
+
+                    if($output->data)
+                    foreach($output->data as $doc){
+                            $this->_resolveDocumentDetails($oModuleModel, $oDocumentModel, $doc);
+                    }
+
+                    Context::set('document_list', $output->data);
+                    Context::set('total_count', $output->total_count);
+                    Context::set('total_page', $output->total_page);
+
+                    Context::set('page', $page);
+                    Context::set('page_navigation', $output->page_navigation);
+
+                    return $output;
+            }
+
+            /**
+             * @brief Prepares document versioning info for display
+             */
+            function _formatVersions($versions, $document_srl)
+            {
+                    $oXedocsModel = &getModel('xedocs');
+
+                    if( !isset($versions) || 0 == strcmp('', $versions)){
+                            return array();
+                    }
+
+                    $result = array();
+
+                    $varr = explode("|", $versions);
+                    $labels = array();
+                    $sversions = array();
+                    foreach($varr as $v){
+                            $values = explode("->", $v);
+
+                            $label = $values[0];
+                            $doc_srl = $values[1];
+                            $labels[] = $label;
+                            $sversions[$label] = $doc_srl;
+                    }
+
+                    sort($labels);
+
+                    foreach($labels as  $l)
+                    {
+                            $doc_srl = $sversions[$l];
+
+                            $obj = null;
+
+                            $obj->{'is_current_version'}= $doc_srl == $document_srl;
+
+                            $obj->{'doc_srl'} = $doc_srl;
+                            $obj->{'vlabel'} = $l;
+
+                            if( $doc_srl != $document_srl ){
+                                    $obj->{'href'} = $oXedocsModel->get_document_link($doc_srl);
+                            }else{
+                                    $obj->{'href'} = "";
+                            }
+
+                            $result[] = $obj;
+                    }
+                    return $result;
+            }
+
+            /**
+             * @brief Adds current user visit to document visit log
+             */
+            function _addToVisitLog($entry)
+            {
+                    $module_srl = $this->module_info->module_srl;
+                    $visit_log = &$_SESSION['xedocs_visit_log'];
+                    if(! $visit_log) {
+
+                            $visit_log =   $_SESSION['xedocs_visit_log'] = array();
+                    }
+                    if(!$visit_log[$module_srl]
+                    || !is_array($visit_log[$module_srl])) {
+
+                            $visit_log[$module_srl] = array();
+                    }
+                    else {
+
+                            foreach($visit_log[$module_srl] as $key => $value){
+
+                                    if($value == $entry){
+
+                                            unset($visit_log[$module_srl][$key]);
+                                    }
+                            }
+
+                            if( 5 <= count($visit_log[$module_srl]) ) {
+
+                                    array_shift($visit_log[$module_srl]);
+                            }
+                    }
+                    $visit_log[$module_srl][] = $entry;
+            }
+
 
     }
     ?>
