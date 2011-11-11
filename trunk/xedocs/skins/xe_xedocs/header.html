@@ -27,10 +27,16 @@
 		
 		<ul id="navMenu">
 			<li>
-				<a class="xeDocsButton" href=""><span>Manual Index</span></a>
+				<a class="xeDocsButton" href="{getUrl('act','dispXedocsTreeIndex','entry','','document_srl','')}"><span>Manual Index</span></a>
 			</li>
 			<li>
 				<a class="xeDocsButton" href=""><span>Sign In</span></a>
+			</li>
+			<li>
+				<a class="xeDocsButton" href="{getUrl('act','dispXedocsContent','entry','','document_srl','')}"><span>Custom 1</span></a>
+			</li>
+			<li>
+				<a class="xeDocsButton" href="{getUrl('act','dispXedocsTitleIndex','entry','','document_srl','')}"><span>Show all pages</span></a>
 			</li>
 			<!--@if($grant->manager)-->
 				<li>
@@ -44,24 +50,3 @@
 		
 		<div class="cleared"></div>
 	</div>
-
-	<!--@if($grant->manager)-->
-    <div class="wikiInformation">
-		<div class="wikiInformationPadding">
-			<div class="infoView">
-				<!--span class="buttonOfficial"><a href="{getUrl('act','dispXedocsContent','entry','','document_srl','')}">Manual Title </a></span-->
-				<!--a class="xeDocsHeaderButton" id="manual_index" href="{getUrl('act','dispXedocsTreeIndex','entry','','document_srl','')}"><span>{$lang->cmd_view_document_list}</span></a>
-				<a class="xeDocsHeaderButton" id="table_of_contents" href="{getUrl('act','dispXedocsTitleIndex','entry','','document_srl','')}"><span>{$lang->cmd_view_document_tree}</span></a-->
-			</div>
-
-
-			<div id="adminActions">
-				<a class="xeDocsHeaderButtonConfig" id="toc_structure" href="{getUrl('act','dispXedocsModifyTree')}"><span>{$lang->cmd_modify}</span></a>
-				<a class="xeDocsHeaderButtonConfig" id="config" href="{getUrl('act','dispXedocsAdminInsertManual')}"><span>{$lang->cmd_setup}</span></a>
-				<a class="xeDocsHeaderButtonConfig" id="editPage" href="{getUrl('act','dispXedocsEditPage')}"><span>{$lang->edit_page}</span></a>
-                                <a class="xeDocsHeaderButtonConfig" id="addPage" href="{getUrl('act','dispXedocsEditPage', 'entry', '')}"><span>Add page</span></a>
-				<a class="xeDocsHeaderButtonConfig" href="#" onclick="if(confirm('{$lang->confirm_delete}')) { doDeleteManual('{$oDocument->document_srl}'); }; return false;"><span>{$lang->delete_page}</span></a>
-			</div>
-		</div>
-    </div>
-	<!--@end-->

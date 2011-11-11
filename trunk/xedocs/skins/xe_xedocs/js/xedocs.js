@@ -74,3 +74,8 @@ function Tree(){
         });
     },"xml");
 }
+
+//equalize columns to avoid messy CSS hack
+jQuery(document).ready(function() {
+	jQuery('#xeDocsTree').height(jQuery('#xeDocsBody').height());
+})
