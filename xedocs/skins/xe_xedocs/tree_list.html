@@ -18,18 +18,19 @@
 			<!--@if(count($documents_tree))-->
 			<ul>
 				<!--@foreach($documents_tree as $node)-->
-				<li class="xedocsTreeNode">
+				<li class="xedocsTreeNode" style="
 					<!--@if($node->type == 'root' || $node->type == 'active_root')-->
-						<img src="img/icon_root.png" alt="+" title="">
+						list-style-image:url('./modules/xedocs/skins/xe_xedocs/img/icon_root.png');
 					<!--@elseif($node->type == 'parent')-->
-						<img src="img/icon_arrow.png" alt="+" title="">
+						list-style-image:url('./modules/xedocs/skins/xe_xedocs/img/icon_up_one_level.png');
 					<!--@elseif($node->type == 'sibling')-->
-						<img src="img/icon_right.png" alt="+" title="">
+						list-style-image:url('./modules/xedocs/skins/xe_xedocs/img/icon_current_directory.png'); margin-left: 15px;
 					<!--@elseif($node->type == 'child')-->
-						<img src="img/down-to-right-arrow.png" alt="-" title=""/>
+						list-style-image:url('./modules/xedocs/skins/xe_xedocs/img/icon_current_directory.png'); margin-left: 30px;
 					<!--@elseif($node->type == 'current')-->
-						<img src="img/icon_right.png" alt="+" title="">
+						list-style-image:url('./modules/xedocs/skins/xe_xedocs/img/icon_current_directory.png'); margin-left: 15px;
 					<!--@end-->
+				">
 					<a href="{$node->href}">
 						{$node->title}
 					</a>
@@ -40,18 +41,18 @@
 		</div>
 		<div id="xeDocsVersion">
 			<div id="xeDocsEditorActions">
-				<a href=""><img src="img/icon_add_page.png" alt="Add new page" title="Add new page"/></a>
+				<a href="{getUrl('act','dispXedocsEditPage', 'entry', '')}"><img src="img/icon_add_page.png" alt="Add new page" title="Add new page"/></a>
 				<a href="{getUrl('act','dispXedocsEditPage')}"><img src="img/icon_edit_page.png" alt="Edit page" title="Edit page"/></a>
 				<a href="#" onclick="if(confirm('{$lang->confirm_delete}')) { doDeleteManual('{$oDocument->document_srl}'); }; return false;"><img src="img/icon_delete_page.png" alt="Delete page" title="Delete page"/></a>
-                                <a href="{getUrl('act','dispXedocsHistory')}">History</a>
+				<a href="{getUrl('act','dispXedocsHistory')}"><img src="img/icon_history.png" alt="History" title="History"/></a>
 			</div>
-			<p>{$lang->versions}
+			<p><strong>{$lang->versions}</strong>&nbsp;&nbsp;&nbsp;
 				<!--@foreach($version_labels as $value)-->
 
 					<!--@if($value->is_current_version)-->
-						<span>{$value->vlabel}</span>&nbsp;|&nbsp;
+						<strong><span id="xeDocsCurrentVersion">{$value->vlabel}</span></strong>
 					<!--@else-->
-						<a href='{$value->href}'> {$value->vlabel} </a>&nbsp;|&nbsp;
+						&nbsp;|&nbsp;<strong><a href='{$value->href}'>{$value->vlabel}</a></strong>
 					<!--@end-->
 
 				<!--@end-->
@@ -122,7 +123,8 @@
 		</div>
 
 		<h2>{$oDocument->get('title')}</h2>
-
+		<!--#include("breadcrumbs.html")-->
+		
 		<!--@if(!$oDocument->isExists())-->
 		<div id="rightContainer">
 				<div id="rightcontent" style='margin:2px; color:red; margin-right:20px; font-size:16px; font-weight:bold;' >
@@ -134,89 +136,72 @@
 			</div>
 		</div>
 		<!--@else-->
-
-		<div id="showHideTree" onclick="hidediv1('treeList'); return false;" alt="Close Tree" title="Close tree"></div>
-
-		<div id="rightContainer">
-			<!--#include("breadcrumbs.html")-->
-			<div class="cleared"></div>
-			<div id="rightcontent">{$oDocument->get('content')}
-
-			<!--@if($module_info->toc_location=='Left')-->
-				<div id='footer_links' class="wikiReadFooter">
-			<!--@else-->
-			<!--@end-->
-					<div class="manualNavigation" >
-
+			<div id="showHideTree" onclick="hidediv1('treeList'); return false;" alt="Close Tree" title="Close tree"></div>
+			<div id="xeDocsContentContainer">
+				{$oDocument->get('content')}
+				<div id='xeDocsPageNav'>
+					<!--@if($module_info->toc_location=='Left')-->
+					<!--@end-->
 					<!--@if($oDocumentPrev)-->
-						<p class="wikiPrev" style="width: 50%;">
+						<p id="xeDocsPrev">
 							<span>Previous document:</span>
-
 							<a href="{getSiteUrl($site_module_info->domain, '','mid',$mid,'entry',$oPrevDocEntry)}">
-
 							{$oDocumentPrev->getTitle()}</a>
 						</p>
 					<!--@end-->
-
 					<!--@if($oDocumentNext)-->
-						<p class="wikiNext" style="width: 50%; text-align: right;">
+						<p id="xeDocsNext">
 							<span>Next document:</span>
-
-
 							<a href="{getSiteUrl($site_module_info->domain, '','mid',$mid,'entry',$oNextDocEntry)}">
-
 							{$oDocumentNext->getTitle()}</a>
 						</p>
 					<!--@end-->
-						<div class="cleared"></div>
-					</div> <!--end of div manualNavigation-->
-				</div> <!-- end of footer_links-->
-			</div> <!--end of div right content-->
-			<!--@end-->
-
-			<!--@if($oDocument->isExists())-->
-				<div id="comments">
-				<!--@if($oDocument->allowComment())-->
-                                    <a name="comment"></a>
-                                    <!--#include("./comment.html")-->
-
-                                    <!--@if($grant->write_comment && $oDocument->isEnableComment() )-->
-                                      <form action="./" method="post" onsubmit="return procFilter(this, insert_comment)" class="wikiEditor" >
-                                        <input type="hidden" name="mid" value="{$mid}" />
-                                        <input type="hidden" name="document_srl" value="{$oDocument->document_srl}" />
-                                        <input type="hidden" name="comment_srl" value="" />
-                                        <input type="hidden" name="content" value="" />
-                                            <div class="wikiWrite commentEditor">
-                                                <div class="editor">{$oDocument->getCommentEditor()}</div>
-
-                                                <div class="editorOption">
-                                                <!--@if(!$is_logged)-->
-                                                   <input type="text" name="nick_name" class="inputText userName" value="{$lang->writer}" onfocus="this.value=''" />
-                                                                   <input type="password" name="password" class="inputText userPw" value="{$lang->password}" onfocus="this.value=''" />
-                                                                   <input type="text" name="email_address" class="inputText emailAddress" value="{$lang->email_address}" onfocus="this.value=''" />
-                                                                   <input type="text" name="homepage" class="inputText homePage" value="{$lang->homepage}" onfocus="this.value=''" />
-                                                <!--@end-->
-
-                                                                <!--@if($is_logged)-->
-                                                                        <input type="checkbox" name="notify_message" value="Y" id="notify_message" class="inputCheck" />
-                                                                        <label for="notify_message">{$lang->notify}</label>
-                                                                <!--@end-->
-                                                                        <input type="checkbox" name="is_secret" value="Y" id="is_secret" class="inputCheck" />
-                                                                        <label for="is_secret">{$lang->secret}</label>
-                                                </div>
-
-                                                <div class="wikiNavigation">
-                                                    <span class="buttonOfficial"><input type="submit" value="{$lang->cmd_comment_registration}" accesskey="s" /></span>
-                                                </div>
-
-                                            </div>
-
-                                        </form>
-                                    <!--@end-->
-				<!--@end-->
+					<div class="cleared"></div>
 				</div>
-			<!--@end--> <!--has_page-->
-		</div>
+				<!--@if($oDocument->isExists())-->
+					<div id="comments">
+					<!--@if($oDocument->allowComment())-->
+						<a name="comment"></a>
+						<!--#include("./comment.html")-->
+
+						<!--@if($grant->write_comment && $oDocument->isEnableComment() )-->
+						  <form action="./" method="post" onsubmit="return procFilter(this, insert_comment)" class="wikiEditor" >
+							<input type="hidden" name="mid" value="{$mid}" />
+							<input type="hidden" name="document_srl" value="{$oDocument->document_srl}" />
+							<input type="hidden" name="comment_srl" value="" />
+							<input type="hidden" name="content" value="" />
+								<div class="wikiWrite commentEditor">
+									<div class="editor">{$oDocument->getCommentEditor()}</div>
+
+									<div class="editorOption">
+									<!--@if(!$is_logged)-->
+									   <input type="text" name="nick_name" class="inputText userName" value="{$lang->writer}" onfocus="this.value=''" />
+													   <input type="password" name="password" class="inputText userPw" value="{$lang->password}" onfocus="this.value=''" />
+													   <input type="text" name="email_address" class="inputText emailAddress" value="{$lang->email_address}" onfocus="this.value=''" />
+													   <input type="text" name="homepage" class="inputText homePage" value="{$lang->homepage}" onfocus="this.value=''" />
+									<!--@end-->
+
+													<!--@if($is_logged)-->
+															<input type="checkbox" name="notify_message" value="Y" id="notify_message" class="inputCheck" />
+															<label for="notify_message">{$lang->notify}</label>
+													<!--@end-->
+															<input type="checkbox" name="is_secret" value="Y" id="is_secret" class="inputCheck" />
+															<label for="is_secret">{$lang->secret}</label>
+									</div>
+
+									<div class="wikiNavigation">
+										<span class="buttonOfficial"><input type="submit" value="{$lang->cmd_comment_registration}" accesskey="s" /></span>
+									</div>
+
+								</div>
+
+							</form>
+						<!--@end-->
+					<!--@end-->
+					</div>
+				<!--@end-->
+			</div>
+		<!--@end-->
 		<div class="cleared"></div>
 	</div>
 

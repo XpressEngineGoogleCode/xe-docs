@@ -17,6 +17,15 @@ body {
 	font-family: Arial, Helvetica, sans;
 	color: #000;
 }
+#xeDocs a {
+	color: #1780ab;
+}
+
+#xeDocs h2 {
+	margin: 10px 10px 6px 10px;
+	color: #ba0000;
+	font-size: 22px;
+}
 
 #xeDocsHeader {
 	background: #424242;
@@ -162,13 +171,12 @@ a.xeDocsButtonAdmin, a.xeDocsButton  {
 }
 
 #xeDocsTree ul {
-	list-style-type: none;
 	margin: 5px;
-	padding: 0;
+	padding: 0 0 0 20px;
 }
 
 #xeDocsTree ul li {
-	margin: 5px 0;
+	margin: 8px 0;
 }
 
 #xeDocsTree ul a {
@@ -190,8 +198,7 @@ a.xeDocsButtonAdmin, a.xeDocsButton  {
 }
 
 #xeDocsVersion p {
-	margin: 8px 0;
-	font-weight: bold;
+	margin: 7px 0;
 }
 
 #xeDocsTree h3 {
@@ -265,4 +272,41 @@ a.xeDocsButtonAdmin, a.xeDocsButton  {
 #xeDocsEditorActions img {
 	margin: 0 5px 0 0;
 	vertical-align: top;
+}
+
+#xeDocsContentContainer {
+	margin: 20px 10px 0 10px;
+}
+
+#xeDocsBreadcrumbs {
+	margin: 0 10px;
+	border-top: 1px dotted #b9b8b8;
+	padding-top: 5px;
+}
+
+#xeDocsPageNav {
+	margin: 5px 0;
+	border-top: 1px dotted #b9b8b8;
+	border-bottom: 1px dotted #b9b8b8;
+	padding: 0 10px;
+}
+
+#xeDocsPrev {
+	float: left;
+	text-align: left;
+}
+
+#xeDocsNext {
+	float: right;
+	text-align: right;
+}
+
+#xeDocsPrev, #xeDocsNext {
+	font-weight: bold;
+	color: #333;
+	width: 50%;
+}
+
+#xeDocsCurrentVersion {
+	color: #ba0000;
 }
