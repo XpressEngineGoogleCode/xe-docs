@@ -10,7 +10,7 @@
             var $search_option = array('title','content','title_content','comment','user_name','nick_name','user_id','tag');
 
             /**
-             * Setup action context
+             * @brief Setup action context
              */
             function init() {
                 /* Init template path */
@@ -39,14 +39,9 @@
                 Context::set('grant', $this->grant);
             }
 
-
-            function dispXedocsContent() {
-                    $output = $this->dispXedocsContentView();
-                    if(!$output->toBool()){
-                            return;
-                    }
-            }
-
+            /**
+             * @brief View used for displaying document history - a log of all edits made on a document
+             */
             function dispXedocsHistory()
             {
                     $oDocumentModel = &getModel('document');
@@ -76,7 +71,7 @@
             }
 
             /**
-             * View used for editing an existing document or for creating a new one
+             * @brief View used for editing an existing document or for creating a new one
              */
             function dispXedocsEditPage()
             {
@@ -108,7 +103,7 @@
             }
 
             /**
-             * @brief Displaying Message
+             * @brief Displaying message
              **/
             function dispXedocsMessage($msg_code)
             {
@@ -120,6 +115,10 @@
                     $this->setTemplateFile('message');
             }
 
+            /**
+             * @brief Sorts array descending by key
+             * // TODO See if can be removed and replaced with a query
+             */
             function sortArrayByKeyDesc($object_array, $key ){
                     $key_array = array();
                     foreach($object_array as $obj ){
@@ -135,7 +134,12 @@
                     return $result;
             }
 
-            function resolve_document_details($oModuleModel, $oDocumentModel, $doc){
+            /**
+             * @brief Adds info to document - user friendly url and others
+             * for pretty displaying in search results
+             * // TODO See if it can be replaced / removed
+             */
+            function resolveDocumentDetails($oModuleModel, $oDocumentModel, $doc){
 
                     $entry = $oDocumentModel->getAlias($doc->document_srl);
 
@@ -149,12 +153,12 @@
                     }else{
                             $doc->entry = "bugbug";
                     }
-
-                    debug_syslog(1, "resolve_document_details doc_sel=".$doc->document_srl." mid= ".$doc->mid." entry=".$doc->entry."\n");
             }
 
-
-            function _search_keyword($target_mid, $is_keyword){
+            /**
+             * @brief Helper method for search
+             */
+            function _searchKeyword($target_mid, $is_keyword){
                     $page =  Context::get('page');
                     if (!isset($page)) $page = 1;
 
@@ -169,9 +173,9 @@
 
                     $output = $oXedocsModel->search($is_keyword, $target_mid, $search_target, $page, 10);
 
+                    if($output->data)
                     foreach($output->data as $doc){
-
-                            $this->resolve_document_details($oModuleModel, $oDocumentModel, $doc);
+                            $this->resolveDocumentDetails($oModuleModel, $oDocumentModel, $doc);
                     }
 
                     Context::set('document_list', $output->data);
@@ -184,6 +188,9 @@
                     return $output;
             }
 
+            /**
+             * @brief View dor displaying search results
+             */
             function dispXedocsSearchResults()
             {
                     $oXedocsModel = &getModel('xedocs');
@@ -197,12 +204,15 @@
                     $target_mid = $this->module_info->module_srl;
                     $is_keyword = Context::get("search_keyword");
 
-                    $this->_search_keyword($target_mid, $is_keyword);
+                    $this->_searchKeyword($target_mid, $is_keyword);
 
                     $this->setTemplateFile('search_results');
             }
 
-
+            /**
+             * @brief View for displaying a list of all the documents
+             * from a manual
+             */
             function dispXedocsTitleIndex()
             {
                     $page = Context::get('page');
@@ -338,47 +348,16 @@
                 Context::addJsFilter($this->module_path.'tpl/filter', 'insert_comment.xml');
             }
 
-
-            function dispXedocsCommentEditor()
-            {
-                    $document_srl = Context::get('document_srl');
-                    $oModuleModel = &getModel('module');
-                    $module_info = $oModuleModel->getModuleInfoByModuleSrl($this->module_srl);
-                    Context::set("module_info", $module_info);
-
-                    if (!isset($document_srl) )
-                    {
-                            if(!isset($module_info->first_node_srl))
-                            {
-                                    foreach( $value as $i=>$obj){
-                                            $document_srl = $obj->document_srl;
-                                            break;
-                                    }
-                            }else{
-                                    $document_srl = $module_info->first_node_srl;
-                            }
-                    }
-
-                    Context::set('has_page', true);
-
-                    $oDocumentModel = &getModel("document");
-                    $oDocument = $oDocumentModel->getDocument($document_srl);
-
-                    Context::set('oDocument', $oDocument);
-
-                    $this->setTemplateFile('comment_editor');
-                    Context::addJsFilter($this->module_path.'tpl/filter', 'insert_comment.xml');
-            }
-
             function get_document_link($document_srl)
             {
-                    $oXedocsModel = &getModel('xedocs');
-                    return $oXedocsModel->get_document_link($document_srl);
+
             }
 
 
             function format_versions($versions, $document_srl)
             {
+                    $oXedocsModel = &getModel('xedocs');
+
                     if( !isset($versions) || 0 == strcmp('', $versions)){
                             return array();
                     }
@@ -395,11 +374,9 @@
                             $doc_srl = $values[1];
                             $labels[] = $label;
                             $sversions[$label] = $doc_srl;
-                            //$result .= "<a href='".$this->get_document_link($doc_srl)."'> ".$label." </a> &nbsp";
                     }
 
                     sort($labels);
-                    //debug_syslog(1,"Sorted versions: ".print_r($labels, true)."\n");
 
                     foreach($labels as  $l)
                     {
@@ -413,7 +390,7 @@
                             $obj->{'vlabel'} = $l;
 
                             if( $doc_srl != $document_srl ){
-                                    $obj->{'href'} = $this->get_document_link($doc_srl);
+                                    $obj->{'href'} = $oXedocsModel->get_document_link($doc_srl);
                             }else{
                                     $obj->{'href'} = "";
                             }
@@ -478,125 +455,6 @@
                             return "<a href=\"".getUrl('entry',$names[0])."\" class=\"inlink\" >".$names[1]."</a>";
                     }
                     return "<a href=\"".getUrl('entry',$matches[1])."\" class=\"inlink\" >".$matches[1]."</a>";
-            }
-
-            function dispXedocsContentView()
-            {
-                    $oXedocsModel = &getModel('xedocs');
-                    $oDocumentModel = &getModel('document');
-
-                    $document_srl = Context::get('document_srl');
-                    $entry = Context::get('entry');
-                    if(!$document_srl && !$entry) {
-                            $entry = "Front Page";
-                            Context::set('entry', $entry);
-                            $document_srl = $oDocumentModel->getDocumentSrlByAlias($this->module_info->mid, $entry);
-                    }
-
-                    if($document_srl) {
-                            $oDocument = $oDocumentModel->getDocument($document_srl);
-
-
-                            if($oDocument->isExists()) {
-
-                                    if($oDocument->get('module_srl')!=$this->module_info->module_srl ){
-                                            return $this->stop('msg_invalid_request');
-                                    }
-
-                                    if($this->grant->manager) $oDocument->setGrant();
-
-                                    if(!$entry) {
-
-                                            $entry = $oDocument->getTitleText();
-                                            Context::set('entry', $entry);
-                                    }
-
-
-                                    $history_srl = Context::get('history_srl');
-                                    if($history_srl) {
-
-                                            $output = $oDocumentModel->getHistory($history_srl);
-                                            if($output && $output->content != null){
-
-                                                    Context::set('history', $output);
-                                            }
-                                    }
-
-                                    $content = $oDocument->getContent(false);
-                                    //$content = preg_replace_callback("!\[([^\]]+)\]!is", array( $this, 'callback_xedocslink' ), $content );
-                                    $oDocument->add('content', $content);
-
-
-                                    list($prev_document_srl, $next_document_srl) = $oXedocsModel->getPrevNextDocument($this->module_srl, $document_srl);
-                                    if($prev_document_srl){
-                                            Context::set('oDocumentPrev', $oDocumentModel->getDocument($prev_document_srl));
-                                    }
-                                    if($next_document_srl){
-                                            Context::set('oDocumentNext', $oDocumentModel->getDocument($next_document_srl));
-                                    }
-                                    $this->addToVisitLog($entry);
-
-
-                            } else {
-                                    Context::set('document_srl','',true);
-                                    $this->alertMessage('msg_not_founded');
-                            }
-
-                    } else {
-                            $oDocument = $oDocumentModel->getDocument(0);
-                    }
-
-                    if($oDocument->isExists()) {
-
-                            Context::addBrowserTitle($oDocument->getTitleText());
-
-
-                            if(!$oDocument->isSecret() || $oDocument->isGranted()){
-                                    $oDocument->updateReadedCount();
-                            }
-
-                            if($oDocument->isSecret() && !$oDocument->isGranted()){
-                                    $oDocument->add('content',Context::getLang('thisissecret'));
-                            }
-
-                            $module_srl=$oDocument->get('module_srl');
-                            $parents = $oXedocsModel->getParents($document_srl, $module_srl);
-                            $p_count = count($parents);
-                            Context::set('p_count1',$p_count);
-
-                            Context::set('parents',$parents);
-
-                            $this->setTemplateFile('view_document');
-
-                            // set contributors
-                            if($this->use_history) {
-
-                                    $contributors = $oXedocsModel->getContributors($oDocument->document_srl);
-                                    Context::set('contributors', $contributors);
-                            }
-
-
-                            if($this->module_info->use_comment != 'N'){
-                                    $oDocument->add('allow_comment','Y');
-                            }
-                    }
-                    else {
-                            $module_srl=$oDocument->get('module_srl');
-                            $parents = $oXedocsModel->getParents($document_srl, $module_srl);
-                            $p_count = count($parents);
-                            Context::set('p_count2',$p_count);
-                            Context::set('parents',$parents);
-
-                            $this->setTemplateFile('create_document');
-                    }
-
-                    Context::set('visit_log', $_SESSION['xedocs_visit_log'][$this->module_info->module_srl]);
-
-                    Context::set('oDocument', $oDocument);
-
-                    Context::addJsFilter($this->module_path.'tpl/filter', 'insert_comment.xml');
-
-                    return new Object();
             }
 
             function dispXedocsReplyComment()
