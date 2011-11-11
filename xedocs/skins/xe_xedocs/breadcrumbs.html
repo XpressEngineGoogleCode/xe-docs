@@ -2,7 +2,7 @@
 
         <!--@foreach($documents_tree as $node)-->
 
-		<!--@if($node->type=='parent')-->
+		<!--@if($node->type=='parent' || $node->type=='active_root')-->
                     <a href="{$node->href}"> {$node->title} </a>
                     <strong>&nbsp;&nbsp;&raquo;&nbsp;&nbsp;</strong>
                 <!--@elseif($node->type=='current')-->

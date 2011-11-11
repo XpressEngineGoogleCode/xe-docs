@@ -111,6 +111,7 @@
 
                 if($document_srl){
                     $documents_tree = $oXedocsModel->getMenuTree($module_srl, $document_srl);
+                    //var_dump($documents_tree);
                 }
                 Context::set("documents_tree", $documents_tree);
 

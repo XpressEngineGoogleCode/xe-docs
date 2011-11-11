@@ -19,7 +19,7 @@
 			<ul>
 				<!--@foreach($documents_tree as $node)-->
 				<li class="xedocsTreeNode">
-					<!--@if($node->type == 'root')-->
+					<!--@if($node->type == 'root' || $node->type == 'active_root')-->
 						<img src="img/icon_root.png" alt="+" title="">
 					<!--@elseif($node->type == 'parent')-->
 						<img src="img/icon_arrow.png" alt="+" title="">
