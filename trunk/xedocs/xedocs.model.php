@@ -127,7 +127,7 @@ class xedocsModel extends xedocs {
 		$xml_file = $this->getXmlCacheFilename($this->module_srl);
 
 		if(!file_exists($xml_file)) {
-			$oXedocsController->recompileTree($this->module_srl);
+			$oXedocsController->_recompileTree($this->module_srl);
 		}
 
 		print FileHandler::readFile($xml_file);
@@ -147,7 +147,7 @@ class xedocsModel extends xedocs {
 		$dat_file = $this->getDatCacheFilename($module_srl);
 
 		if(!file_exists($dat_file)) {
-			$oXedocsController->recompileTree($module_srl);
+			$oXedocsController->_recompileTree($module_srl);
 		}
 
 		$buff = explode("\n", trim(FileHandler::readFile($dat_file)));
@@ -1520,8 +1520,10 @@ class xedocsModel extends xedocs {
                 /* Find and mark parents */
                 $node_srl_iterator = $current_node->parent_srl;
                 while($node_srl_iterator > 0){
-                    if($documents_tree[$node_srl_iterator] != 0)
+                    if($documents_tree[$node_srl_iterator]->parent_srl != 0)
                         $documents_tree[$node_srl_iterator]->type = 'parent';
+                    else
+                        $documents_tree[$node_srl_iterator]->type = 'active_root';
                     $node_srl_iterator =  $documents_tree[$node_srl_iterator]->parent_srl;
                 }
 
