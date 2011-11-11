@@ -1,13 +1,15 @@
 <div id="breadcrumbs">
 
-	<!--@for($_i=count($parents)-1; $_i>0; $_i--)-->
+        <!--@foreach($documents_tree as $node)-->
 
-		<a href="{$parents[$_i]->href}"> {$parents[$_i]->title} </a>
-		<!--@if($_i>0)-->
-			<strong>&nbsp;&nbsp;&raquo;&nbsp;&nbsp;</strong>
+		<!--@if($node->type=='parent')-->
+                    <a href="{$node->href}"> {$node->title} </a>
+                    <strong>&nbsp;&nbsp;&raquo;&nbsp;&nbsp;</strong>
+                <!--@elseif($node->type=='current')-->
+                    {$node->title}
 		<!--@end-->
 
 	<!--@end-->
-	{$parents[0]->title}
-	
+
+
 </div>
