@@ -319,7 +319,7 @@ a.xeDocsButtonAdmin, a.xeDocsButton  {
 	margin: 0 5px
 }
 
-#xeDocsComments h3 {
+#xeDocsComments h3, #xeDocsSearchForm  h3 {
 	font-size: 18px;
 	font-weight: normal;
 	border-bottom: 1px dotted #b9b8b8;
@@ -370,5 +370,16 @@ a.xeDocsButtonAdmin, a.xeDocsButton  {
 }
 
 .xeDocsTable th.center, .xeDocsTable td.center {
+	text-align: center;
+}
+
+#xeDocsSearchFormTop, #xeDocsSearchFormBottom {
+	margin: 5px;
+	text-align: right;
+}
+
+.xeDocsPagination {
+	border-top: 1px solid #dfdfdf;
+	padding: 10px;
 	text-align: center;
 }
