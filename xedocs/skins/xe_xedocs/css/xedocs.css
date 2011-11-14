@@ -326,3 +326,49 @@ a.xeDocsButtonAdmin, a.xeDocsButton  {
 	padding-bottom: 4px;
 	margin: 8px 0;
 }
+
+.xeDocsTable {
+	width: 99.9%;
+	padding: 5px;
+}
+
+.xeDocsTable thead th {
+	border-top: 1px solid #360000;
+	border-bottom: 1px solid #960000;
+	background: #a00000; /* Old browsers */
+	background: -moz-linear-gradient(top,  #a00000 0%, #bc0000 32%, #bc0000 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#a00000), color-stop(32%,#bc0000), color-stop(100%,#bc0000)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top,  #a00000 0%,#bc0000 32%,#bc0000 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top,  #a00000 0%,#bc0000 32%,#bc0000 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top,  #a00000 0%,#bc0000 32%,#bc0000 100%); /* IE10+ */
+	background: linear-gradient(top,  #a00000 0%,#bc0000 32%,#bc0000 100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#a00000', endColorstr='#bc0000',GradientType=0 ); /* IE6-9 */
+	padding: 10px;
+	color: #fff;
+	text-transform: uppercase;
+}
+
+.xeDocsTable tbody td {
+	border-bottom: 1px solid #c7c7c7;
+	background: #e2e2e2; /* Old browsers */
+	background: -moz-linear-gradient(top,  #e2e2e2 0%, #f2f2f2 33%, #f2f2f2 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#e2e2e2), color-stop(33%,#f2f2f2), color-stop(100%,#f2f2f2)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top,  #e2e2e2 0%,#f2f2f2 33%,#f2f2f2 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top,  #e2e2e2 0%,#f2f2f2 33%,#f2f2f2 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top,  #e2e2e2 0%,#f2f2f2 33%,#f2f2f2 100%); /* IE10+ */
+	background: linear-gradient(top,  #e2e2e2 0%,#f2f2f2 33%,#f2f2f2 100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#e2e2e2', endColorstr='#f2f2f2',GradientType=0 ); /* IE6-9 */
+	padding: 10px;
+}
+
+.xeDocsTable tbody tr:hover td {
+	background: #fff;
+}
+
+.xeDocsTable th.left, .xeDocsTable td.left {
+	text-align: left;
+}
+
+.xeDocsTable th.center, .xeDocsTable td.center {
+	text-align: center;
+}
