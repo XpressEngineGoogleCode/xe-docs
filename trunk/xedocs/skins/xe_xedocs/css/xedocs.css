@@ -16,6 +16,7 @@ body {
 	font-size: 13px;
 	font-family: Arial, Helvetica, sans;
 	color: #000;
+	min-width: 980px;
 }
 #xeDocs a {
 	color: #1780ab;
@@ -289,6 +290,7 @@ a.xeDocsButtonAdmin, a.xeDocsButton  {
 	border-top: 1px dotted #b9b8b8;
 	border-bottom: 1px dotted #b9b8b8;
 	padding: 0 10px;
+	background: #fffbde;
 }
 
 #xeDocsPrev {
@@ -309,4 +311,18 @@ a.xeDocsButtonAdmin, a.xeDocsButton  {
 
 #xeDocsCurrentVersion {
 	color: #ba0000;
+}
+
+#xeDocsComments {
+	float: left;
+	width: 98.3%;
+	margin: 0 5px
+}
+
+#xeDocsComments h3 {
+	font-size: 18px;
+	font-weight: normal;
+	border-bottom: 1px dotted #b9b8b8;
+	padding-bottom: 4px;
+	margin: 8px 0;
 }
