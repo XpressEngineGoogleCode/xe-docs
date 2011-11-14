@@ -1515,7 +1515,8 @@ class xedocsModel extends xedocs {
                 $current_node = $documents_tree[$document_srl];
 
                 /* Mark current node as type 'active' */
-                $documents_tree[$document_srl]->type = 'current';
+                if($documents_tree[$document_srl]->parent_srl != 0)
+                    $documents_tree[$document_srl]->type = 'current';
 
                 /* Find and mark parents */
                 $node_srl_iterator = $current_node->parent_srl;
