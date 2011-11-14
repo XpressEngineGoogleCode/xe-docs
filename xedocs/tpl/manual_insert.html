@@ -133,23 +133,19 @@
 	  </td>
 </tr>
 
-<tr>
-    <th scope="col"><div>{$lang->manual_default_toc_location}</div></th>
-    
-    
-	  <td>
-	        <select name="toc_location">
-                <option value="Right" <!--@if($module_info->toc_location=='Right')-->selected="selected"<!--@end--> >{$lang->right}</option>
-                <option value="Left" <!--@if($module_info->toc_location!='Right')-->selected="selected"<!--@end--> >{$lang->left}</option>
-            </select>
- 	     	<p>{$lang->about_manual_default_toc_location}</p>
-	  </td>
-	  
-</tr>    
-    
-    
-    
-    
+		<tr>
+			<th scope="col"><div>{$lang->manual_default_toc_location}</div></th>
+			
+			
+			  <td>
+					<select name="toc_location">
+						<option value="Right" <!--@if($module_info->toc_location=='Right')-->selected="selected"<!--@end--> >{$lang->right}</option>
+						<option value="Left" <!--@if($module_info->toc_location!='Right')-->selected="selected"<!--@end--> >{$lang->left}</option>
+					</select>
+					<p>{$lang->about_manual_default_toc_location}</p>
+			  </td>
+			  
+		</tr>  
         <th colspan="2" class="button">
             <span class="button black strong"><input type="submit" value="{$lang->cmd_registration}" accesskey="s" /></span>
             <span class="button"><input type="button" value="{$lang->cmd_back}" onclick="history.back(); return false;" /></span>
