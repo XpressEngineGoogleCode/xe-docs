@@ -76,7 +76,7 @@
 
                 $oDocumentModel = &getModel("document");
                 if($document_srl){
-                    $this->setTemplateFile('tree_list');
+                    $this->setTemplateFile('document_view');
 
                     $oDocument = $oDocumentModel->getDocument($document_srl);
                     // TODO Check that visit log is properly setup and works
@@ -209,7 +209,7 @@
                     }
 
                     Context::set('oDocument', $oDocument);
-                    $this->setTemplateFile('histories');
+                    $this->setTemplateFile('document_history');
             }
 
             /**
@@ -262,7 +262,7 @@
                     }
                     Context::set('search_option', $search_option);
 
-                    $this->setTemplateFile('title_index');
+                    $this->setTemplateFile('document_list_all');
             }
 
             /**

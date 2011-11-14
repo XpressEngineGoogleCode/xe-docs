@@ -109,7 +109,7 @@ body {
 		rgb(170,0,0) 0%,
 		rgb(226,0,0) 100%
 	);
-	border: 3px solid #831818;
+	border: 3px solid #7e7e7e;
 	line-height: 30px;
 	padding: 7px 4px;
 	margin: 2px;
@@ -128,14 +128,14 @@ body {
 		rgb(226,0,0) 0%,
 		rgb(170,0,0) 100%
 	);
-	border-color: #c61010;
+	border-color: #c7c7c7;
 	box-shadow: inset 0px 0px 1px 1px rgba(0, 0, 0, 0.3);
 	-moz-box-shadow: inset 0px 0px 1px 1px rgba(0, 0, 0, 0.3);
 	-webkit-box-shadow: inset 0px 0px 1px 1px rgba(0, 0, 0, 0.3);
 }
 
 .xeDocsButtonAdmin:hover {
-	border-color: #c61010;
+	border-color: #c7c7c7;
 }
 
 .xeDocsButtonAdmin span {
