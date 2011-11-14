@@ -1,44 +1,7 @@
 	<!--#include("header.html")-->
 
 	<div id="xeDocsBody">
-		<div id="xeDocsTree">
-			<div id="xeDocsSearch">
-				<form action="{getUrl()}" method="get" >
-					<input type="hidden" name="vid" value="{$vid}" />
-					<input type="hidden" name="mid" value="{$mid}" />
-					<input type="hidden" name="category" value="" />
-					<input type="hidden" name="search_target" value="title_content" />
-					<input type="hidden" name="act" value="dispXedocsSearchResults" />
-
-					<input id="xeDocsSearchText" type="text" name="search_keyword" />
-					<input id="xeDocsSearchButton" src="img/search_button.png" type="image" value="{$lang->Search}" alt="{$lang->Search}" title="{$lang->Search}" />
-				</form>
-			</div>
-			<h3>Table of contents:</h3>
-			<!--@if(count($documents_tree))-->
-			<ul>
-				<!--@foreach($documents_tree as $node)-->
-				<li class="xedocsTreeNode" style="
-					<!--@if($node->type == 'root' || $node->type == 'active_root')-->
-						list-style-image:url('./modules/xedocs/skins/xe_xedocs/img/icon_root.png');
-					<!--@elseif($node->type == 'parent')-->
-						list-style-image:url('./modules/xedocs/skins/xe_xedocs/img/icon_up_one_level.png');
-					<!--@elseif($node->type == 'sibling')-->
-						list-style-image:url('./modules/xedocs/skins/xe_xedocs/img/icon_current_directory.png'); margin-left: 15px;
-					<!--@elseif($node->type == 'child')-->
-						list-style-image:url('./modules/xedocs/skins/xe_xedocs/img/icon_current_directory.png'); margin-left: 30px;
-					<!--@elseif($node->type == 'current')-->
-						list-style-image:url('./modules/xedocs/skins/xe_xedocs/img/icon_current_directory.png'); margin-left: 15px;
-					<!--@end-->
-				">
-					<a href="{$node->href}">
-						{$node->title}
-					</a>
-				</li>
-				<!--@end-->
-			</ul>
-			<!--@end-->
-		</div>
+		<!--#include("column_left.html")-->
 		<div id="xeDocsVersion">
 			<div id="xeDocsEditorActions">
 				<a href="{getUrl('act','dispXedocsEditPage', 'entry', '')}"><img src="img/icon_add_page.png" alt="Add new page" title="Add new page"/></a>
