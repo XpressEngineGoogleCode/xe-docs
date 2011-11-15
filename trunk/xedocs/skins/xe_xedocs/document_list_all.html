@@ -3,6 +3,7 @@
 <div id="xeDocsBody">
 	<!--#include("column_left.html")-->
 
+	<h2 id="xeDocsTitle">All manual pages</h2>
 	<form action="{getUrl()}" method="get" id="xeDocsSearchFormTop">
 		<input type="hidden" name="vid" value="{$vid}" />
 		<input type="hidden" name="mid" value="{$mid}" />
@@ -60,17 +61,7 @@
 		<a href="#" onclick="jQuery('#xeDocsSearchFormBottom').submit();return false;" class=""><span>{$lang->cmd_search}</span></a>
 	</form>
 
-	<div class="xeDocsPagination">
-		<a href="{getUrl('page','','document_srl','','division',$division,'last_division',$last_division,'entry','')}" class="prevEnd">{$lang->first_page}</a> 
-		<!--@while($page_no = $page_navigation->getNextPage())-->
-			<!--@if($page == $page_no)-->
-				<strong>{$page_no}</strong> 
-			<!--@else-->
-				<a href="{getUrl('page',$page_no,'document_srl','','division',$division,'last_division',$last_division,'entry','')}">{$page_no}</a>
-			<!--@end-->
-		<!--@end-->
-		<a href="{getUrl('page',$page_navigation->last_page,'document_srl','','division',$division,'last_division',$last_division,'entry','')}" class="nextEnd">{$lang->last_page}</a>
-	</div>
+	<!--#include("document_pagination.html")-->
 
 </div>
 

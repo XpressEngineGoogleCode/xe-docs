@@ -230,7 +230,7 @@
 
                     $this->_searchKeyword($target_mid, $is_keyword);
 
-                    $this->setTemplateFile('search_results');
+                    $this->setTemplateFile('document_search');
             }
 
             /**
