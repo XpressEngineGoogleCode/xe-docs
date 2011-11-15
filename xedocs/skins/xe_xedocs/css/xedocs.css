@@ -18,14 +18,13 @@ body {
 	color: #000;
 	min-width: 980px;
 }
+
 #xeDocs a {
 	color: #1780ab;
 }
 
-#xeDocs h2 {
-	margin: 10px 10px 6px 10px;
-	color: #ba0000;
-	font-size: 22px;
+#xeDocs p {
+	line-height: 20px;
 }
 
 #xeDocsHeader {
@@ -382,4 +381,44 @@ a.xeDocsButtonAdmin, a.xeDocsButton  {
 	border-top: 1px solid #dfdfdf;
 	padding: 10px;
 	text-align: center;
+}
+
+#xeDocsSearchResults {
+	list-style-type: none;
+	margin: 10px;
+	padding: 0;
+}
+
+#xeDocsSearchResults li {
+	border-top: 1px dotted #B9B8B8;
+}
+
+#xeDocsSearchResults h4 {
+	font-size: 18px;
+	font-weight: normal;
+	color: #BA0000;
+	text-decoration: none;
+	margin: 10px 0;
+}
+
+#xeDocsSearchResults h4 a {
+	color: #BA0000;
+	text-decoration: none;
+}
+
+#xeDocsSearchResults h4 span {
+	font-size: 14px;
+	color: #999;
+}
+
+#xeDocsSearchInfo {
+	padding: 10px;
+	margin: 0;
+}
+
+#xeDocsTitle {
+	margin: 0 10px 6px 10px;
+	padding: 10px 0 0 0;
+	color: #ba0000;
+	font-size: 22px;
 }
