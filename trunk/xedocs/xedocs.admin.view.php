@@ -80,6 +80,19 @@
         }
 
         /**
+         * @brief Displays xedocs aditional setup
+         */
+        function dispXedocsAdminAdditionSetup() {
+            $content = '';
+
+            $output = ModuleHandler::triggerCall('module.dispAdditionSetup', 'before', $content);
+            $output = ModuleHandler::triggerCall('module.dispAdditionSetup', 'after', $content);
+            Context::set('setup_content', $content);
+
+            $this->setTemplateFile('addition_setup');
+        }
+
+        /**
          * @brief Displays manual skin config
          */
         function dispXedocsAdminSkinInfo()
@@ -90,6 +103,14 @@
             Context::set('skin_content', $skin_content);
 
             $this->setTemplateFile('skin_info');
+        }
+
+        /**
+         * @brief Displays page for recreating document aliases
+         */
+        function dispXedocsAdminArrange() {
+
+                $this->setTemplateFile('arrange_list');
         }
 
         /**

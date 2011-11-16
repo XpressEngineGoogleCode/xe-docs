@@ -64,4 +64,5 @@ $lang->cmd_create_keword = "Create Keyword";
 $lang->cmd_filter_kewords = "Apply filter";
 
 $lang->use_comment = 'Use Comments';
+$lang->arrange_list = 'Refresh alias';
 ?>
