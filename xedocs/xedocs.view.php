@@ -116,10 +116,19 @@
                 Context::set("documents_tree", $documents_tree);
 
                 /* Get versioning information */
-                $versions = $oXedocsModel->get_versions($module_srl, $oDocument);
-                $version_labels = $this->_formatVersions(trim($versions), $document_srl);
-                Context::set("version_labels",  $version_labels );
+                $manual_set = $this->module_info->help_name;
+                if($entry)
+                    $alias = $entry;
+                else
+                    $alias = $oDocument->getDocumentAlias();
+                $versions = $oXedocsModel->getVersions($manual_set, $alias);
 
+                $version_count = count($versions);
+                for($i = 0; $i < $version_count; $i++){
+                    $versions[$i]->is_current_version = ($versions[$i]->document_srl == $document_srl);
+                    $versions[$i]->href = getSiteUrl('document','','mid',$versions[$i]->mid,'entry',$versions[$i]->alias);
+                }
+                Context::set("versions",  $versions);
 
                 $meta = $oXedocsModel->get_meta($module_srl, $document_srl);
                 Context::set("meta", $meta);
@@ -484,55 +493,6 @@
                     Context::set('page_navigation', $output->page_navigation);
 
                     return $output;
-            }
-
-            /**
-             * @brief Prepares document versioning info for display
-             */
-            function _formatVersions($versions, $document_srl)
-            {
-                    $oXedocsModel = &getModel('xedocs');
-
-                    if( !isset($versions) || 0 == strcmp('', $versions)){
-                            return array();
-                    }
-
-                    $result = array();
-
-                    $varr = explode("|", $versions);
-                    $labels = array();
-                    $sversions = array();
-                    foreach($varr as $v){
-                            $values = explode("->", $v);
-
-                            $label = $values[0];
-                            $doc_srl = $values[1];
-                            $labels[] = $label;
-                            $sversions[$label] = $doc_srl;
-                    }
-
-                    sort($labels);
-
-                    foreach($labels as  $l)
-                    {
-                            $doc_srl = $sversions[$l];
-
-                            $obj = null;
-
-                            $obj->{'is_current_version'}= $doc_srl == $document_srl;
-
-                            $obj->{'doc_srl'} = $doc_srl;
-                            $obj->{'vlabel'} = $l;
-
-                            if( $doc_srl != $document_srl ){
-                                    $obj->{'href'} = $oXedocsModel->get_document_link($doc_srl);
-                            }else{
-                                    $obj->{'href'} = "";
-                            }
-
-                            $result[] = $obj;
-                    }
-                    return $result;
             }
 
             /**
