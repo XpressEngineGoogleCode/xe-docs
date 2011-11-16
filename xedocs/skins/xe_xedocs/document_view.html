@@ -10,6 +10,7 @@
 				<a href="{getUrl('act','dispXedocsHistory')}"><img src="img/icon_history.png" alt="History" title="History"/></a>
 			</div>
 			<p>
+                            <!--@if(count($versions) > 0) -->
                             <strong>{$lang->versions}</strong>&nbsp;&nbsp;&nbsp;
 				<!--@foreach($versions as $value)-->
 					<!--@if($value->is_current_version)-->
@@ -18,6 +19,8 @@
 						&nbsp;|&nbsp;<strong><a href='{$value->href}'>{$value->version_label}</a></strong>
 					<!--@end-->
 				<!--@end-->
+                            <!--@end-->
+                            &nbsp;
 			</p>
 
 			<!--@if($oDocument && $oDocument->isExists())-->
