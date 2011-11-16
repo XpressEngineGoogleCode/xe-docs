@@ -134,27 +134,6 @@
         }
 
         /**
-         * @brief Displays page for creating a new manual by importing a zip Robohelp archive
-         */
-        function dispXedocsAdminImportManual()
-        {
-            if(!in_array($this->module_info->module, array('admin', 'xedocs'))) {
-                    return $this->alertMessage('msg_invalid_request');
-            }
-
-            $oModuleModel = &getModel('module');
-            $skin_list = $oModuleModel->getSkins($this->module_path);
-            Context::set('skin_list',$skin_list);
-
-            $oLayoutMode = &getModel('layout');
-            $layout_list = $oLayoutMode->getLayoutList();
-            Context::set('layout_list', $layout_list);
-
-
-            $this->setTemplateFile('manual_import');
-        }
-
-        /**
          * @brief Displays page for editing keywords
          */
         function dispXedocsAdminEditKeyword()

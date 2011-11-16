@@ -20,23 +20,6 @@ function completeInsertManual(ret_obj) {
 
 
 
-function completeImportManual(ret_obj) {
-    var error = ret_obj['error'];
-    var message = ret_obj['message'];
-
-    var page = ret_obj['page'];
-    var module_srl = ret_obj['module_srl'];
-
-    alert(message);
-
-    var url = current_url.setQuery('act','dispXedocsAdminImportManual');
-    if(module_srl) url = url.setQuery('module_srl',module_srl);
-    if(page) url.setQuery('page',page);
-    location.href = url;
-}
-
-
-
 function completeDeleteManual(ret_obj) {
 
     var error = ret_obj['error'];
@@ -55,11 +38,11 @@ function completeCompileKeywords(ret_obj){
     var message = ret_obj['message'];
     var page = ret_obj['page'];
     alert(message);
-    
+
     var url = current_url.setQuery('act','dispXedocsAdminCompileKeywordList');
     if(page) url = url.setQuery('page',page);
-    location.href = url;    
-	
+    location.href = url;
+
 }
 
 
@@ -71,8 +54,8 @@ function completeEditKeyword(ret_obj){
 
     var url = current_url.setQuery('act','dispXedocsAdminCompileKeywordList')
     if(page) url = url.setQuery('page',page);
-    location.href = url;    
-	
+    location.href = url;
+
 }
 
 
@@ -85,9 +68,9 @@ function completeAddKeyword(ret_obj){
 
     var url = current_url.setQuery('act','dispXedocsAdminCompileKeywordList');
     if(page) url = url.setQuery('page',page);
-    
-    location.href = url;    
-	
+
+    location.href = url;
+
 }
 
 
@@ -109,10 +92,10 @@ function doArrangeXedocsList(module_srl) {
 
 
 
-function insertManualPage(id, document_srl, mid, browser_title) 
+function insertManualPage(id, document_srl, mid, browser_title)
 {
-    
-    
+
+
     if(!window.opener){
     	alert('!window.opener');
     	window.close();
@@ -122,9 +105,9 @@ function insertManualPage(id, document_srl, mid, browser_title)
     	alert('undefined opener.insertSelectedManualPage');
     	return;
     }
-    
+
     opener.insertSelectedManualPage(id, document_srl, mid, browser_title);
     window.close();
-    
+
 }
 

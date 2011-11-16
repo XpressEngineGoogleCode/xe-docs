@@ -1,7 +1,5 @@
 <?php
 
-    require_once(_XE_PATH_.'modules/xedocs/xedocs.lib.php');
-    
     /**
      * Base class for XE Docs module.
      */

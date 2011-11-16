@@ -2,13 +2,9 @@
 
 $lang->xedocs="Xe Documentation";
 $lang->admin_title = 'Welcome to XE Documentation System configuration';
-$lang->admin_import_head = 'Import documentation archive';
-$lang->admin_import_arch_label = " Manual Archive Url: ";
-$lang->cmd_import = "Import";
 $lang->manual_ids_count = "Total number of configured manuals";
 $lang->admin_import_manual_collection_name = "Manual Set";
 $lang->about_manual_collection = "Helps to idenntify diferent versions of manuals.";
-$lang->about_archive_url = "Location of the manual archive tat we use for import";
 $lang->about_manual_version = "Version label of the manual (i.e.: '2.0', '3.1' etc )";
 $lang->manual_default_toc_location = "Toc placement";
 $lang->about_manual_default_toc_location = "Toc placemant : right or left";
@@ -21,7 +17,6 @@ $lang->admin_manual_modules_list_head = "Manage Documentation";
 //$lang->about_xedocs="";
 $lang->cmd_manual_list = "List";
 $lang->cmd_xedocs_view_info="Manual Information";
-$lang->cmd_xedocs_import ="Import Manual archive";
 $lang->cmd_view_document_list = "Home";
 $lang->cmd_view_document_tree = "Document list";
 $lang->cmd_edit = "Edit";
