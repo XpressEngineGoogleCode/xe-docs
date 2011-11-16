@@ -120,30 +120,6 @@ class xedocsAdminView extends xedocs {
 
 	}
 
-	function dispXedocsAdminCompileVersion(){
-
-		debug_syslog(1, dispXedocsAdminCompileVersion);
-		$module_info = Context::get('module_info');
-
-		$oModuleModel = &getModel('module');
-		$module_info = $oModuleModel->getModuleInfoByModuleSrl($module_info->module_srl);
-		$oModuleModel->addModuleExtraVars($module_info);
-
-		$manual_set = &getModel('xedocs')->getModuleMidSet($module_info->help_name);
-		$module_count = count($manual_set);
-
-		debug_syslog(1, "module_count =".$module_count."\n");
-		debug_syslog(1, "help_name =".$module_info->help_name."\n");
-
-		Context::set('module_count',$module_count);
-		Context::set('module_info',$module_info);
-		Context::set('manual_set', $manual_set);
-
-
-
-		$this->setTemplateFile("compile_version_labels");
-	}
-
 	function dispXedocsAdminEditKeyword()
 	{
 		debug_syslog(1, "dispXedocsAdminEditKeyword\n");
