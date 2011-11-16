@@ -36,22 +36,22 @@ class xedocsAdminController extends xedocs {
 
 		$oModuleController = &getController('module');
 		$oModuleModel = &getModel('module');
-		
-		$toc_location = Context::get('toc_location'); 
+
+		$toc_location = Context::get('toc_location');
 		if( !isset($toc_location) ){
 			Context::set('toc_location', "Left"); //set default
 		}
-		
+
 		$args = Context::getRequestVars();
-		debug_syslog(1, "procXedocsAdminInsertManual args: ".print_r($args, true)."\n");	
+		debug_syslog(1, "procXedocsAdminInsertManual args: ".print_r($args, true)."\n");
 		$args->module = 'xedocs';
 		$args->mid = $args->manual_name;
 		if($args->use_comment!='N'){
 			$args->use_comment = 'Y';
 		}
-		
 
-		debug_syslog(1, "args :\n ".print_r($args, true)."\n");		
+
+		debug_syslog(1, "args :\n ".print_r($args, true)."\n");
 		unset($args->manual_name);
 
 		if($args->module_srl) {
@@ -100,211 +100,82 @@ class xedocsAdminController extends xedocs {
 		$this->setMessage('success_deleted');
 	}
 
-	function procXedocsAdminCompileVersion(){
 
-		debug_syslog(1, "procXedocsAdminCompileVersion\n");
-		set_time_limit(0);
-
-		$oXedocsModel = &getModel('xedocs'); 
-		
-		$help_name = Context::get('help_name');
-		$module_srl = Context::get('module_srl');
-
-		debug_syslog(1, "module_srl='".$module_srl."'\n");
-		debug_syslog(1, "help_name='".$help_name."'\n");
-		
-		$manual_set = $oXedocsModel->getModuleSet($help_name);
-		$manual_versions = $oXedocsModel->getManualVersions($manual_set);
-		
-		$documents = array();
-		foreach($manual_set as $manual_srl){
-			$docs = $oXedocsModel->getDocumentList($manual_srl);
-			$documents[] = $docs;
-		}
-		$oDocumentModel = &getModel('document');
-		$count = count($documents);
-		debug_syslog(1, "Clear versions\n");
-		//clear versions 
-		for($i=0; $i<$count; $i+=1){
-			$doc_set = $documents[$i];
-			$crt_module_srl = $manual_set[$i];
-			debug_syslog(1, "module_srl:".$crt_module_srl." has ".count($doc_set)." documents\n");
-			
-			foreach($doc_set as $doc){
-				$oXedocsModel->clear_version($crt_module_srl, $doc);
-			}
-		}
-		debug_syslog(1, "Clear versions complete\n");
-		for( $i=0; $i<$count; $i+=1){
-			
-			$crt_docs = $documents[$i];
-			$crt_module_srl = $manual_set[$i];
-			
-			$crt_version = $manual_versions[$i];
-			debug_syslog(1, "idx=".$i." crt_version=". $crt_version."\n");
-			
-			foreach($crt_docs as $doc){
-				$oXedocsModel->add_version($crt_module_srl, $doc, $crt_version, $doc->document_srl);
-			}
-			
-			for( $j = 0; $j<$count; $j+=1)
-			{
-				if ( $i== $j ){ //skip same manual
-					continue;
-				}
-				$other_docs = $documents[$j];
-				$other_version = $manual_versions[$j];
-				debug_syslog(1, "idx=".$i." other_version=". $other_version."\n");
-				foreach($crt_docs as $crt_doc){
-					 
-					$res = $this->has_document($crt_doc, $other_docs); 
-					if( $res->success ){
-						foreach($res->other_docs_srl as $ods){
-							debug_syslog(1, "adding other_doc_srl=".$ods."\n");
-							$oXedocsModel->add_version($crt_module_srl, $crt_doc, $other_version, $ods);
-						}
-					}
-				}
-			}
-		}
-		debug_syslog(1, "compile versions complete");
-		$this->setMessage('success_compiled');
-	}
-
-
-	
-	
 	function _update_keyword($keyword, $orig_keyword=null)
 	{
-		
+
 		debug_syslog(1, "_update_keyword(".$keyword.", orig=".$orig_keyword.")\n");
 		$module_srl = Context::get('module_srl');
 		$target_document_srl = Context::get('target_document_srl');
-		
+
 		$oXedocsModel = &getModel('xedocs');
 		$updated = $oXedocsModel->update_keyword($module_srl, $orig_keyword, $keyword, $target_document_srl);
 		if($updated){
 			debug_syslog(1, "keyword updated\n");
 		}
-		
+
 	}
-	
+
 	function procXedocsAdminEditKeyword()
 	{
 		debug_syslog(1, "procXedocsAdminEditKeyword\n");
 		$orig_keyword = Context::get('orig_title');
 		$keyword = Context::get('title');
-		
+
 		$this->_update_keyword($keyword, $orig_keyword);
 		$this->setMessage("success");
 		debug_syslog(1, "procXedocsAdminEditKeyword complete\n");
 	}
-	
+
 	function procXedocsAdminAddKeyword()
 	{
 		debug_syslog(1, "procXedocsAdminAddKeyword\n");
-		
+
 		$keyword = Context::get('title');
 		$orig_keyword = null;
-		
+
 		$this->_update_keyword($keyword, $orig_keyword);
 		$this->setMessage("success");
 		debug_syslog(1, "procXedocsAdminAddKeyword complete\n");
 	}
-	
-	
+
+
 	function procXedocsAdminCompileKeywords(){
 
 		debug_syslog(1, "procXedocsAdminCompileKeywords\n");
 		set_time_limit(0);
 
-		$oXedocsModel = &getModel('xedocs'); 
-		
+		$oXedocsModel = &getModel('xedocs');
+
 		$help_name = Context::get('help_name');
 		$module_srl = Context::get('module_srl');
 
 		debug_syslog(1, "module_srl='".$module_srl."'\n");
 		debug_syslog(1, "help_name='".$help_name."'\n");
-		
-		
+
+
 		$docs = $oXedocsModel->getDocumentList($module_srl);
-		
+
 		debug_syslog(1, "there are ".count($docs)." documents \n getting keywords ...\n");
-		
-		
+
+
 		$keywords = $oXedocsModel->getKeywordTargets($docs, 10000);
-		
+
 		debug_syslog(1, "extract keywords complete count = ".count($keywords)."\n");
-		
+
 		$oModuleModel = &getModel('module');
-		
+
 		$extra_vars = $oModuleModel->getModuleExtraVars($module_srl);
 		$update_args = $extra_vars[$module_srl];
 		$update_args->{'keywords'} = $oXedocsModel->keyword_list_to_string($keywords);
 		Context::set('filter_keyword', null);
-		
-		$oModuleController = &getController('module'); 
+
+		$oModuleController = &getController('module');
 		$oModuleController->insertModuleExtraVars($module_srl, $update_args);
-		
+
 		debug_syslog(1, "compile keywords complete");
 		$this->setMessage('success_compiled');
 	}
-	
-	
-	
-	
-	//TODO optimize with module srl
-	function has_document($crt_doc, $other_docs )
-	{
-		$oDocumentModel = &getModel('document');
-		
-		//document titles can be duplicated in tree therefore we need to compare alias
-		$crt_doc_entry = $oDocumentModel->getAlias($crt_doc->document_srl); 
-		
-		$args = null;
-		$args->alias_title = $crt_doc_entry;
-		  
-		$output =  executeQuery('xedocs.getAliasesByTitle', $args);
-		debug_syslog(1, "--> docs with alias=".$crt_doc_entry."\n");
-
-		$result = null;
-		$result->success = false;
-		if(isset($output->data))
-		{
-			$result->success = true;
-			$result->other_docs_srl = array();
-			
-			foreach($output->data as $val)
-			{
-				debug_syslog(1, "    other doc srl=".$val->document_srl." alias=".$val->alias_title."\n");
-				
-				$found = false;
-				foreach( $other_docs as $od ){
-					if($od->document_srl == $val->document_srl){
-						$found = true;
-						break;
-					}
-				}
-				
-				if($found)
-				{
-					$result->other_docs_srl[] = $val->document_srl;
-					debug_syslog(1, "found");		
-					
-				}else{
-					debug_syslog(1, "not found");
-				}
-				
-			}
-			 
-		}
-		
-		return $result;
-		
-	}
-	
-	
-	
 
 	function procXedocsAdminImportArchive()
 	{
@@ -312,7 +183,7 @@ class xedocsAdminController extends xedocs {
 		// first insert a manual
 		$oModuleController = &getController('module');
 		$oModuleModel = &getModel('module');
-			
+
 		$args = Context::getRequestVars();
 		$args->module = 'xedocs';
 		$args->mid = $args->manual_name;
@@ -323,7 +194,7 @@ class xedocsAdminController extends xedocs {
 
 		$module_name = $args->manual_name;
 		unset($args->manual_name);
-		
+
 		if($args->module_srl) {
 			$module_info = $oModuleModel->getModuleInfoByModuleSrl($args->module_srl);
 			if($module_info->module_srl != $args->module_srl) {
@@ -346,7 +217,7 @@ class xedocsAdminController extends xedocs {
 		$this->add('page',Context::get('page'));
 		$module_srl = $output->get('module_srl');
 
-		
+
 		debug_syslog(1, "module_srl=".$module_srl."\n");
 
 		$this->add('module_srl',$module_srl);
@@ -361,7 +232,7 @@ class xedocsAdminController extends xedocs {
 			debug_syslog(1, "Bad archive srl\n");
 			return ;
 		}
-		
+
 		$module_title = Context::get("browser_title");
 
 		debug_syslog(1, "Importing archive: '".$args->help_archive_url."'\n");
@@ -378,26 +249,26 @@ class xedocsAdminController extends xedocs {
 		}
 
 		$man->url = $args->help_archive_url;
-		
+
 		$update_args->{'first_node_srl'} = $output->first_node->document_srl;
 		$update_args->{'help_name'} = Context::get('help_name');
 		$update_args->{'help_archive_url'} = Context::get('help_archive_url');
-		
+
 		$update_args->{'version_label'} = Context::get('version_label');
 		$update_args->{'help_tags'} = Context::get('help_tags');
 		$update_args->{'search_rank'} = Context::get('search_rank');
-		
+
 		$toc_location = Context::get('toc_location');
-		
+
 		if( !isset($toc_location) ){
 			$toc_location = "Left"; //set default
 		}
-		
+
 		$update_args->{'toc_location'} = $toc_location;
-		
+
 		$oModuleController->insertModuleExtraVars($module_srl, $update_args);
 		$msg_code = 'success_updated';
-		
+
 		syslog(1, "import complete - inserting content first_node_srl=".$output->first_node->document_srl."\n");
 
 		return $output;
@@ -441,18 +312,18 @@ class xedocsAdminController extends xedocs {
 
 		debug_syslog(1, "inserting documents");
 
-		$processor->set_process_step(0); 
+		$processor->set_process_step(0);
 		$walker->walk($toc, $processor);
-		
-		
+
+
 		debug_syslog(1, "build aliases");
-		$processor->set_process_step(1); 
+		$processor->set_process_step(1);
 		$walker->walk($toc, $processor);
 
 		debug_syslog(1, "resolving links");
-		$processor->set_process_step(2); 
+		$processor->set_process_step(2);
 		$walker->walk($toc, $processor);
-		
+
 		syslog(1, "import complete\n");
 
 		//original archive not needed any more
@@ -492,10 +363,10 @@ class ContentBuilderTocProcessor extends TocProcessor
 	public $controller;
     var $first_node;
 
-    
+
     function set_module_title($title)
     {
-    	$this->module_title = $title;	
+    	$this->module_title = $title;
     }
 	function dump_node_paths()
 	{
@@ -531,29 +402,29 @@ class ContentBuilderTocProcessor extends TocProcessor
 		$this->docid++;
 
 		set_time_limit(0);
-		
+
 		if( 0 == $this->step ){
-			
+
 			$this->insert_document($toc_node);
-			
+
 		}else if ( 1== $this->step)
-		{ 
+		{
 			$this->insert_document_alias($toc_node);
-			
+
 		}else
 		{
 			$this->resolve_links($toc_node);
 		}
-		
+
 	}
-	
-	
+
+
 	function get_document_link($document_srl)
 	{
 		$oXedocsModel = &getModel('xedocs');
 		return $oXedocsModel->get_document_link($document_srl);
 	}
-	
+
 
 	function resolve_links($toc_node)
 	{
@@ -610,70 +481,70 @@ class ContentBuilderTocProcessor extends TocProcessor
 		}
 
 		foreach( $dom->find('link') as $link){
-			if ( isset($link->type) 
-				 && 0 == strcmp('text/css', $link->type ) 
+			if ( isset($link->type)
+				 && 0 == strcmp('text/css', $link->type )
 				&& 0 == strcmp('../nhelp.css', $link->href) )
 			{
 				$link->href='modules/xedocs/styles/nhelp.css';
 			}
 		}
-		
+
 		$meta = array();
 		foreach($dom->find('meta') as $element ){
 
 			$attributes = $element->getAllAttributes();
 			foreach($attributes as $attr => $val){
-				$obj["name"] = $attr;				
+				$obj["name"] = $attr;
 				$obj["value"] = $val;
 				debug_syslog(1, " added meta: name=".$attr." value=".$val."\n");
 				$meta[] = $obj;
 			}
 		}
-		
+
 		$new_content = "".$dom;
-		
+
 		$toc_node->meta = $meta;
-		
+
 		//remove meta tags
 		$new_content = $this->removeTag($new_content, "<meta", ">");
 		$new_content = $this->removeHtmlTag($new_content, "</meta>");
-		
+
 
 		debug_syslog(1, "updating document_srl=".$toc_node->document_srl." content with new links ...\n");
 
-		
+
 		$this->update_document_content($toc_node, $new_content);
-		
+
 		$oXedocsModel = $this->controller->getModel('xedocs');
 		$oXedocsModel->add_meta($this->module_srl, $toc_node->document_srl, $meta );
-		
+
 		debug_syslog(1, "document updated with new links \n");
-		
+
 	}
 
-	
+
 	function get_simple_filename($name){
 		if(!isset($name)) return $name;
-		
+
 		$last_pos= strrpos($name, "/");
 		if( false === $last_pos){
 			return $name;
 		}
-		
+
 		return substr($name, $last_pos+1);
 	}
-	
+
 	function attach_image($toc_node, $element)
 	{
-			
+
 
 		$src = $element->src;
 		debug_syslog(1, "relpath = ".$toc_node->relpath." src=".$src."\n");
 
-			
+
 		$name = substr($src, strpos($src, "/")+1);
 		$simple_name = $this->get_simple_filename($name);
-		
+
 		$file_info['name'] = $simple_name;
 		debug_syslog(1, "file_info['name'] =".$file_info['name'] ."\n");
 
@@ -695,9 +566,9 @@ class ContentBuilderTocProcessor extends TocProcessor
 		debug_syslog(1, "upload_target_srl=".$upload_target_srl." \n");
 		$oFileController = $this->controller->getController("file");
 
-		
+
 		$output = $oFileController->insertFile($file_info, $this->module_srl, $upload_target_srl, 0, true);
-		
+
 		if(!$output->toBool()) {
 
 			debug_syslog(1, "insert file failed"."\n");
@@ -706,15 +577,15 @@ class ContentBuilderTocProcessor extends TocProcessor
 		else
 		{
 			$element->{'editor_component'} = 'image_link';
-			
+
 			$link = $output->get('uploaded_filename');
 			if( !endsWith($link, $simple_name )){
 				debug_syslog(1, "   file_info: ".print_r($file_info, true)."\n");
 				debug_syslog(1, "bad upload : ".$link. " simple_name ".$simple_name."\n");
-				
+
 			}
-			
-			$element->src = $link;			
+
+			$element->src = $link;
 			$element->alt = $simple_name;
 
 			//check upload
@@ -725,21 +596,21 @@ class ContentBuilderTocProcessor extends TocProcessor
 				debug_syslog(1, "file_srl not set\n");
 			}
 		}
-		
+
 		unlink($tmpfilename);
-		
+
 
 	}
 
 	function check_uploaded_file_content($name, $image_content , $uploaded_filename)
 	{
 			debug_syslog(1, "check_uploaded_file_content uploaded file: ".$uploaded_filename."\n");
-				
-			
+
+
 			$uploaded_file_content = file_get_contents($uploaded_filename);
-				 
+
 			if( 0 != strcmp($image_content, $uploaded_file_content))
-			{ 	
+			{
 				debug_syslog(1, "uploaded file difers: ".$name."\n");
 				return false;
 			}
@@ -748,8 +619,8 @@ class ContentBuilderTocProcessor extends TocProcessor
 				return true;
 			}
 	}
-	
-	
+
+
 	function is_single_file_ref($link)
 	{
 		return false==strpos($link, '/');
@@ -757,21 +628,21 @@ class ContentBuilderTocProcessor extends TocProcessor
 
 	function resolve_single_link($toc_node, $element, $changed)
 	{
- 		
-		
+
+
 		if( 0 == strcmp('', trim($element->href)))  //empty link
 		{
 			return $this->resolve_empty_link($toc_node, $element, $changed);
 		}
-	
+
 		return $this->resolve_full_link($toc_node, $element, $changed);
 	}
 
 	function resolve_empty_link($toc_node, $element, $changed)
 	{
-		
+
 		//empty links may be resoved in $not_navigable
-		
+
 		$title = trim($element->plaintext);
 		debug_syslog(1, "resolving: ". $title."in [".$toc_node->name."]\n");
 		if( isset($this->not_navigable[$title]) ){
@@ -793,7 +664,7 @@ class ContentBuilderTocProcessor extends TocProcessor
 		}else{
 			debug_syslog(1, " key: ". $title." is not in not_navigable\n");
 		}
-		
+
 		return $changed;
 
 	}
@@ -828,7 +699,7 @@ class ContentBuilderTocProcessor extends TocProcessor
 
 			debug_syslog(1, "resolve_single_link normalize_link from [".$orig."] to [".$element->href."] \n");
 		}
-			
+
 		//handle names in links .
 		$idx=strpos($element->href, '#');
 		$hasname = false;
@@ -874,16 +745,16 @@ class ContentBuilderTocProcessor extends TocProcessor
 		$oDocumentController = $this->controller->getController('document');
 
 		$title_nodes = $this->titles[$toc_node->name];
-		$tnodes_count = count($title_nodes); 
+		$tnodes_count = count($title_nodes);
 		if(1 ==  $tnodes_count)
 		{
-			$alias = str_replace("/", "|", $toc_node->name); 
+			$alias = str_replace("/", "|", $toc_node->name);
 			$oDocumentController->insertAlias($this->module_srl, $toc_node->document_srl, $alias);
 			//debug_syslog(1, "one node insert alias for ".$toc_node->document_srl." alias=".$alias."\n");
-			
-		}else if (1 < count($title_nodes) ) 
+
+		}else if (1 < count($title_nodes) )
 		{
-			$ti = 0; 
+			$ti = 0;
 			foreach($title_nodes as $tnode )
 			{
 				$ti+=1;
@@ -894,21 +765,21 @@ class ContentBuilderTocProcessor extends TocProcessor
 						$alias = trim($tnode->parent->name)."-".trim($tnode->name);
 					}
 				}else{
-					$alias = $tnode->name.$ti; 	
+					$alias = $tnode->name.$ti;
 				}
-				
-				$alias = str_replace("/", "|",$alias); 
-				
+
+				$alias = str_replace("/", "|",$alias);
+
 				$oDocumentController->insertAlias($this->module_srl, $tnode->document_srl, $alias);
 				debug_syslog(1, "multinode insert alias for ".$tnode->document_srl." alias=".$alias."\n");
 			}
 		}
-		
+
 		$this->titles[$toc_node->name] = array(); //mark as alias inerted
-		
+
 	}
-	
-	
+
+
 	function update_document_content($toc_node, $content)
 	{
 		if(!isset($toc_node->document_srl)){
@@ -924,7 +795,7 @@ class ContentBuilderTocProcessor extends TocProcessor
 			return;
 		}
 		debug_syslog(1, "update_document_content 1 \n");
-	
+
 		$obj = NULL;
 		$obj->{'module_srl'} = $this->module_srl;
 		$obj->{'allow_comment'} = 'Y';
@@ -934,9 +805,9 @@ class ContentBuilderTocProcessor extends TocProcessor
 		$obj->{'document_srl'} = $toc_node->document_srl;
 		$obj->{'category_srl'} = $oDocument->get('category_srl');
 
-		
+
 		try{
-	
+
 			debug_syslog(1, "update_document_content 2 \n");
 			$oDocumentController = $this->controller->getController('document');
 			$output = $oDocumentController->updateDocument($oDocument, $obj);
@@ -1055,7 +926,7 @@ class ContentBuilderTocProcessor extends TocProcessor
 		$contents = $this->removeTag($contents, $start, $end);
 		return $contents;
 	}
-	
+
 	function removeHtmlTag($contents,$tag)
 	{
 
@@ -1070,7 +941,7 @@ class ContentBuilderTocProcessor extends TocProcessor
 
 		return $contents;
 	}
-	
+
 
 	function get_node_contents($toc_node)
 	{
@@ -1092,7 +963,7 @@ class ContentBuilderTocProcessor extends TocProcessor
 
 		$contents = $this->removeHtmlTag($contents, "<body>");
 		$contents = $this->removeHtmlTag($contents, "</body>");
-			
+
 		$contents = $this->removeTag($contents, "<html", ">");
 		$contents = $this->removeHtmlTag($contents, "</html>");
 
@@ -1101,13 +972,13 @@ class ContentBuilderTocProcessor extends TocProcessor
 
 		$contents = $this->removeTag($contents, "<link", ">");
 		$contents = $this->removeHtmlTag($contents, "</link>");
-		
+
 		debug_syslog(1, "cleanup document contents complete \n");
-		
+
 		$contents = preg_replace('/^[ \t]*[\r\n]+/m', '', $contents);
-		
+
 		return $contents;
-		
+
 
 	}
 
@@ -1128,29 +999,29 @@ class ContentBuilderTocProcessor extends TocProcessor
 	function get_first_node(){
 		return $this->first_node;
 	}
-	
+
 	function add_toc_title($toc_node)
 	{
 		$title = $toc_node->name;
 		$old_toc = $this->titles[$title];
-		
+
 		if(isset ($old_toc) ){
 			if( isset ($toc_node->document_srl) ){
-				
-				foreach($old_toc as $old ){ //skip same document_srl 
+
+				foreach($old_toc as $old ){ //skip same document_srl
 					if($old->document_srl == $toc_node->document_srl){
 						return;
 					}
 				}
 			}
 			$this->titles[$title][] = $toc_node;
-			
+
 		}else{
-		
+
 			$this->titles[$title] = array($toc_node);
 		}
 	}
-	
+
 	function insert_document($toc_node)
 	{
 
@@ -1158,8 +1029,8 @@ class ContentBuilderTocProcessor extends TocProcessor
 		if( 0 == strcmp('home', $toc_node->name)) return;
 
 		set_time_limit(0);
-		
-		
+
+
 		if( !isset($this->first_node)){
 			$this->first_node = $toc_node;
 		}
@@ -1170,16 +1041,16 @@ class ContentBuilderTocProcessor extends TocProcessor
 
 		$oDocumentModel = $this->controller->getModel('document');
 		$oDocumentController = $this->controller->getController('document');
-		
-		
-		
-		
+
+
+
+
 		if ( 0 == strcmp('', trim($toc_node->relpath)) ) //a not navigable node
 		{
 			$this->not_navigable[$toc_node->name] = $toc_node;
-			
+
 			debug_syslog(1, "not navigable ".$toc_node->name."\n");
-		}		
+		}
 		else if( false != ($idx = strpos($toc_node->relpath, "#")) ){
 
 			$toc_node->rel_name = substr($toc_node->relpath, 1+$idx);
@@ -1196,7 +1067,7 @@ class ContentBuilderTocProcessor extends TocProcessor
 			}
 		}
 
-	
+
 
 		$obj = NULL;
 		$obj->{'module_srl'} = $this->module_srl;
@@ -1216,23 +1087,23 @@ class ContentBuilderTocProcessor extends TocProcessor
 			$obj->title = 'Untitled';
 		}
 
-		
+
 		$output = $oDocumentController->insertDocument($obj);
-		
-	
+
+
 		$obj->{'document_srl'} = $output->get('document_srl');
 
 		$toc_node->document_srl = $obj->document_srl;
-		
+
 		$this->add_toc_title($toc_node);
 
 		if ( 0 != strcmp('', $toc_node->relpath ) ){
 			$this->node_paths[$toc_node->relpath] = $toc_node;
-			
+
 			$oXedocsModel = $this->controller->getModel('xedocs');
-			
+
 			$oXedocsModel->add_original_url($obj->document_srl, $toc_node->relpath);
-			
+
 		}
 
 		if(!$output->toBool()){

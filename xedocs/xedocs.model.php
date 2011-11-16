@@ -599,62 +599,6 @@ class xedocsModel extends xedocs {
 		return $mid_set;
 	}
 
-
-
-	function getManualVersions($manual_set)
-	{
-		$oModuleModel = &getModel('module');
-		$extra_vars = $oModuleModel->getModuleExtraVars($manual_set);
-
-		$manual_versions = array();
-		foreach($manual_set as $module_srl)
-		{
-			$manual_versions[] =  $extra_vars[$module_srl]->version_label;
-		}
-		debug_syslog(1, "manual_versions:".print_r($manual_versions, true)."\n");
-		return $manual_versions;
-	}
-
-
-	function add_version($module_srl, $doc, $version, $version_doc_srl)
-	{
-
-		$document_versions = $this->getVersions($module_srl, $doc);
-
-		$insert = (0 == strcmp('', trim($document_versions)));
-
-		debug_syslog(1, "add_version document_srl=".$doc->document_srl." existing versions: |".$document_versions."|\n");
-
-		$oDocumentModel = &getModel('document');
-
-		//document titles can be duplicated in tree therefore we need aliases
-		$doc_title = trim($oDocumentModel->getAlias($doc->document_srl));
-
-		debug_syslog(1, "add_version document_srl=".$doc->document_srl." title |".$doc_title."|\n");
-		debug_syslog(1, "            version=".$version." version_doc_srl=".$version_doc_srl."\n");
-
-		$args=null;
-		$args->document_srl = $doc->document_srl;
-		$args->module_srl = $module_srl;
-		$args->var_idx = 1;
-		$args->eid = "version_labels";
-
-		if(0 != strcmp('', trim($document_versions))){
-			$args->value = $document_versions."|".$version."->".$version_doc_srl;
-		}else{
-			$args->value = "".$version."->".$version_doc_srl;
-		}
-
-		if($insert){
-			$output = executeQuery('xedocs.insertDocumentExtraVars', $args);
-
-		}else{
-			$output = executeQuery('xedocs.updateDocumentExtraVars', $args);
-		}
-
-	}
-
-
         /**
          * Gets all versions of a document
          * Mapping is done based on alias - if there are more documents with
@@ -672,21 +616,6 @@ class xedocsModel extends xedocs {
             $output = executeQuery('xedocs.getDocumentVersions', $args);
             if(!$output->toBool() || !$output->data) return "";
             return $output->data;
-	}
-
-	function clear_version($module_srl, $doc)
-	{
-
-		$args->document_srl = $doc->document_srl;
-		$args->module_srl = $module_srl;
-
-		$args->eid = "version_labels";
-		$args->var_idx = 1;
-
-		$output =  executeQuery('xedocs.deleteDocumentExtraVars', $args);
-
-		//debug_syslog(1, "delete_versios: ".print_r($output, true));
-
 	}
 
 	function getDocumentList($module_srl)
