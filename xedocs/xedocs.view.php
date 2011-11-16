@@ -110,7 +110,7 @@
                 $module_srl=$oDocument->get('module_srl');
 
                 if($document_srl){
-                    $documents_tree = $oXedocsModel->getMenuTree($module_srl, $document_srl);
+                    $documents_tree = $oXedocsModel->getMenuTree($module_srl, $document_srl, $this->module_info->mid);
                     //var_dump($documents_tree);
                 }
                 Context::set("documents_tree", $documents_tree);
