@@ -58,7 +58,6 @@
 
         <action name="dispXedocsAdminView" type="view" standalone="true" admin_index="true" />
         <action name="dispXedocsAdminInsertManual" type="view" standalone="true" setup_index="true" />
-        <action name="dispXedocsAdminImportManual" type="view" standalone="true" />
         <action name="dispXedocsAdminDeleteManual" type="view" standalone="true" />
 
 		<action name="dispXedocsAdminCompileKeywordList" type="view" standalone="true" />
@@ -79,7 +78,6 @@
         <action name="dispXedocsAdminSkinInfo" type="view" standalone="true" />
 
 
-        <action name="procXedocsAdminImportArchive" type="controller" standalone="true" />
         <action name="procXedocsAdminDelete"  type="controller" standalone="true" />
         <action name="procXedocsAdminInsertManual"  type="controller" standalone="true" />
         <action name="procXedocsAdminCompileKeywords" type="controller" standalone="true" />
