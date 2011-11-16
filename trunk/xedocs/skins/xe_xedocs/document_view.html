@@ -5,7 +5,7 @@
 		<div id="xeDocsVersion">
 			<div id="xeDocsEditorActions">
 				<a href="{getUrl('act','dispXedocsEditPage', 'entry', '')}"><img src="img/icon_add_page.png" alt="Add new page" title="Add new page"/></a>
-				<a href="{getUrl('act','dispXedocsEditPage')}"><img src="img/icon_edit_page.png" alt="Edit page" title="Edit page"/></a>
+				<a href="{getUrl('act','dispXedocsEditPage', 'entry', $entry)}"><img src="img/icon_edit_page.png" alt="Edit page" title="Edit page"/></a>
 				<a href="#" onclick="if(confirm('{$lang->confirm_delete}')) { doDeleteManual('{$oDocument->document_srl}'); }; return false;"><img src="img/icon_delete_page.png" alt="Delete page" title="Delete page"/></a>
 				<a href="{getUrl('act','dispXedocsHistory')}"><img src="img/icon_history.png" alt="History" title="History"/></a>
 			</div>

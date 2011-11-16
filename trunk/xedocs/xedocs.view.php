@@ -62,8 +62,9 @@
                     $oDocumentModel = getModel('document');
                     $document_srl = $oDocumentModel->getDocumentSrlByAlias($this->module_info->mid, $entry);
                     // If no document was found, just retrieve the root
-                    if(!$document_srl)
+                    if(!$document_srl){
                         $document_srl = $oXedocsModel->get_first_node_srl($this->module_srl);
+                    }
                 }else{
                     // Check if given document_srl exists (is valid)
                     if(!$oXedocsModel->check_document_srl($document_srl, $this->module_info))
@@ -79,6 +80,12 @@
                     $this->setTemplateFile('document_view');
 
                     $oDocument = $oDocumentModel->getDocument($document_srl);
+
+                    if(!isset($entry)){
+                        $entry = $oDocument->getDocumentAlias();
+                        Context::set('entry', $entry);
+                    }
+                    
                     // TODO Check that visit log is properly setup and works
                     $this->_addToVisitLog($entry);
 
