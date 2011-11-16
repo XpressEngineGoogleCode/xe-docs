@@ -157,7 +157,7 @@ class xedocsModel extends xedocs {
 
                 $list = array();
 		foreach($buff as $val) {
-			if(!preg_match('/^([0-9]+),([0-9]+),([0-9]+),([0-9]+),(.+)$/i', $val, $m)){
+			if(!preg_match('/^([0-9]+),([0-9]+),([0-9]+),([0-9]+),(.+),(.+)$/i', $val, $m)){
 				continue;
 			}
 			unset($obj);
@@ -165,7 +165,8 @@ class xedocsModel extends xedocs {
 			$obj->document_srl = $m[2];
 			$obj->depth = $m[3];
 			$obj->childs = $m[4];
-			$obj->title = $m[5];
+			$obj->alias = $m[5];
+                        $obj->title = $m[6];
 			$list[$obj->document_srl] = $obj;
 		}
 		return $list;
@@ -180,7 +181,6 @@ class xedocsModel extends xedocs {
 
 		$args->module_srl = $module_srl;
 		$output = executeQueryArray('xedocs.getTreeList', $args);
-
 		if(!$output->data || !$output->toBool()){
 			return array();
 		}
@@ -199,6 +199,7 @@ class xedocsModel extends xedocs {
                     $obj->parent_srl = (int)$node->parent_srl;
                     $obj->document_srl = (int)$node->document_srl;
                     $obj->title = $node->title;
+                    $obj->alias = $node->alias;
                     $list[$obj->document_srl] = $obj;
 		}
 
@@ -324,58 +325,6 @@ class xedocsModel extends xedocs {
 			return $url;
 	}
 
-	function make_links($nodes)
-	{
-
-		foreach($nodes as $node){
-
-			$node->{'href'} = $this->make_document_link($node->document_srl);
-		}
-	}
-
-	function getParents($document_srl, $module_srl)
-	{
-		$parents = $this->buildParents($document_srl, $module_srl);
-		$this->make_links($parents, $module_srl);
-		return $parents;
-	}
-
-	function getChildren($document_srl, $module_srl)
-	{
-		$children = $this-> buildChildren($document_srl, $module_srl);
-		$this->make_links($children, $module_srl);
-
-		return $children;
-	}
-
-
-	function getSiblings($document_srl, $module_srl)
-	{
-		$siblings = $this-> buildSiblings($document_srl, $module_srl);
-		$this->make_links($siblings, $module_srl);
-
-		return $siblings;
-
-	}
-
-	function buildSiblings($document_srl, $module_srl){
-		$list[] = $this->readXedocsTreeCache($module_srl);
-
-		$result = array();
-		$home = $this->getHomeNode($list);
-		if($home->document_srl == $document_srl){
-
-			return $result;
-		}
-
-		$parent_srl = $this->getParentSrl($document_srl, $module_srl, $list);
-
-		$result[] = $this->getNodeSiblings($document_srl, $module_srl, $parent_srl, $list);
-
-
-		return $result;
-	}
-
 	function getParentSrl($document_srl, $module_srl, $list){
 
 		$parent_srl;
@@ -392,138 +341,7 @@ class xedocsModel extends xedocs {
 		return $parent_srl;
 	}
 
-	function getNodeSiblings($document_srl, $module_srl, $parent_srl, $list){
-
-
-		foreach($list as $node => $ns){
-			foreach($ns as $n =>$val){
-
-				if($parent_srl == $val->parent_srl
-					//&& $document_srl !=  $val->document_srl
-				){
-                                    if($val->parent_srl != 0) {
-						unset($obj);
-						$obj->parent_srl =  $val->parent_srl;
-						$obj->document_srl = $val->document_srl;
-						$obj->title = $val->title;
-						$result[] =  $obj;
-					}
-				}
-			}
-		}
-
-		return $result;
-	}
-
-	function buildChildren($document_srl, $module_srl){
-		$list[] = $this->readXedocsTreeCache($module_srl);
-
-		$result = array();
-/*
-		$home = $this->getHomeNode($list);
-		if($home->document_srl == $document_srl){
-			$result = $this->getHomeChildrenNode($list,$document_srl);
-			return $result;
-		}
-*/
-		foreach($list as $node => $ns){
-			foreach($ns as $n =>$val){
-
-				if($document_srl == $val->parent_srl){
-					unset($obj);
-					$obj->parent_srl =  $val->parent_srl;
-					$obj->document_srl = $val->document_srl;
-					$obj->title = $val->title;
-					$result[] =  $obj;
-				}
-			}
-		}
-
-		return $result;
-	}
-
-	function getHomeChildrenNode($list, $document_srl){
-
-		foreach($list as $node => $ns){
-			foreach($ns as $n =>$val){
-				if(0 == $val->parent_srl && $val->document_srl != $document_srl){
-					unset($obj);
-					$obj->parent_srl =  $val->parent_srl;
-					$obj->document_srl = $val->document_srl;
-					$obj->title = $val->title;
-					$result[] =  $obj;
-				}
-			}
-
-		}
-		return $result;
-	}
-
-	function buildParents($document_srl, $module_srl)
-	{
-
-		//get parents for document_srl
-		$result = array();
-		$doc_srl = $document_srl;
-		//get all nodes in a list
-		$documents_tree = $this->readXedocsTreeCache($module_srl);
-
-                foreach($documents_tree as $node){
-
-
-
-                }
-
-		while(0 < $doc_srl){
-			$node = $this->getNode($list, $doc_srl);
-			if($node->parent_srl != 0){
-				$result[] = $node;//add parent_srl
-			}
-			$doc_srl = $node->parent_srl;//check for parent_srl
-		}
-		$result[] = $this->getHomeNode($list);
-		return $result;
-	}
-
-	function getHomeNode($list){
-		foreach($list as $node => $ns){
-			foreach($ns as $n =>$val){
-                            if($val->parent_srl == 0) {
-					unset($obj);
-					$obj->parent_srl =  0;
-					$obj->document_srl = $val->document_srl;
-					$obj->title = $val->title;
-					return $obj;
-				}
-
-			}
-
-		}
-	}
-
-	function getNode($list, $doc_srl)
-	{
-		foreach($list as $node => $ns){
-			foreach($ns as $n =>$val){
-
-				$document_srl = $val->document_srl;
-				if($doc_srl == $document_srl){
-
-					unset($obj);
-					$obj->parent_srl =  $val->parent_srl;
-					$obj->document_srl = $document_srl;
-					$obj->title = $val->title;
-					return $obj;
-				}
-			}
-
-		}
-	}
-
-
-
-
-	function getModuleList($add_extravars = false)
+        function getModuleList($add_extravars = false)
 	{
 		$args->sort_index = "module_srl";
 		$args->page = 1;
@@ -1438,14 +1256,14 @@ class xedocsModel extends xedocs {
          *
          * Used for displaying the sidebar tree menu of the documentation
          */
-        function getMenuTree($module_srl, $document_srl){
+        function getMenuTree($module_srl, $document_srl, $mid){
                 /** Create menu tree */
                 $documents_tree = $this->readXedocsTreeCache($module_srl);
-                $current_node = $documents_tree[$document_srl];
+                $current_node = &$documents_tree[$document_srl];
 
                 /* Mark current node as type 'active' */
-                if($documents_tree[$document_srl]->parent_srl != 0)
-                    $documents_tree[$document_srl]->type = 'current';
+                if($current_node->parent_srl != 0)
+                    $current_node->type = 'current';
 
                 /* Find and mark parents */
                 $node_srl_iterator = $current_node->parent_srl;
@@ -1458,6 +1276,7 @@ class xedocsModel extends xedocs {
                 }
 
                 foreach($documents_tree as $node){
+                    $node->href = getSiteUrl('document','','mid',$mid,'entry',$node->alias);
                     if(!isset($documents_tree[$node->document_srl]->type)){
                         if($node->parent_srl == 0)
                                 $documents_tree[$node->document_srl]->type = 'root';
@@ -1469,7 +1288,6 @@ class xedocsModel extends xedocs {
                     }
                 }
 
-                $this->make_links($documents_tree);
                 return $documents_tree;
         }
 }

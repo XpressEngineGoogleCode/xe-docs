@@ -366,7 +366,6 @@
         {
                 $oXedocsModel = &getModel('xedocs');
                 $list = $oXedocsModel->loadXedocsTreeList($module_srl);
-
                 $dat_file = sprintf('%sfiles/cache/xedocs/%d.dat', _XE_PATH_,$module_srl);
                 $xml_file = sprintf('%sfiles/cache/xedocs/%d.xml', _XE_PATH_,$module_srl);
 
@@ -375,16 +374,15 @@
 
 
                 foreach($list as $key => $val) {
-                        $buff .= sprintf('%d,%d,%d,%d,%s%s',
+                        $buff .= sprintf('%d,%d,%d,%d,%s,%s%s',
                         $val->parent_srl,$val->document_srl,
-                        $val->depth,$val->childs,$val->title,"\n");
+                        $val->depth,$val->childs,$val->alias,$val->title,"\n");
 
                         $xml_buff .= sprintf('<node node_srl="%d" parent_srl="%d"><![CDATA[%s]]></node>%s',
                         $val->document_srl, $val->parent_srl, $val->title,"\n");
                 }
 
                 $xml_buff .= '</root>';
-
                 FileHandler::writeFile($dat_file, $buff);
                 FileHandler::writeFile($xml_file, $xml_buff);
 
