@@ -619,7 +619,7 @@ class xedocsModel extends xedocs {
 	function add_version($module_srl, $doc, $version, $version_doc_srl)
 	{
 
-		$document_versions = $this->get_versions($module_srl, $doc);
+		$document_versions = $this->getVersions($module_srl, $doc);
 
 		$insert = (0 == strcmp('', trim($document_versions)));
 
@@ -655,23 +655,23 @@ class xedocsModel extends xedocs {
 	}
 
 
-	function get_versions($module_srl, $doc)
+        /**
+         * Gets all versions of a document
+         * Mapping is done based on alias - if there are more documents with
+         * the same alias, but belonging to different manuals from the same
+         * manual set, they are considered versions of the same page.
+         *
+         * Input: manual_set, document_alias
+         * Ouput: array with: document_srl, document_alias, module_srl, mid, version_name
+         */
+	function getVersions($manual_set, $document_alias)
 	{
-		$args=null;
-		$args->document_srl = $doc->document_srl;
-		$args->module_srl = $module_srl;
-		$args->eid = "version_labels";
-		$args->var_idx = 1;
-
-		$output =  executeQuery('xedocs.getDocumentExtraVars', $args);
-
-		if (isset($output->data)){
-
-			return $output->data->value;
-		}
-
-		return "";
-
+            $args = null;
+            $args->manual_set = $manual_set;
+            $args->alias = $document_alias;
+            $output = executeQuery('xedocs.getDocumentVersions', $args);
+            if(!$output->toBool() || !$output->data) return "";
+            return $output->data;
 	}
 
 	function clear_version($module_srl, $doc)
