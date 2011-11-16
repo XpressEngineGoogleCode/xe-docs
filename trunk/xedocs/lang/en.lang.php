@@ -62,4 +62,6 @@ $lang->filter_keywords = "Filter Keywords";
 $lang->cmd_clear_kewords = "Clear Keywords";
 $lang->cmd_create_keword = "Create Keyword";
 $lang->cmd_filter_kewords = "Apply filter";
+
+$lang->use_comment = 'Use Comments';
 ?>
