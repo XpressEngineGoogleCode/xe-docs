@@ -613,8 +613,8 @@ class xedocsModel extends xedocs {
             $args = null;
             $args->manual_set = $manual_set;
             $args->alias = $document_alias;
-            $output = executeQuery('xedocs.getDocumentVersions', $args);
-            if(!$output->toBool() || !$output->data) return "";
+            $output = executeQueryArray('xedocs.getDocumentVersions', $args);
+            if(!$output->toBool() || !$output->data) return array();
             return $output->data;
 	}
 
