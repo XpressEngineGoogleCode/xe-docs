@@ -81,6 +81,28 @@ class xedocsAdminController extends xedocs {
 
 	}
 
+        /**
+         * @brief Recreates document aliases
+         */
+        function procXedocsAdminArrangeList() {
+                $oModuleModel = &getModel('module');
+                $oDocumentController = &getController('document');
+
+                $module_srl = Context::get('module_srl');
+                $module_info = $oModuleModel->getModuleInfoByModuleSrl($module_srl);
+                if(!$module_info->module_srl || $module_info->module != 'xedocs') return new Object(-1,'msg_invalid_request');
+
+                $args->module_srl = $module_srl;
+                $output = executeQueryArray('xedocs.getDocumentWithoutAlias', $args);
+                if(!$output->toBool() || !$output->data) return new Object();
+
+                foreach($output->data as $key => $val) {
+                        if($val->alias_srl) continue;
+                        $result = $oDocumentController->insertAlias($module_srl, $val->document_srl, $val->alias_title);
+                        if(!$result->toBool()) $oDocumentController->insertAlias($module_srl, $val->document_srl, $val->alias_title.'_'.$val->document_srl);
+                }
+        }
+
 
 	function procXedocsAdminDelete()
 	{
@@ -1129,6 +1151,7 @@ class ContentBuilderTocProcessor extends TocProcessor
 	{
 		debug_syslog(1, "inserting complete !!! \n");
 	}
+
 
 }
 
