@@ -108,12 +108,7 @@
 
                 /* Get manual tree */
                 $module_srl=$oDocument->get('module_srl');
-
-                if($document_srl){
-                    $documents_tree = $oXedocsModel->getMenuTree($module_srl, $document_srl, $this->module_info->mid);
-                    //var_dump($documents_tree);
-                }
-                Context::set("documents_tree", $documents_tree);
+                $this->_loadSidebarTreeMenu($module_srl, $document_srl);
 
                 /* Get versioning information */
                 $manual_set = $this->module_info->help_name;
@@ -196,8 +191,12 @@
             function dispXedocsHistory()
             {
                     $oDocumentModel = &getModel('document');
+                    $oXedocsModel = &getModel('xedocs');
                     $document_srl = Context::get('document_srl');
                     $page = Context::get('page');
+
+                    if(!$document_srl)
+                         $document_srl = $oXedocsModel->get_first_node_srl($this->module_srl);
                     $oDocument = $oDocumentModel->getDocument($document_srl);
 
                     if(!$oDocument->isExists()){
@@ -218,6 +217,10 @@
                     }
 
                     Context::set('oDocument', $oDocument);
+
+                    $module_srl=$oDocument->get('module_srl');
+                    $this->_loadSidebarTreeMenu($module_srl, $document_srl);
+
                     $this->setTemplateFile('document_history');
             }
 
@@ -527,6 +530,14 @@
                             }
                     }
                     $visit_log[$module_srl][] = $entry;
+            }
+
+            function _loadSidebarTreeMenu($module_srl, $document_srl){
+                if($document_srl){
+                    $oXedocsModel = &getModel('xedocs');
+                    $documents_tree = $oXedocsModel->getMenuTree($module_srl, $document_srl, $this->module_info->mid);
+                }
+                Context::set("documents_tree", $documents_tree);
             }
 
 
