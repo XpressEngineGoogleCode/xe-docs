@@ -24,7 +24,7 @@
 			<!--@foreach($histories as $val)-->
 			<tr>
 				<td class="left">
-					<span class="buttonOfficial"><button type="button" onclick="jQuery('#historyContent{$val->history_srl}').toggleClass('hide');return false;">{$lang->cmd_view}</button></span>
+					<span class="buttonOfficial"><a type="button" href="{getUrl('act','dispXedocsHistoryPage','history_srl',$val->history_srl)}">{$lang->cmd_view}</a></span>
 					<span class="buttonOfficial"><button type="button" onclick="location.href='{getUrl('act','dispXedocsEditPage','history_srl',$val->history_srl)}';return false;">{$lang->cmd_edit_page}</button></span>
 				</td>
 				<td class="center"><a href="#" onclick="return false;" class="member_{$val->member_srl}">{$val->nick_name}</a></td>
