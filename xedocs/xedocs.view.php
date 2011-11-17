@@ -82,10 +82,10 @@
                     $oDocument = $oDocumentModel->getDocument($document_srl);
 
                     if(!isset($entry)){
-                        $entry = $oDocument->getDocumentAlias();
+                        $entry = $oDocumentModel->getAlias($oDocument->document_srl);
                         Context::set('entry', $entry);
                     }
-                    
+
                     // TODO Check that visit log is properly setup and works
                     $this->_addToVisitLog($entry);
 
@@ -121,8 +121,9 @@
                 $manual_set = $this->module_info->help_name;
                 if($entry)
                     $alias = $entry;
-                else
-                    $alias = $oDocument->getDocumentAlias();
+                else {
+                    $alias = $oDocumentModel->getAlias($oDocument->document_srl);
+                }
                 $versions = $oXedocsModel->getVersions($manual_set, $alias);
 
                 $version_count = count($versions);
