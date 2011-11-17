@@ -190,7 +190,7 @@
 
                 Context::addJsFilter($this->module_path.'tpl/filter', 'insert.xml');
 
-                $this->setTemplateFile('write_form');
+                $this->setTemplateFile('document_edit');
             }
 
             /**

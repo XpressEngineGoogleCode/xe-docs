@@ -1,0 +1,37 @@
+<!--#include("header.html")-->
+
+<form action="./" method="post" onsubmit="return procFilter(this, insert)" id="fo_write">
+	<input type="hidden" name="mid" value="{$mid}" />
+	<input type="hidden" name="document_srl" value="{$document_srl}" />
+	
+	<!--@if($history)-->
+		<input type="hidden" name="content" value="{htmlspecialchars($history->content)}" />
+	<!--@else-->
+		<input type="hidden" name="content" value="{$oDocument->getContentText()}" />
+	<!--@end-->
+	
+	<!--@if($oDocument->isExists()&&$oDocument->get('title')=='Front Page')-->
+		<input type="hidden" name="title" value="{$oDocument->get('title')}" />
+	<!--@end-->
+
+	<div id="xeDocsBody2">
+
+		<!--@if($oDocument->get('title')!='Front Page')-->
+			<input type="text" name="title" value="{$entry}" class="inputTypeText" />
+		<!--@end-->
+
+
+		<div class="editor">{$oDocument->getEditor()}</div>
+
+		<div class="tag">
+			{$lang->tag} : <input type="text" name="tags" value="{htmlspecialchars($oDocument->get('tags'))}" class="inputText" title="Tag" /> ({$lang->about_tag})
+			<p />
+		</div>
+
+		<div class="manualNavigation">
+			<a href="#" onclick="jQuery('#fo_write').submit();return false;" class="xeDocsButton"><span>{$lang->cmd_registration}</span></a>
+		</div>
+	</div>
+</form>
+
+<!--#include("footer.html")-->

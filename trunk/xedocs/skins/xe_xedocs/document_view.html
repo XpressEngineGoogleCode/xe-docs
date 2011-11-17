@@ -3,12 +3,14 @@
 	<div id="xeDocsBody">
 		<!--#include("column_left.html")-->
 		<div id="xeDocsVersion">
+			<!--@if($grant->manager)-->
 			<div id="xeDocsEditorActions">
 				<a href="{getUrl('act','dispXedocsEditPage', 'entry', '')}"><img src="img/icon_add_page.png" alt="Add new page" title="Add new page"/></a>
 				<a href="{getUrl('act','dispXedocsEditPage', 'entry', $entry)}"><img src="img/icon_edit_page.png" alt="Edit page" title="Edit page"/></a>
 				<a href="#" onclick="if(confirm('{$lang->confirm_delete}')) { doDeleteManual('{$oDocument->document_srl}'); }; return false;"><img src="img/icon_delete_page.png" alt="Delete page" title="Delete page"/></a>
 				<a href="{getUrl('act','dispXedocsHistory')}"><img src="img/icon_history.png" alt="History" title="History"/></a>
 			</div>
+			<!--@end-->
 			<p>
                             <!--@if(count($versions) > 0) -->
                             <strong>{$lang->versions}</strong>&nbsp;&nbsp;&nbsp;
@@ -105,6 +107,7 @@
 			<div id="xeDocsContentContainer">
 				{$oDocument->get('content')}
 			</div>
+			<!--@if($oDocumentPrev && $oDocumentNext)-->
 			<div id='xeDocsPageNav'>
 				<!--@if($module_info->toc_location=='Left')-->
 				<!--@end-->
@@ -124,6 +127,7 @@
 				<!--@end-->
 				<div style="clear: right;"></div>
 			</div>
+			<!--@end-->
 			<!--@if($oDocument->isExists())-->
 				<div id="xeDocsComments">
 				<!--@if($oDocument->allowComment())-->
