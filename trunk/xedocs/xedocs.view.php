@@ -194,6 +194,38 @@
             }
 
             /**
+             * @brief View used for diplaying an old version of a document
+             */
+            function dispXedocsHistoryPage()
+            {
+                if(!$this->grant->is_admin){
+                        return $this->dispXedocsMessage('msg_not_permitted');
+                }
+
+                $oDocumentModel = &getModel('document');
+                $document_srl = Context::get('document_srl');
+
+                $oDocument = $oDocumentModel->getDocument(0, $this->grant->manager);
+                $oDocument->setDocument($document_srl);
+                $oDocument->add('module_srl', $this->module_srl);
+                Context::set('document_srl',$document_srl);
+
+                Context::set('oDocument', $oDocument);
+                $history_srl = Context::get('history_srl');
+                if($history_srl) {
+                        $output = $oDocumentModel->getHistory($history_srl);
+                        if($output && $output->content != null){
+                                Context::set('history', $output);
+                        }
+                }
+
+                $module_srl=$oDocument->get('module_srl');
+                $this->_loadSidebarTreeMenu($module_srl, $document_srl);
+
+                $this->setTemplateFile('document_history_view');
+            }
+
+            /**
              * @brief View used for displaying document history - a log of all edits made on a document
              */
             function dispXedocsHistory()
