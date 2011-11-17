@@ -361,7 +361,7 @@ a.xeDocsButtonAdmin, a.xeDocsButton  {
 }
 
 .xeDocsTable tbody tr:hover td {
-	background: #fff;
+	background: #e5f6ff;
 }
 
 .xeDocsTable th.left, .xeDocsTable td.left {
@@ -421,4 +421,8 @@ a.xeDocsButtonAdmin, a.xeDocsButton  {
 	padding: 10px 0 0 0;
 	color: #ba0000;
 	font-size: 22px;
+}
+
+#xeDocsBody2 {
+	padding: 10px;
 }
