@@ -268,19 +268,10 @@
 
                             $keywords = $oXedocsModel->string_to_keyword_list($module_info->keywords);
                             //debug_syslog(1, "There are ".count($keywords)." keyword targets\n");
-                            $kcontent = $oXedocsModel->get_document_content_with_keywords($oDocument, $keywords);
+                            $content = $oXedocsModel->replaceKeywordsWithLinks($oDocument->get('content'), $keywords);
                             //debug_syslog(1, "got kcontent\n");
-                            if( 0 < $kcontent->fcount ){
-                                    $content = $kcontent->content;
-                                    //debug_syslog(1, "There are ".count($kcontent->links)." links inserted\n");
-                                    Context::set("klinks", $kcontent->links);
-                            }
-                            else{
-                                    Context::set("klinks", null);
-                                    //debug_syslog(1, "No keywords matched in document\n");
-                                    $content = $oDocument->getContent(false);
-                            }
-
+                            Context::set("klinks", 1);
+                            //debug_syslog(1, "No keywords matched in document\n");
                     }
             else{
                             Context::set("klinks", null);

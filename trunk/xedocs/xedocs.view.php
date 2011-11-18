@@ -92,17 +92,14 @@
                     // If current document exists and has keywords, replace keywords with links to corresponding articles
                     if(isset($this->module_info->keywords)){
                         $keywords = $oXedocsModel->string_to_keyword_list($this->module_info->keywords);
-                        $kcontent = $oXedocsModel->get_document_content_with_keywords($oDocument, $keywords);
-                        if( 0 < $kcontent->fcount ){
-                                $content = $kcontent->content;
-                        }
+                        $content = $oXedocsModel->replaceKeywordsWithLinks($oDocument->get('content'), $keywords);
+                        $oDocument->add('content', $content);
                     }
                     else{
                         // Get content without popup menu
                         $content = $oDocument->getContent(false);
+                        $oDocument->add('content', $content);
                     }
-                    $oDocument->add('content', $content);
-
                 } else {
                     $this->setTemplateFile('create_document');
 
