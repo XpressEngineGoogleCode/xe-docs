@@ -29,12 +29,9 @@
             <title xml:lang="zh-TW">發表評論</title>
         </grant>
     </grants>
-
     <permissions >
     </permissions>
-
     <actions>
-
         <action name="dispXedocsContent" type="view" />
         <action name="dispXedocsSearchResults" type="view" />
         <action name="dispXedocsEditPage" type="view" />
@@ -46,49 +43,41 @@
         <action name="dispXedocsReplyComment" type="view" />
         <action name="dispXedocsModifyComment" type="view" />
         <action name="dispXedocsDeleteComment" type="view" />
-		<action name='dispXedocsCommentEditor' type="view" />
-
-
+	<action name='dispXedocsCommentEditor' type="view" />
         <action name="procXedocsInsertDocument" type="controller" />
         <action name="procXedocsInsertComment" type="controller" />
         <action name="procXedocsDeleteDocument" type="controller" />
         <action name="procXedocsDeleteComment" type="controller" />
         <action name="procXedocsMoveTree" type="controller" />
         <action name="procXedocsRecompileTree" type="controller" />
-
-
-        <action name="dispXedocsAdminView" type="view" standalone="true" admin_index="true" />
-        <action name="dispXedocsAdminInsertManual" type="view" standalone="true" setup_index="true" />
+        <action name="dispXedocsAdminView" type="view" standalone="true" admin_index="true" menu_name="dummy_menu" menu_index="true" />
+        <action name="dispXedocsAdminInsertManual" type="view" standalone="true" setup_index="true" menu_name="dummy_menu" />
         <action name="dispXedocsAdminDeleteManual" type="view" standalone="true" />
-
-		<action name="dispXedocsAdminCompileKeywordList" type="view" standalone="true" />
-		<action name="dispXedocsAdminEditKeyword" type="view" standalone="true" />
-		<action name="dispXedocsAdminDeleteKeyword" type="view" standalone="true" />
-		<action name="dispXedocsAdminAddKeyword" type="view" standalone="true" />
-		<action name="dispXedocsAdminManualPageSelect" type="view" standalone="true" />
-		<action name='dispXedocsAdminSelectDocumentList' type="view"  standalone="true"/>
-		<action name='dispXedocsAdminClearKeywordList' type="view"  standalone="true"/>
-		<action name='dispXedocsAdminReviewKeywords' type="view"  standalone="true"/>
-
-
-
+        <action name="dispXedocsAdminCompileKeywordList" type="view" standalone="true" />
+        <action name="dispXedocsAdminEditKeyword" type="view" standalone="true" />
+        <action name="dispXedocsAdminDeleteKeyword" type="view" standalone="true" />
+        <action name="dispXedocsAdminAddKeyword" type="view" standalone="true" />
+        <action name="dispXedocsAdminManualPageSelect" type="view" standalone="true" />
+        <action name='dispXedocsAdminSelectDocumentList' type="view"  standalone="true"/>
+        <action name='dispXedocsAdminClearKeywordList' type="view"  standalone="true"/>
+        <action name='dispXedocsAdminReviewKeywords' type="view"  standalone="true"/>
         <action name="dispXedocsAdminManualInfo" type="view" standalone="true" />
         <action name="dispXedocsAdminGrantInfo" type="view" standalone="true" />
         <action name="dispXedocsAdminAdditionSetup" type="view" standalone="true" />
         <action name="dispXedocsAdminArrange" type="view" standalone="true" />
         <action name="dispXedocsAdminSkinInfo" type="view" standalone="true" />
-
-
         <action name="procXedocsAdminDelete"  type="controller" standalone="true" />
         <action name="procXedocsAdminInsertManual"  type="controller" standalone="true" />
         <action name="procXedocsAdminCompileKeywords" type="controller" standalone="true" />
         <action name="procXedocsAdminEditKeyword" type="controller" standalone="true" />
         <action name="procXedocsAdminAddKeyword" type="controller" standalone="true" />
         <action name="procXedocsAdminArrangeList" type="controller" standalone="true" />
-
-
         <action name="getXedocsTreeList" type="model" />
         <action name="getManualList" type="model" standalone="true" />
-
     </actions>
+    <menus>
+        <menu name="dummy_menu">
+            <title xml:lang="en">XE Docs</title>
+        </menu>
+    </menus>
 </module>
