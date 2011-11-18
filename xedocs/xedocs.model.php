@@ -672,123 +672,87 @@ class xedocsModel extends xedocs {
 		return $result;
 	}
 
-	function get_document_content_with_keywords($oDocument, $keywords, $tags="p", $color='yellow')
+        /**
+         * @brief Constructs an URL from a given document_srl and keyword
+         *
+         * The link will point towards the given document and the keyword will be used as link text
+         */
+        function _getKeywordLink($document_srl, $keyword){
+            $oDocumentModel = &getModel('document');
+            $oModuleModel = &getModel('module');
+
+            $module_info = $oModuleModel->getModuleInfoByDocumentSrl($document_srl);
+            $entry = $oDocumentModel->getAlias($document_srl);
+
+            $url = getSiteUrl('', 'mid',$module_info->mid,'entry',$entry);
+            return "<a id='keyword_$document_srl' class='keyword_link' href='$url'>$keyword</a>";
+        }
+
+        /**
+         * @brief Replaces a set of keywords with hyperlinks
+         *
+         * This methods uses simple_html_dom library in order to search
+         * for the keywords only in document text and not in HTML markup
+         *
+         * Example:
+         * keyword: world, url: index.php?page=about-the-world
+         * Input:
+         * <<< HTML
+         *  <h2> Hello world! </h2>
+         *  It sure is fun going around the world.
+         *  <a href="/goodnight-world>Say Good night!</a>
+         *  <a href="/goodmorning-world>Say Good morning!</a>
+         * HTML;
+         * Output:
+         * <<< HTML
+         *  <h2> Hello <a href="index.php?page=about-the-world">world</a>! </h2>
+         *  It sure is fun going around the <a href="index.php?page=about-the-world">world</a>.
+         *  <a href="/goodnight-world>Say Good night!</a>
+         *  <a href="/goodmorning-world>Say Good morning!</a>
+         * HTML;*
+         *
+         * Reference: http://stackoverflow.com/questions/3151064/find-and-replace-keywords-by-hyperlinks-in-an-html-fragment-via-php-dom
+         */
+	function replaceKeywordsWithLinks($content, $keywords)
 	{
-		require_once 'simple_html_dom.php';
+            $keyword_frequency = array();
+            $keyword_replacement = array();
 
+            // Replace keywords with links and save replacements made in an array
+            $dom = new DOMDocument;
+            $dom->formatOutput = TRUE;
+            $dom->loadHTML($content);
+            $xpath = new DOMXPath($dom);
 
-		$document_srl = $oDocument->document_srl;
-		$content = $oDocument->getContent(false);
+            foreach($keywords as $keyword){
+                unset($nodes);
+                $nodes = $xpath->query('//text()[contains(., "' . $keyword->title .'")]');
+                foreach($nodes as $node) {
+                    $link     = $this->_getKeywordLink($keyword->target_document_srl, $keyword->title);
+                    $replaced = str_replace($keyword->title, $link, $node->wholeText);
+                    $keyword_frequency[$keyword->title]++;
+                    $keyword_replacement[$keyword->title] = $link;
+                    $newNode  = $dom->createDocumentFragment();
+                    $newNode->appendXML($replaced);
+                    $node->parentNode->replaceChild($newNode, $node);
+                }
+            }
 
-		$dom = str_get_html($content);
-		$link_id_prefix = 'keyword_link_';
-		$link_id = 1;
-		$fcount = 0;
+            $content = $dom->saveHTML($dom->documentElement);;
 
+            // Add a See also section at the end of the document, based on previous replacements made
+            $links = array();
+            foreach($keyword_frequency as $keyword => $frequency){
+                $links[$frequency][] = $keyword_replacement[$keyword];
+            }
 
-		foreach($keywords as $key){
-			$key->freq = 0;
-		}
-		//debug_syslog(1, "fequencies cleared \n");
-		$result = null;
-		$result->links = array();
+            $see_also_content = '<h4> See Also:</h4><ul>';
+            foreach($links as $link_group){
+                foreach($link_group as $link) $see_also_content .= "<li>" . $link . "</li>";
+            }
+            $see_also_content .= '</ul>';
 
-		foreach( $dom->find($tags) as $text){
-		  foreach($keywords as $key){
-
-		  	  $kvalue = $key->title;
-		  	  if("" == trim($kvalue)){
-		  	  		continue;
-		  	  }
-
-		  	  //do not make links to self
-		      if($document_srl == $key->target_document_srl){
-		      	continue;
-		      }
-		      $m = array();
-		      $res = preg_match_all("%".$kvalue."%", $text->plaintext, $m);
-		      if( ! $res ) continue;
-		      $fcount += $res;
-		      $key->freq = $res;
-
-		      $lid = $link_id_prefix.$link_id;
-		      $link_id += 1;
-
-		      //add links in result
-		      $obj = null;
-		      $obj->id = $lid;
-		      $obj->key = $key;
-
-
-			  $replacement = $this->make_keyword_link($key, $lid, $color);
-			  $obj->url = $replacement->url;
-			  $result->links[] = $obj;
-
-		      $replaced = preg_replace("%".$kvalue."%", $replacement->href, $text->plaintext);
-		      $text->innertext = $replaced;
-		  }
-		}
-
-		//debug_syslog(1, "".count($result->links)."links inserted \n");
-
-
-		$lcontent =  "".$dom;
-
-		$klinks = array();
-		$result->fcount = $fcount;
-		if( 0 < $fcount ){
-
-
-			$klinks = array();
-			foreach($keywords as $key){
-				if( 0 == $key->freq) continue;
-
-				$lid = $link_id_prefix.$link_id;
-		      	$link_id += 1;
-
-		      	$link=null;
-		      	$link->key = $key->title;
-
-				$replacement = $this->make_keyword_link($key, $lid, $color);
-				$link->href = $replacement->href;
-
-				$llist =  $klinks[$key->freq];
-				if(!isset($llist)){
-					$llist = array();
-					$llist[] = $link;
-
-				}else{
-					$llist[] = $link;
-				}
-				$klinks[$key->freq] = $llist;
-
-			}
-			//debug_syslog(1, "result prepared , inserting See Also ... \n");
-
-			$lcontent = $lcontent."<h4> See Also:</h4><ul>\n";
-			ksort($klinks);
-			$keys = array();
-			foreach($klinks  as $freq => $llink ){
-				foreach($llink as $link){
-					$k = $keys[$link->key];
-					if( isset($k) ) continue;
-
-					$lcontent = $lcontent."<li>".$link->href."</li><!-- freq=".$freq." key=".$link->key." -->\n";
-					$keys[$link->key] = $link;
-				}
-			}
-
-		  	$lcontent = $lcontent."</ul>";
-		  	//debug_syslog(1, " inserting See Als complete \n");
-		}
-
-		$result->content = $lcontent;
-
-		//debug_syslog(1, "fcount = ".$fcount."\n");
-
-		//debug_syslog(1, "".count($result->links)."links inserted final\n");
-
-		return $result;
+            return $content . $see_also_content;
 	}
 
 
