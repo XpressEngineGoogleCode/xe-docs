@@ -27,23 +27,17 @@
 		
 		<ul id="navMenu">
 			<li>
-				<a class="xeDocsButton" href="{getUrl('act','dispXedocsTreeIndex','entry','','document_srl','')}"><span>Manual Index</span></a>
+				<a class="xeDocsButton" href="{getUrl('act','dispXedocsTreeIndex','entry','','document_srl','')}"><img src="img/icon_manual_index.png" alt="" /><span>Manual Index</span></a>
 			</li>
 			<li>
-				<a class="xeDocsButton" href=""><span>Sign In</span></a>
-			</li>
-			<li>
-				<a class="xeDocsButton" href="{getUrl('act','dispXedocsContent','entry','','document_srl','')}"><span>Custom 1</span></a>
-			</li>
-			<li>
-				<a class="xeDocsButton" href="{getUrl('act','dispXedocsTitleIndex','search_keyword','','search_target','')}"><span>Show all pages</span></a>
+				<a class="xeDocsButton" href="{getUrl('act','dispXedocsTitleIndex','search_keyword','','search_target','')}"><img src="img/icon_view_all.png" alt="" /><span>Show all pages</span></a>
 			</li>
 			<!--@if($grant->manager)-->
 				<li>
-					<a class="xeDocsButtonAdmin" id="toc_structure" href="{getUrl('act','dispXedocsModifyTree')}"><span>{$lang->cmd_modify}</span></a>
+					<a class="xeDocsButtonAdmin" href="{getUrl('act','dispXedocsModifyTree')}"><img src="img/icon_change_toc_structure.png" alt="" /><span>{$lang->cmd_modify}</span></a>
 				</li>
 				<li>
-					<a class="xeDocsButtonAdmin" id="config" href="{getUrl('act','dispXedocsAdminInsertManual')}"><span>{$lang->cmd_setup}</span></a>
+					<a class="xeDocsButtonAdmin" href="{getUrl('act','dispXedocsAdminInsertManual')}"><img src="img/icon_module_setup.png" alt="" /><span>{$lang->cmd_setup}</span></a>
 				</li>
 			<!--@end-->
 		</ul>
