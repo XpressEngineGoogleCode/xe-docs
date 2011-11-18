@@ -105,45 +105,43 @@
         function _update_keyword($keyword, $orig_keyword=null)
         {
 
-                debug_syslog(1, "_update_keyword(".$keyword.", orig=".$orig_keyword.")\n");
+                //debug_syslog(1, "_update_keyword(".$keyword.", orig=".$orig_keyword.")\n");
                 $module_srl = Context::get('module_srl');
                 $target_document_srl = Context::get('target_document_srl');
 
                 $oXedocsModel = &getModel('xedocs');
                 $updated = $oXedocsModel->update_keyword($module_srl, $orig_keyword, $keyword, $target_document_srl);
                 if($updated){
-                        debug_syslog(1, "keyword updated\n");
+                        //debug_syslog(1, "keyword updated\n");
                 }
 
         }
 
         function procXedocsAdminEditKeyword()
         {
-                debug_syslog(1, "procXedocsAdminEditKeyword\n");
+                //debug_syslog(1, "procXedocsAdminEditKeyword\n");
                 $orig_keyword = Context::get('orig_title');
                 $keyword = Context::get('title');
 
                 $this->_update_keyword($keyword, $orig_keyword);
                 $this->setMessage("success");
-                debug_syslog(1, "procXedocsAdminEditKeyword complete\n");
+                //debug_syslog(1, "procXedocsAdminEditKeyword complete\n");
         }
 
         function procXedocsAdminAddKeyword()
         {
-                debug_syslog(1, "procXedocsAdminAddKeyword\n");
+                //debug_syslog(1, "procXedocsAdminAddKeyword\n");
 
                 $keyword = Context::get('title');
                 $orig_keyword = null;
 
                 $this->_update_keyword($keyword, $orig_keyword);
                 $this->setMessage("success");
-                debug_syslog(1, "procXedocsAdminAddKeyword complete\n");
+                //debug_syslog(1, "procXedocsAdminAddKeyword complete\n");
         }
 
 
         function procXedocsAdminCompileKeywords(){
-
-                debug_syslog(1, "procXedocsAdminCompileKeywords\n");
                 set_time_limit(0);
 
                 $oXedocsModel = &getModel('xedocs');
@@ -151,18 +149,18 @@
                 $help_name = Context::get('help_name');
                 $module_srl = Context::get('module_srl');
 
-                debug_syslog(1, "module_srl='".$module_srl."'\n");
-                debug_syslog(1, "help_name='".$help_name."'\n");
+                //debug_syslog(1, "module_srl='".$module_srl."'\n");
+                //debug_syslog(1, "help_name='".$help_name."'\n");
 
 
                 $docs = $oXedocsModel->getDocumentList($module_srl);
 
-                debug_syslog(1, "there are ".count($docs)." documents \n getting keywords ...\n");
+                // //debug_syslog(1, "there are ".count($docs)." documents \n getting keywords ...\n");
 
 
                 $keywords = $oXedocsModel->getKeywordTargets($docs, 10000);
 
-                debug_syslog(1, "extract keywords complete count = ".count($keywords)."\n");
+                // //debug_syslog(1, "extract keywords complete count = ".count($keywords)."\n");
 
                 $oModuleModel = &getModel('module');
 
@@ -174,7 +172,7 @@
                 $oModuleController = &getController('module');
                 $oModuleController->insertModuleExtraVars($module_srl, $update_args);
 
-                debug_syslog(1, "compile keywords complete");
+                // //debug_syslog(1, "compile keywords complete");
                 $this->setMessage('success_compiled');
         }
 

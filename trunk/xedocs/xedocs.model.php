@@ -47,7 +47,7 @@ class xedocsModel extends xedocs {
         $output = executeQuery('document.getDocument', $args);
 
 
-        //debug_syslog(1, "check_document_srl(".$document_srl.")->".print_r($output, true)."\n");
+        ////debug_syslog(1, "check_document_srl(".$document_srl.")->".print_r($output, true)."\n");
 
         if (!$output->toBool()) return false;
 
@@ -58,10 +58,10 @@ class xedocsModel extends xedocs {
         if( !isset($module_info)){
         	return false;
         }
-        //debug_syslog(1, "check_document_srl(".$document_srl.") module_info".print_r($module_info, true)."\n");
+        ////debug_syslog(1, "check_document_srl(".$document_srl.") module_info".print_r($module_info, true)."\n");
 
         if($expected_module_info->mid != $module_info->mid){
-        	debug_syslog(1, "mid mismatch: expected=".$expected_module_info->mid."vs actual=".$module_info->mid."\n");
+        	//debug_syslog(1, "mid mismatch: expected=".$expected_module_info->mid."vs actual=".$module_info->mid."\n");
         	return false;
         }
 
@@ -512,7 +512,7 @@ class xedocsModel extends xedocs {
 			return 0 == $output->error;
 
 		}else{
-			debug_syslog(1, "no meta to add\n");
+			//debug_syslog(1, "no meta to add\n");
 		}
 		return false;
 	}
@@ -689,7 +689,7 @@ class xedocsModel extends xedocs {
 		foreach($keywords as $key){
 			$key->freq = 0;
 		}
-		debug_syslog(1, "fequencies cleared \n");
+		//debug_syslog(1, "fequencies cleared \n");
 		$result = null;
 		$result->links = array();
 
@@ -729,7 +729,7 @@ class xedocsModel extends xedocs {
 		  }
 		}
 
-		debug_syslog(1, "".count($result->links)."links inserted \n");
+		//debug_syslog(1, "".count($result->links)."links inserted \n");
 
 
 		$lcontent =  "".$dom;
@@ -763,7 +763,7 @@ class xedocsModel extends xedocs {
 				$klinks[$key->freq] = $llist;
 
 			}
-			debug_syslog(1, "result prepared , inserting See Also ... \n");
+			//debug_syslog(1, "result prepared , inserting See Also ... \n");
 
 			$lcontent = $lcontent."<h4> See Also:</h4><ul>\n";
 			ksort($klinks);
@@ -779,14 +779,14 @@ class xedocsModel extends xedocs {
 			}
 
 		  	$lcontent = $lcontent."</ul>";
-		  	debug_syslog(1, " inserting See Als complete \n");
+		  	//debug_syslog(1, " inserting See Als complete \n");
 		}
 
 		$result->content = $lcontent;
 
-		debug_syslog(1, "fcount = ".$fcount."\n");
+		//debug_syslog(1, "fcount = ".$fcount."\n");
 
-		debug_syslog(1, "".count($result->links)."links inserted final\n");
+		//debug_syslog(1, "".count($result->links)."links inserted final\n");
 
 		return $result;
 	}
@@ -805,7 +805,7 @@ class xedocsModel extends xedocs {
 
 		$oModuleController = &getController('module');
 		$oModuleController->insertModuleExtraVars($module_srl, $update_args);
-		debug_syslog(1, "model clear_keywords complete\n");
+		//debug_syslog(1, "model clear_keywords complete\n");
 	}
 
 	function update_keyword($module_srl, $orig_keyword, $keyword, $target_document_srl)
@@ -829,7 +829,7 @@ class xedocsModel extends xedocs {
 		//remove original
 		if( isset($orig_keyword))
 		{
-			debug_syslog(1, "there are ".count($keywords)." keywords\n");
+			//debug_syslog(1, "there are ".count($keywords)." keywords\n");
 			foreach($keywords as $i=>$val){
 				if(0 == strcmp($val->title,$orig_keyword) ){
 					$val->title = $keyword;
@@ -838,7 +838,7 @@ class xedocsModel extends xedocs {
 				}
 			}
 		}else{
-			debug_syslog(1, "adding keyword\n");
+			//debug_syslog(1, "adding keyword\n");
 			$obj = null;
 			$obj->title = $keyword;
 			$obj->target_document_srl = $target_document_srl;
@@ -846,7 +846,7 @@ class xedocsModel extends xedocs {
 			$keywords[] = $obj;
 		}
 
-		debug_syslog(1, "updating extravars\n");
+		//debug_syslog(1, "updating extravars\n");
 
 		$extra_vars = $oModuleModel->getModuleExtraVars($module_srl);
 		$update_args = $extra_vars[$module_srl];
@@ -873,7 +873,7 @@ class xedocsModel extends xedocs {
 
 		$keywords = $this->string_to_keyword_list($module_info->keywords);
 		$deleted = false;
-		debug_syslog(1, "there are ".count($keywords)." keywords\n");
+		//debug_syslog(1, "there are ".count($keywords)." keywords\n");
 		foreach($keywords as $i=>$val){
 			if(0 == strcmp($val->title,$keyword) ){
 				unset($keywords[$i]);
@@ -885,7 +885,7 @@ class xedocsModel extends xedocs {
 		if($deleted)
 		{
 
-			debug_syslog(1, "keyword deleted. updating extravars\n");
+			//debug_syslog(1, "keyword deleted. updating extravars\n");
 
 			$extra_vars = $oModuleModel->getModuleExtraVars($module_srl);
 			$update_args = $extra_vars[$module_srl];
@@ -920,23 +920,23 @@ class xedocsModel extends xedocs {
 	{
 		$oLuceneModel = &getModel('xedocs'); //temporary imported sources so we not interfere with nlucene
 
-		debug_syslog(1, "_lucene_search search target_module_srl=".$target_module_srl."\n");
+		//debug_syslog(1, "_lucene_search search target_module_srl=".$target_module_srl."\n");
 		$searchAPI = "lucene_search_bloc-1.0/SearchBO/";
 
 		$searchUrl = $oLuceneModel->getDefaultSearchUrl($searchAPI);
-		debug_syslog(1, "searchUrl=".$searchUrl."\n");
+		//debug_syslog(1, "searchUrl=".$searchUrl."\n");
 
-		debug_syslog(1, "setup complete.target_mid=".$target_module_srl." now checking\n");
+		//debug_syslog(1, "setup complete.target_mid=".$target_module_srl." now checking\n");
 
 		if(!$oLuceneModel->isFieldCorrect($search_target)){
 		  $search_target = 'title_content';
 		}
-		debug_syslog(1, "search_target=".$search_target."\n");
+		//debug_syslog(1, "search_target=".$search_target."\n");
 
 		//Search queries applied to the target module
 		$query = $oLuceneModel->getSubquery($target_module_srl, "include", null);
 
-		debug_syslog(1, "subquery=".$query."\n");
+		//debug_syslog(1, "subquery=".$query."\n");
 		//Parameter setting
 		$json_obj->query = $oLuceneModel->getQuery($is_keyword, $search_target, null);
 		$json_obj->curPage = $page;
@@ -971,10 +971,10 @@ class xedocsModel extends xedocs {
 	function getService(){
 	  require_once(_XE_PATH_.'modules/lucene/lib/jsonphp.php');
 		if( !isset($this->json_service) ){
-			debug_syslog(1, "creating new json_service\n");
+			//debug_syslog(1, "creating new json_service\n");
 			$this->json_service = new Services_JSON(0);
 		}else{
-			debug_syslog(1, "reusing json_service\n");
+			//debug_syslog(1, "reusing json_service\n");
 		}
 		return $this->json_service;
 
@@ -1195,7 +1195,7 @@ class xedocsModel extends xedocs {
             $params->displayFields = array("id");
 
             $encodedParams = $this->getService()->encode($params);
-	    	debug_syslog(1, "luceneModel.getDocuments() encodedParams:".print_r($encodedParams, true)."\n");
+	    	//debug_syslog(1, "luceneModel.getDocuments() encodedParams:".print_r($encodedParams, true)."\n");
             $searchResult = FileHandler::getRemoteResource($searchUrl."searchByMap", $encodedParams, 3, "POST", "application/json; charset=UTF-8", array(), array());
 
             // 결과가 유효한지 확인
@@ -1217,7 +1217,7 @@ class xedocsModel extends xedocs {
                     $documents['doc'.$id] = $tmpDocuments[$id];
                 }
             }
-	    	debug_syslog(1, "searchResult=".$searchResult."\n");
+	    	//debug_syslog(1, "searchResult=".$searchResult."\n");
             //$searchResult = $this->json_service->decode($searchResult);
             $searchResult = json_decode($searchResult);
             $page_navigation = new PageHandler($searchResult->totalSize, ceil( (float)$searchResult->totalSize / 10.0 ), $params->curPage, 10);
