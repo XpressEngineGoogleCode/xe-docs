@@ -17,6 +17,7 @@ $lang->admin_manual_modules_list_head = "Manage Documentation";
 //$lang->about_xedocs="";
 $lang->cmd_manual_list = "List";
 $lang->cmd_xedocs_view_info="Manual Information";
+$lang->cmd_xedocs_insert_manual="Create a new manual";
 $lang->cmd_view_document_list = "Home";
 $lang->cmd_view_document_tree = "Document list";
 $lang->cmd_edit = "Edit";
@@ -26,6 +27,7 @@ $lang->cmd_modify = "Change Toc Structure";
 $lang->cmd_history = "Page history";
 $lang->cmd_move = "Go To";
 $lang->cmd_setup = "Module Setup";
+$lang->cmd_manage_keywords = "Manage keywords";
 $lang->cmd_compile_keywords = "Compile Keywords";
 $lang->confirm_compile_keywords = "Compile Keywords ?";
 $lang->module_count = "Module Count";
@@ -60,4 +62,5 @@ $lang->cmd_filter_kewords = "Apply filter";
 
 $lang->use_comment = 'Use Comments';
 $lang->arrange_list = 'Refresh alias';
+$lang->version_label = 'Version';
 ?>
