@@ -23,7 +23,7 @@
         <th scope="row"><div>{$lang->manual_set_identifier}</div></th>
         <td>{$module_info->help_name}</td>
     </tr>
-    
+
     <tr>
         <th colspan="2" class="button">
             <span class="button black strong"><input type="submit" value="{$lang->cmd_compile_keywords}" /></span>
@@ -56,7 +56,7 @@
 {$lang->filter_keywords} <input type="text" value="{$filter_keyword}" name="filter_keyword" />
 
 <span class="button black strong"><input type="submit" value="{$lang->cmd_filter_kewords}" /></span>
-<form>
+</form>
 
 </div>
 
@@ -66,18 +66,18 @@
 	{$lang->no_keywords}
 <!--@else-->
 
-<div style='float:right; position:relative; top:-20px;'>{$lang->total_keywords} &nbsp {$total_keywords} &nbsp &nbsp &nbsp 
+<div style='float:right; position:relative; top:-20px;'>{$lang->total_keywords} &nbsp {$total_keywords} &nbsp &nbsp &nbsp
 <a href="{getUrl('act','dispXedocsAdminReviewKeywords','module_srl',$module_srl)}" class="button blue"><span>Review Keyword Links</span></a>
 </div>
 
 
 <table cellspacing="0" class="rowTable">
 	<tr>
-	
+
 	<th scope="col">
 	<div>{$lang->keyword}</div>
 	</th>
-	
+
 	<th scope="col">
 	<div>document_srl</div>
 	</th>
@@ -98,41 +98,41 @@
 
 
 	<!--@foreach($keyword_list as $k)-->
-		
+
 		<tr>
 			<td>
 			{$k->title}
 			</td>
-	
+
 			<td>
 			{$k->target_document_srl}
 			</td>
-	
+
 			<td>
-			
+
 			<a href="{getSiteUrl( 'mid', $mid,  'module_srl',$module_srl,'document_srl', $k->target_document_srl, 'act', 'dispXedocsTreeIndex')}" onclick="window.open(this.href); return false;">{$k->title} -> {$k->target_title}</a>
-			
+
 			</td>
-			
+
 			<td>
 			<a href="{getUrl('act','dispXedocsAdminEditKeyword','module_srl',$module_srl, 'keyword', $k->title, 'target_document_srl', $k->target_document_srl )}" class="buttonSet buttonSetting"><span>{$lang->cmd_setup}</span></a>
 			</td>
 
 			<td><a href="{getUrl('act','dispXedocsAdminDeleteKeyword','module_srl',$module_srl, 'keyword', $k->title)}" class="buttonSet buttonDelete"><span>{$lang->cmd_setup}</span></a>
-			
+
 			</td>
 
-			
+
 		</tr>
-		
+
 	<!--@end-->
 </table>
 
 		<div class="pagination a1">
-			<a href="{getUrl('page','','module_srl',$module_srl,'division',$division,'last_division',$last_division,'act','dispXedocsAdminCompileKeywordList')}" class="prevEnd">{$lang->first_page}</a> 
+			<a href="{getUrl('page','','module_srl',$module_srl,'division',$division,'last_division',$last_division,'act','dispXedocsAdminCompileKeywordList')}" class="prevEnd">{$lang->first_page}</a>
 			<!--@while($page_no = $page_navigation->getNextPage())-->
 				<!--@if($page == $page_no)-->
-					<strong>{$page_no}</strong> 
+					<strong>{$page_no}</strong>
 				<!--@else-->
 					<a href="{getUrl('page',$page_no,'module_srl', $module_srl,'division',$division,'last_division',$last_division,'act','dispXedocsAdminCompileKeywordList')}">{$page_no}</a>
 				<!--@end-->
