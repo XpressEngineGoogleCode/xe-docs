@@ -211,7 +211,7 @@
                     $target_title = $oDocument->getTitle();
                     $has_target_page = true;
             }
-            Context::set('keyword', "-");
+            Context::set('keyword', "");
             Context::set("target_title", $target_title);
 
 
