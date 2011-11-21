@@ -459,7 +459,8 @@
                         $page = 1;
                 }
 
-                $keywords = $oXedocsModel->string_to_keyword_list($module_info->keywords, $filter_keyword);
+                //$keywords = $oXedocsModel->string_to_keyword_list($module_info->keywords, $filter_keyword);
+                $keywords = unserialize($this->module_info->keywords);
 
                 $paged_keywords = array();
 
