@@ -119,62 +119,47 @@
 
         function procXedocsAdminEditKeyword()
         {
-                //debug_syslog(1, "procXedocsAdminEditKeyword\n");
-                $orig_keyword = Context::get('orig_title');
-                $keyword = Context::get('title');
+            $keyword_key = Context::get('orig_title');
+            $user_keyword = Context::get('title');
+            $target_document_srl = Context::get('target_document_srl');
 
-                $this->_update_keyword($keyword, $orig_keyword);
-                $this->setMessage("success");
-                //debug_syslog(1, "procXedocsAdminEditKeyword complete\n");
+            $keywords = unserialize($this->module_info->keywords);
+            unset($keywords[$keyword_key]);
+            $keywords[$user_keyword] = new Object;
+            $keywords[$user_keyword]->title = $user_keyword;
+            $keywords[$user_keyword]->target_document_srl = $target_document_srl;
+
+            $args->module_srl = $this->module_info->module_srl;
+            $args->keywords = serialize($keywords);
+
+            $oModuleController = &getController('module');
+            $oModuleController->updateModule($args);
+
+            $this->setMessage("success");
         }
 
+        /**
+         * Adds a new keyword
+         */
         function procXedocsAdminAddKeyword()
         {
-                //debug_syslog(1, "procXedocsAdminAddKeyword\n");
+            $user_keyword = Context::get('title');
+            $target_document_srl = Context::get('target_document_srl');
 
-                $keyword = Context::get('title');
-                $orig_keyword = null;
+            $keywords = array();
+            $keywords[$user_keyword] = new stdClass;
+            $keywords[$user_keyword]->title = $user_keyword;
+            $keywords[$user_keyword]->target_document_srl = $target_document_srl;
 
-                $this->_update_keyword($keyword, $orig_keyword);
-                $this->setMessage("success");
-                //debug_syslog(1, "procXedocsAdminAddKeyword complete\n");
+            $args = clone($this->module_info);
+            $args->keywords = serialize($keywords);
+
+            $oModuleController = &getController('module');
+            $output = $oModuleController->updateModule($args);
+
+            if(!$output->toBool()) return $output;
+
+            $this->setMessage("success");
         }
-
-
-        function procXedocsAdminCompileKeywords(){
-                set_time_limit(0);
-
-                $oXedocsModel = &getModel('xedocs');
-
-                $help_name = Context::get('help_name');
-                $module_srl = Context::get('module_srl');
-
-                //debug_syslog(1, "module_srl='".$module_srl."'\n");
-                //debug_syslog(1, "help_name='".$help_name."'\n");
-
-
-                $docs = $oXedocsModel->getDocumentList($module_srl);
-
-                // //debug_syslog(1, "there are ".count($docs)." documents \n getting keywords ...\n");
-
-
-                $keywords = $oXedocsModel->getKeywordTargets($docs, 10000);
-
-                // //debug_syslog(1, "extract keywords complete count = ".count($keywords)."\n");
-
-                $oModuleModel = &getModel('module');
-
-                $extra_vars = $oModuleModel->getModuleExtraVars($module_srl);
-                $update_args = $extra_vars[$module_srl];
-                $update_args->{'keywords'} = $oXedocsModel->keyword_list_to_string($keywords);
-                Context::set('filter_keyword', null);
-
-                $oModuleController = &getController('module');
-                $oModuleController->insertModuleExtraVars($module_srl, $update_args);
-
-                // //debug_syslog(1, "compile keywords complete");
-                $this->setMessage('success_compiled');
-        }
-
     }
 ?>
