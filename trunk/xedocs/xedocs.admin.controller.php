@@ -142,12 +142,13 @@
                         , 'act', ''
                         , '_filter', ''
                         , 'title', ''
+                        , 'orig_title', ''
                         , 'target_document_srl', '');
 
 
             $args = clone($this->module_info);
             $args->keywords = serialize($keywords);
-            
+
             $oModuleController = &getController('module');
             $oModuleController->updateModule($args);
 
@@ -180,6 +181,7 @@
                         , 'act', ''
                         , '_filter', ''
                         , 'title', ''
+                        , 'orig_title', ''
                         , 'target_document_srl', '');
 
             $args = clone($this->module_info);

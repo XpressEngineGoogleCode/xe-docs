@@ -682,7 +682,7 @@ class xedocsModel extends xedocs {
             $module_info = $oModuleModel->getModuleInfoByDocumentSrl($document_srl);
             $entry = $oDocumentModel->getAlias($document_srl);
 
-            return getNotEncodedUrl('mid',$module_info->mid
+            return getUrl('mid',$module_info->mid
                         , 'entry',$entry
                         , 'module_srl', ''
                         , 'module', ''
@@ -742,7 +742,7 @@ class xedocsModel extends xedocs {
                 unset($nodes);
                 $nodes = $xpath->query('//text()[contains(., "' . $keyword->title .'")]');
                 foreach($nodes as $node) {
-                    $link     = $this->getKeywordLink($keyword->target_document_srl, $keyword->title. $keyword->url);
+                    $link     = $this->getKeywordLink($keyword->target_document_srl, $keyword->title, $keyword->url);
                     $replaced = str_replace($keyword->title, $link, $node->wholeText);
                     $keyword_frequency[$keyword->title]++;
                     $keyword_replacement[$keyword->title] = $link;

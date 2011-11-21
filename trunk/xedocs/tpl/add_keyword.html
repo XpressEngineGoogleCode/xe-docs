@@ -11,6 +11,12 @@
         sObj.href = href_value;
         sObj.innerText = browser_title;
     }
+
+    function searchThroughPages(href){
+        var keyword = document.getElementById('title').value;
+        href = href + '&search_keyword=' + keyword;
+        popopen(href, 'Select Manual Page');
+    }
     var xe_root = "{_XE_PATH_}";
 </script>
 
@@ -31,7 +37,7 @@
     <table cellspacing="0" class="rowTable">
 	    <tr>
 	        <th scope="row"><div>{$lang->keyword}</div></th>
-	        <td class="wide"><input class="inputTypeText w200" name='title' type="text" value='{$keyword}'></input> </td>
+	        <td class="wide"><input class="inputTypeText w200" id='title' name='title' type="text" value='{$keyword}'></input> </td>
                 <td>Pick a keyword!</td>
 	    </tr>
 	    <tr>
@@ -42,8 +48,8 @@
                     <p>
                         <input type="hidden", value='{$target_document_srl}' name="target_document_srl" id='target_document_srl' />
                         <a id='link_target_document_srl' href="{getUrl( 'mid', $mid,  'module_srl',$module_srl,'document_srl', $target_document_srl, 'act', 'dispXedocsIndex')}" onclick="window.open(this.href); return false;" title="Open document in new window">{$target_title}</a>
-                        <a class ="button blue" href="{getUrl('mid', $mid, 'module_srl',$module_srl,'document_srl', $target_document_srl, 'act', 'dispXedocsAdminManualPageSelect', 'search_keyword', $keyword, 'id', 'target_document_srl')}"
-                                        onclick="popopen(this.href, 'Select Manual Page');return false;"
+                        <a class ="button blue" href="{getUrl('mid', $mid, 'module_srl',$module_srl,'document_srl', $target_document_srl, 'act', 'dispXedocsAdminManualPageSelect', 'id', 'target_document_srl')}"
+                                        onclick="searchThroughPages(this.href);return false;"
                                         style='text-align: center; vertical-align: middle;margin:2px 10px;'><span>Select manual page</span></a>
                     </p>
 	        </td>
