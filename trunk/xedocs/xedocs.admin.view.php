@@ -185,7 +185,7 @@
             if($deleted){
                     //debug_syslog(1, "keyword delted\n");
             }
-            $this->dispXedocsAdminCompileKeywordList();
+            $this->dispXedocsAdminKeywordList();
             //debug_syslog(1, "dispXedocsAdminDeleteKeyword complete\n");
         }
 
@@ -435,7 +435,7 @@
         }
 
 
-        function dispXedocsAdminCompileKeywordList()
+        function dispXedocsAdminKeywordList()
         {
             $module_info = Context::get('module_info');
             $oModuleModel = &getModel('module');

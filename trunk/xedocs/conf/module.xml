@@ -53,7 +53,7 @@
         <action name="dispXedocsAdminView" type="view" standalone="true" admin_index="true" menu_name="dummy_menu" menu_index="true" />
         <action name="dispXedocsAdminInsertManual" type="view" standalone="true" setup_index="true" menu_name="dummy_menu" />
         <action name="dispXedocsAdminDeleteManual" type="view" standalone="true" />
-        <action name="dispXedocsAdminCompileKeywordList" type="view" standalone="true" />
+        <action name="dispXedocsAdminKeywordList" type="view" standalone="true" />
         <action name="dispXedocsAdminEditKeyword" type="view" standalone="true" />
         <action name="dispXedocsAdminDeleteKeyword" type="view" standalone="true" />
         <action name="dispXedocsAdminAddKeyword" type="view" standalone="true" />

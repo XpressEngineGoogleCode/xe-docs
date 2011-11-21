@@ -39,7 +39,7 @@ function completeCompileKeywords(ret_obj){
     var page = ret_obj['page'];
     alert(message);
 
-    var url = current_url.setQuery('act','dispXedocsAdminCompileKeywordList');
+    var url = current_url.setQuery('act','dispXedocsAdminKeywordList');
     if(page) url = url.setQuery('page',page);
     location.href = url;
 
@@ -52,7 +52,7 @@ function completeEditKeyword(ret_obj){
     var page = ret_obj['page'];
     alert(message);
 
-    var url = current_url.setQuery('act','dispXedocsAdminCompileKeywordList')
+    var url = current_url.setQuery('act','dispXedocsAdminKeywordList')
     if(page) url = url.setQuery('page',page);
     location.href = url;
 
@@ -66,7 +66,7 @@ function completeAddKeyword(ret_obj){
     var page = ret_obj['page'];
     alert(message);
 
-    var url = current_url.setQuery('act','dispXedocsAdminCompileKeywordList');
+    var url = current_url.setQuery('act','dispXedocsAdminKeywordList');
     if(page) url = url.setQuery('page',page);
 
     location.href = url;
