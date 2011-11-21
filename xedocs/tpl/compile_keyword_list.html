@@ -51,7 +51,7 @@
 <input type="hidden" name="module" value="admin" />
 <input type="hidden" name="page" value="{$page}" />
 <input type="hidden" name="module_srl" value="{$module_info->module_srl}" />
-<input type="hidden" name="act" value="dispXedocsAdminCompileKeywordList" />
+<input type="hidden" name="act" value="dispXedocsAdminKeywordList" />
 
 {$lang->filter_keywords} <input type="text" value="{$filter_keyword}" name="filter_keyword" />
 
@@ -129,15 +129,15 @@
 </table>
 
 		<div class="pagination a1">
-			<a href="{getUrl('page','','module_srl',$module_srl,'division',$division,'last_division',$last_division,'act','dispXedocsAdminCompileKeywordList')}" class="prevEnd">{$lang->first_page}</a>
+			<a href="{getUrl('page','','module_srl',$module_srl,'division',$division,'last_division',$last_division,'act','dispXedocsAdminKeywordList')}" class="prevEnd">{$lang->first_page}</a>
 			<!--@while($page_no = $page_navigation->getNextPage())-->
 				<!--@if($page == $page_no)-->
 					<strong>{$page_no}</strong>
 				<!--@else-->
-					<a href="{getUrl('page',$page_no,'module_srl', $module_srl,'division',$division,'last_division',$last_division,'act','dispXedocsAdminCompileKeywordList')}">{$page_no}</a>
+					<a href="{getUrl('page',$page_no,'module_srl', $module_srl,'division',$division,'last_division',$last_division,'act','dispXedocsAdminKeywordList')}">{$page_no}</a>
 				<!--@end-->
 			<!--@end-->
-			<a href="{getUrl('page',$page_navigation->last_page,'module_srl', $module_srl,'division',$division,'last_division',$last_division,'act','dispXedocsAdminCompileKeywordList')}" class="nextEnd">{$lang->last_page}</a>
+			<a href="{getUrl('page',$page_navigation->last_page,'module_srl', $module_srl,'division',$division,'last_division',$last_division,'act','dispXedocsAdminKeywordList')}" class="nextEnd">{$lang->last_page}</a>
 		</div>
 
 
