@@ -19,7 +19,7 @@
 				<td class="left">{$oDocument->getUpdate()}</td>
 				<td class="center"><a href="#" onclick="return false;" class="member_{$oDocument->get('member_srl')}">{$oDocument->get("nick_name")}</a></td>
 				<td class="center">
-					<a href="{getUrl('act','dispXedocsHistoryPage','history_srl',$val->history_srl)}" class="xeDocsBodyButton"><span><span>{$lang->cmd_view}</span></span></a>
+					<a href="{getUrl('act','dispXedocsIndex','history_srl','')}" class="xeDocsBodyButton"><span><span>{$lang->cmd_view}</span></span></a>
 				</td>
 				<td class="center">
 					<span>current version</span>
@@ -47,8 +47,6 @@
 			</tr>
 		</tfoot>
 	</table>
-
-	<!--#include("document_pagination.html")-->
 
 	<div class="cleared"></div>
 </div>
