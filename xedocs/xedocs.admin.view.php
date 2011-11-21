@@ -138,13 +138,11 @@
          */
         function dispXedocsAdminEditKeyword()
         {
-            //debug_syslog(1, "dispXedocsAdminEditKeyword\n");
             $has_target_page = false;
 
             $target_document_srl = Context::get('target_document_srl');
 
             if( isset($target_document_srl) ){
-                            //debug_syslog(1, "target_document_srl=".$target_document_srl."\n");
                             $oDocumentModel = &getModel("document");
                             $oDocument = $oDocumentModel->getDocument($target_document_srl);
                             $target_title = "No target document";
@@ -158,10 +156,7 @@
 
             }
             Context::set('has_target_page', $has_target_page);
-            //debug_syslog(1, "has_target_page=".$has_target_page."\n");
-
             $this->setTemplateFile("edit_keyword");
-            //debug_syslog(1, "dispXedocsAdminEditKeyword complete\n");
         }
 
         /**
@@ -266,7 +261,7 @@
 
             if(isset($module_info->keywords)){
 
-                            $keywords = $oXedocsModel->string_to_keyword_list($module_info->keywords);
+                            $keywords = unserialize($module_info->keywords);
                             //debug_syslog(1, "There are ".count($keywords)." keyword targets\n");
                             $content = $oXedocsModel->replaceKeywordsWithLinks($oDocument->get('content'), $keywords);
                             //debug_syslog(1, "got kcontent\n");
@@ -429,7 +424,7 @@
                 Context::set('module_info',$module_info);
 
                 Context::set('total_keywords', 0);
-                $this->setTemplateFile("compile_keyword_list");
+                $this->setTemplateFile("keyword_list");
 
                 //debug_syslog(1, "dispXedocsAdminClearKeywordList complete\n");
         }
@@ -437,46 +432,31 @@
 
         function dispXedocsAdminKeywordList()
         {
-            $module_info = Context::get('module_info');
-            $oModuleModel = &getModel('module');
             $oDocumentModel = &getModel('document');
-            $module_info = $oModuleModel->getModuleInfoByModuleSrl($module_info->module_srl);
-            $oModuleModel->addModuleExtraVars($module_info);
 
-            $manual_set = &getModel('xedocs')->getModuleMidSet($module_info->help_name);
-            $module_count = count($manual_set);
-
-            Context::set('module_count',$module_count);
-            Context::set('module_info',$module_info);
-            Context::set('manual_set', $manual_set);
             $page = Context::get('page');
 
             $oXedocsModel = &getModel('xedocs');
-            if(isset($module_info->keywords)){
+            if(isset($this->module_info->keywords)){
                 $filter_keyword = Context::get('filter_keyword');
                 $items_per_page = 10;
                 if(!isset($page)){
                         $page = 1;
                 }
 
-                //$keywords = $oXedocsModel->string_to_keyword_list($module_info->keywords, $filter_keyword);
                 $keywords = unserialize($this->module_info->keywords);
 
                 $paged_keywords = array();
 
                 $start = $items_per_page * ($page-1);
-                $k_count = 0;
-                for(; $k_count<$items_per_page && $start < count($keywords); $start++,  $k_count++){
-                        $obj = $keywords[$start];
+                $keyword_count = 0;
 
-                        $oDocument = $oDocumentModel->getDocument($obj->target_document_srl);
-                        $obj->target_title = "No target document";
-                        if(isset($oDocument))
-                        {
-                                $obj->target_title = $oDocument->getTitle();
-                        }
+                foreach($keywords as $keyword){
+                    $keyword_count++;
+                    if($keyword_count < $start) continue;
+                    if($keyword_count > $start + $items_per_page) break;
 
-                        $paged_keywords[] =  $obj;
+                    $paged_keywords[] = $keyword;
                 }
 
                 $total_keywords = count($keywords);
@@ -494,7 +474,7 @@
                 Context::set('total_keywords', 0);
             }
 
-            $this->setTemplateFile("compile_keyword_list");
+            $this->setTemplateFile("keyword_list");
         }
 
         /**

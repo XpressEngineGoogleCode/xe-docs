@@ -117,6 +117,9 @@
 
         }
 
+        /**
+         * Edits an existing keyword
+         */
         function procXedocsAdminEditKeyword()
         {
             $keyword_key = Context::get('orig_title');
@@ -125,13 +128,26 @@
 
             $keywords = unserialize($this->module_info->keywords);
             unset($keywords[$keyword_key]);
-            $keywords[$user_keyword] = new Object;
+            $keywords[$user_keyword] = new stdClass;
             $keywords[$user_keyword]->title = $user_keyword;
             $keywords[$user_keyword]->target_document_srl = $target_document_srl;
 
-            $args->module_srl = $this->module_info->module_srl;
-            $args->keywords = serialize($keywords);
+            $oDocumentModel = &getModel('document');
+            $entry = $oDocumentModel->getAlias($target_document_srl);
+            $keywords[$user_keyword]->document_alias = $entry;
+            $keywords[$user_keyword]->url = getNotEncodedUrl('mid',$this->module_info->mid
+                        , 'entry',$entry
+                        , 'module_srl', ''
+                        , 'module', ''
+                        , 'act', ''
+                        , '_filter', ''
+                        , 'title', ''
+                        , 'target_document_srl', '');
 
+
+            $args = clone($this->module_info);
+            $args->keywords = serialize($keywords);
+            
             $oModuleController = &getController('module');
             $oModuleController->updateModule($args);
 
@@ -146,10 +162,25 @@
             $user_keyword = Context::get('title');
             $target_document_srl = Context::get('target_document_srl');
 
-            $keywords = array();
+            if(!isset($this->module_info->keywords))
+                $keywords = array();
+            else
+                $keywords = unserialize($this->module_info->keywords);
             $keywords[$user_keyword] = new stdClass;
             $keywords[$user_keyword]->title = $user_keyword;
             $keywords[$user_keyword]->target_document_srl = $target_document_srl;
+
+            $oDocumentModel = &getModel('document');
+            $entry = $oDocumentModel->getAlias($target_document_srl);
+            $keywords[$user_keyword]->document_alias = $entry;
+            $keywords[$user_keyword]->url = getNotEncodedUrl('mid',$this->module_info->mid
+                        , 'entry',$entry
+                        , 'module_srl', ''
+                        , 'module', ''
+                        , 'act', ''
+                        , '_filter', ''
+                        , 'title', ''
+                        , 'target_document_srl', '');
 
             $args = clone($this->module_info);
             $args->keywords = serialize($keywords);

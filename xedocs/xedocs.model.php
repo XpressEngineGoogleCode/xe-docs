@@ -673,18 +673,32 @@ class xedocsModel extends xedocs {
 	}
 
         /**
-         * @brief Constructs an URL from a given document_srl and keyword
-         *
-         * The link will point towards the given document and the keyword will be used as link text
+         * @brief Constructs an URL for accesing a given document by alias
          */
-        function _getKeywordLink($document_srl, $keyword){
+        function getDocumentURL($document_srl){
             $oDocumentModel = &getModel('document');
             $oModuleModel = &getModel('module');
 
             $module_info = $oModuleModel->getModuleInfoByDocumentSrl($document_srl);
             $entry = $oDocumentModel->getAlias($document_srl);
 
-            $url = getSiteUrl('', 'mid',$module_info->mid,'entry',$entry);
+            return getNotEncodedUrl('mid',$module_info->mid
+                        , 'entry',$entry
+                        , 'module_srl', ''
+                        , 'module', ''
+                        , 'act', ''
+                        , '_filter', ''
+                        , 'title', ''
+                        , 'target_document_srl', '');
+        }
+
+        /**
+         * @brief Constructs an HTML anchor which will point towards
+         * a given document and whose text will be the given keyword
+         */
+        function getKeywordLink($document_srl, $keyword, $url = null){
+            if(!isset($url))
+                $url = $this->getDocumentURL($document_srl);
             return "<a id='keyword_$document_srl' class='keyword_link' href='$url'>$keyword</a>";
         }
 
@@ -728,7 +742,7 @@ class xedocsModel extends xedocs {
                 unset($nodes);
                 $nodes = $xpath->query('//text()[contains(., "' . $keyword->title .'")]');
                 foreach($nodes as $node) {
-                    $link     = $this->_getKeywordLink($keyword->target_document_srl, $keyword->title);
+                    $link     = $this->getKeywordLink($keyword->target_document_srl, $keyword->title. $keyword->url);
                     $replaced = str_replace($keyword->title, $link, $node->wholeText);
                     $keyword_frequency[$keyword->title]++;
                     $keyword_replacement[$keyword->title] = $link;

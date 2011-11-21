@@ -91,7 +91,7 @@
 
                     // If current document exists and has keywords, replace keywords with links to corresponding articles
                     if(isset($this->module_info->keywords)){
-                        $keywords = $oXedocsModel->string_to_keyword_list($this->module_info->keywords);
+                        $keywords = unserialize($this->module_info->keywords);
                         $content = $oXedocsModel->replaceKeywordsWithLinks($oDocument->get('content'), $keywords);
                         $oDocument->add('content', $content);
                     }
