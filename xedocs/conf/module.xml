@@ -58,7 +58,6 @@
         <action name="dispXedocsAdminDeleteKeyword" type="view" standalone="true" />
         <action name="dispXedocsAdminAddKeyword" type="view" standalone="true" />
         <action name="dispXedocsAdminManualPageSelect" type="view" standalone="true" />
-        <action name='dispXedocsAdminReviewKeywords' type="view"  standalone="true"/>
         <action name="dispXedocsAdminManualInfo" type="view" standalone="true" />
         <action name="dispXedocsAdminGrantInfo" type="view" standalone="true" />
         <action name="dispXedocsAdminAdditionSetup" type="view" standalone="true" />
