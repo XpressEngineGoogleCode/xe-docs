@@ -83,6 +83,16 @@ function completeClearKeywords(ret_obj){
     location.href = url;
 }
 
+function completeDeleteKeyword(ret_obj){
+    var error = ret_obj['error'];
+    var message = ret_obj['message'];
+    alert(message);
+
+    var url = current_url.setQuery('act','dispXedocsAdminKeywordList');
+
+    location.href = url;
+}
+
 function doCartSetup(url) {
     var module_srl = new Array();
     jQuery('#fo_list input[name=cart]:checked').each(function() {

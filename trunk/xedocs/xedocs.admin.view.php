@@ -156,31 +156,6 @@
         }
 
         /**
-         * @brief Displays page for deleting a keyword
-         */
-        function dispXedocsAdminDeleteKeyword()
-        {
-            //debug_syslog(1, "dispXedocsAdminDeleteKeyword\n");
-            $module_srl = Context::get('module_srl');
-            $keyword = Context::get('keyword');
-            if(!isset($keyword)){
-                    //debug_syslog(1, "No keyword to delete \n");
-                    return;
-            }
-
-
-            //debug_syslog(1, "delete keyword=".$keyword." from module_srl=".$module_srl."\n");
-
-            $oXedocsModel = &getModel('xedocs');
-            $deleted = $oXedocsModel->delete_keyword($module_srl, $keyword);
-            if($deleted){
-                    //debug_syslog(1, "keyword delted\n");
-            }
-            $this->dispXedocsAdminKeywordList();
-            //debug_syslog(1, "dispXedocsAdminDeleteKeyword complete\n");
-        }
-
-        /**
          * @brief Displays page for adding a keyword
          */
         function dispXedocsAdminAddKeyword()
@@ -323,17 +298,19 @@
             $output = $oXedocsModel->search($search_keyword, $module_srl, $search_target, $page, 10);
 
             $module_info = $oModuleModel->getModuleInfoByModuleSrl($module_srl);
-            foreach($output->data as $doc){
-                $entry = $oDocumentModel->getAlias($doc->document_srl);
-                $doc->browser_title = $module_info->browser_title;
-                $doc->mid = $module_info->mid;
 
-                if (isset($entry) ){
-                        $doc->entry = $entry;
-                }else{
-                        $doc->entry = "bugbug";
+            if($output->data)
+                foreach($output->data as $doc){
+                    $entry = $oDocumentModel->getAlias($doc->document_srl);
+                    $doc->browser_title = $module_info->browser_title;
+                    $doc->mid = $module_info->mid;
+
+                    if (isset($entry) ){
+                            $doc->entry = $entry;
+                    }else{
+                            $doc->entry = "bugbug";
+                    }
                 }
-            }
 
             Context::set('document_list', $output->data);
             Context::set('total_count', $output->total_count);
