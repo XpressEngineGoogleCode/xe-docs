@@ -58,7 +58,6 @@
         <action name="dispXedocsAdminDeleteKeyword" type="view" standalone="true" />
         <action name="dispXedocsAdminAddKeyword" type="view" standalone="true" />
         <action name="dispXedocsAdminManualPageSelect" type="view" standalone="true" />
-        <action name='dispXedocsAdminClearKeywordList' type="view"  standalone="true"/>
         <action name='dispXedocsAdminReviewKeywords' type="view"  standalone="true"/>
         <action name="dispXedocsAdminManualInfo" type="view" standalone="true" />
         <action name="dispXedocsAdminGrantInfo" type="view" standalone="true" />
@@ -71,6 +70,7 @@
         <action name="procXedocsAdminEditKeyword" type="controller" standalone="true" />
         <action name="procXedocsAdminAddKeyword" type="controller" standalone="true" />
         <action name="procXedocsAdminArrangeList" type="controller" standalone="true" />
+        <action name="procXedocsAdminClearKeywords" type="controller" standalone="true" />
         <action name="getXedocsTreeList" type="model" />
         <action name="getManualList" type="model" standalone="true" />
     </actions>

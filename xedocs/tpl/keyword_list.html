@@ -1,9 +1,11 @@
-<!--%import("filter/compile_keywords.xml")-->
+<!--%import("filter/clear_keywords.xml")-->
 <!--%import("js/manual_admin.js")-->
 <!--#include("header.html")-->
 
 <!--@if(0 == $total_keywords)-->
+<p>
 	{$lang->no_keywords}
+</p>
 <!--@else-->
 
 <!-- Filter keywords button -->
@@ -66,8 +68,12 @@
 <!--@end-->
 
 <div id="keyword_commands">
-    <a href="{getUrl('act','dispXedocsAdminAddKeyword','module_srl',$module_srl, 'keyword', '', 'target_document_srl', '')}" class="button blue"><span>{$lang->cmd_create_keword}</span></a>
-    &nbsp
-    <a href="{getUrl('act','dispXedocsAdminClearKeywordList','module_srl',$module_srl)}" class="button blue"><span>{$lang->cmd_clear_kewords}</span></a>
-    &nbsp&nbsp
+    <form action="./" method="get" onsubmit="return procFilter(this, clear_keywords)">
+        <a href="{getUrl('act','dispXedocsAdminAddKeyword','module_srl',$module_srl, 'keyword', '', 'target_document_srl', '')}" class="button blue"><span>{$lang->cmd_create_keword}</span></a>
+        &nbsp
+        <input type="hidden" name="module_srl" value="{$module_info->module_srl}" />
+        <input type="hidden" name="module" value="admin" />
+        <input type="hidden" name="act" value="procXedocsAdminClearKeywords" />
+        <span class="button blue"><input type="submit" value="{$lang->cmd_clear_kewords}" /></span>
+    </form>
 </div>

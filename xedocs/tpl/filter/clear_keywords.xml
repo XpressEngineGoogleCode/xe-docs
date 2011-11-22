@@ -1,0 +1,9 @@
+<filter name="clear_keywords" module="xedocs" act="procXedocsAdminClearKeywords">
+    <form>
+        <node target="module_srl" required="true" />
+    </form>
+    <response callback_func="completeClearKeywords">
+        <tag name="error" />
+        <tag name="message" />
+    </response>
+</filter>

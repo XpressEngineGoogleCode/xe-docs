@@ -44,7 +44,7 @@ $lang->edit_page = "Edit page";
 $lang->delete_page = "Delete page";
 
 $lang->keyword = "Keyword";
-$lang->no_keywords = "Keyword list not compiled for this manual.";
+$lang->no_keywords = "No keywords have been added for this manual.";
 $lang->total_keywords ="Total keywords";
 $lang->edit_keyword = "Edit Keyword";
 $lang->add_keyword = "Add Keyword";
