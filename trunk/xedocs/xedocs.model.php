@@ -760,11 +760,13 @@ class xedocsModel extends xedocs {
                 $links[$frequency][] = $keyword_replacement[$keyword];
             }
 
-            $see_also_content = '<h4> See Also:</h4><ul>';
-            foreach($links as $link_group){
-                foreach($link_group as $link) $see_also_content .= "<li>" . $link . "</li>";
+            if(count($links) > 0){
+                $see_also_content = '<h4> See Also:</h4><ul>';
+                foreach($links as $link_group){
+                    foreach($link_group as $link) $see_also_content .= "<li>" . $link . "</li>";
+                }
+                $see_also_content .= '</ul>';
             }
-            $see_also_content .= '</ul>';
 
             return $content . $see_also_content;
 	}
