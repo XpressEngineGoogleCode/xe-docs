@@ -32,20 +32,6 @@ function completeDeleteManual(ret_obj) {
     location.href = url;
 }
 
-
-function completeCompileKeywords(ret_obj){
-    var error = ret_obj['error'];
-    var message = ret_obj['message'];
-    var page = ret_obj['page'];
-    alert(message);
-
-    var url = current_url.setQuery('act','dispXedocsAdminKeywordList');
-    if(page) url = url.setQuery('page',page);
-    location.href = url;
-
-}
-
-
 function completeEditKeyword(ret_obj){
     var error = ret_obj['error'];
     var message = ret_obj['message'];
