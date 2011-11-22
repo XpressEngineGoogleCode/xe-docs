@@ -154,7 +154,7 @@
             $oDocumentModel = &getModel('document');
             $entry = $oDocumentModel->getAlias($target_document_srl);
             $keywords[$user_keyword]->document_alias = $entry;
-            $keywords[$user_keyword]->url = getNotEncodedUrl('mid',$this->module_info->mid
+            $keywords[$user_keyword]->url = getUrl('mid',$this->module_info->mid
                         , 'entry',$entry
                         , 'module_srl', ''
                         , 'module', ''
