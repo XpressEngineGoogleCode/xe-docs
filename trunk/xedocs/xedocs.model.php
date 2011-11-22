@@ -771,23 +771,6 @@ class xedocsModel extends xedocs {
             return $content . $see_also_content;
 	}
 
-
-	function clear_keywords($module_srl){
-		$oModuleModel = &getModel('module');
-		$module_info = $oModuleModel->getModuleInfoByModuleSrl($module_srl);
-		if(!isset($module_info) ){
-			return false;
-		}
-
-		$extra_vars = $oModuleModel->getModuleExtraVars($module_srl);
-		$update_args = $extra_vars[$module_srl];
-		$update_args->{'keywords'} = null;
-
-		$oModuleController = &getController('module');
-		$oModuleController->insertModuleExtraVars($module_srl, $update_args);
-		//debug_syslog(1, "model clear_keywords complete\n");
-	}
-
 	function update_keyword($module_srl, $orig_keyword, $keyword, $target_document_srl)
 	{
 		if(!isset($keyword) || !isset($keyword) || !isset($target_document_srl)){

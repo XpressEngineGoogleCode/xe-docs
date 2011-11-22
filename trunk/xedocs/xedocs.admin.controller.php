@@ -183,5 +183,29 @@
         {
             $this->procXedocsAdminEditKeyword();
         }
+
+        /**
+         * Delete all keywords
+         */
+        function procXedocsAdminClearKeywords(){
+            // Load info about current module
+            $mid = Context::get('mid');
+            $document_srl = Context::get('document_srl');
+            $module_srl = Context::get('module_srl');
+            if((!isset($mid) || !isset($document_srl)) && isset($module_srl)){
+                $oModuleModel = &getModel('module');
+                $this->module_info = $oModuleModel->getModuleInfoByModuleSrl($module_srl);
+            }
+
+            $args = clone($this->module_info);
+            unset($args->keywords);
+
+            $oModuleController = &getController('module');
+            $output = $oModuleController->updateModule($args);
+
+            if(!$output->toBool()) return $output;
+
+            $this->setMessage("success");
+        }
     }
 ?>

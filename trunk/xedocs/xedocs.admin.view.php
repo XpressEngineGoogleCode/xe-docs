@@ -345,29 +345,6 @@
             $this->setTemplateFile('document_selector');
         }
 
-
-        function dispXedocsAdminClearKeywordList()
-        {
-                //debug_syslog(1, "dispXedocsAdminClearKeywordList\n");
-                $oXedocsModel = &getModel('xedocs');
-                $module_srl = Context::get('module_srl');
-                $module_info = Context::get('module_info');
-
-
-                $oXedocsModel->clear_keywords($module_srl);
-                //debug_syslog(1, "clear_keywords complete\n");
-
-                $oModuleModel = &getModel('module');
-                $module_info = $oModuleModel->getModuleInfoByModuleSrl($module_srl);
-                Context::set('module_info',$module_info);
-
-                Context::set('total_keywords', 0);
-                $this->setTemplateFile("keyword_list");
-
-                //debug_syslog(1, "dispXedocsAdminClearKeywordList complete\n");
-        }
-
-
         function dispXedocsAdminKeywordList()
         {
             $oDocumentModel = &getModel('document');
