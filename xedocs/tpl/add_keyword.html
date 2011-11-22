@@ -14,7 +14,7 @@
 
     function searchThroughPages(href){
         var keyword = document.getElementById('title').value;
-        href = href + '&search_keyword=' + keyword;
+        href = href + '&search_keyword=' + keyword + '#content';
         popopen(href, 'Select Manual Page');
     }
     var xe_root = "{_XE_PATH_}";

@@ -325,42 +325,10 @@
             }
         }
 
-        /**
-         * @brief Helper method for searching keywords in documents
-         */
-        function _search_keyword($target_mid, $is_keyword){
-            $page =  Context::get('page');
-            if (!isset($page)) $page = 1;
-
-            $search_target = Context::get('search_target');
-            if ($search_target == 'tag') $search_target = 'tags';
-
-            $oXedocsModel = &getModel('xedocs');
-            $oModuleModel = &getModel('module');
-            $oDocumentModel = &getModel('document');
-
-            $output = $oXedocsModel->search($is_keyword, $target_mid, $search_target, $page, 10);
-
-            foreach($output->data as $doc){
-
-                    $this->resolve_document_details($oModuleModel, $oDocumentModel, $doc);
-            }
-
-            Context::set('document_list', $output->data);
-            Context::set('total_count', $output->total_count);
-            Context::set('total_page', $output->total_page);
-
-            Context::set('page', $page);
-            Context::set('page_navigation', $output->page_navigation);
-
-            return $output;
-        }
-
         function dispXedocsAdminManualPageSelect()
         {
             if(!Context::get('is_logged')) return new Object(-1, 'msg_not_permitted');
 
-            $oModuleModel = &getModel('module');
             $module_srl = Context::get('module_srl');
             $search_keyword = Context::get('search_keyword');
 
@@ -369,42 +337,27 @@
                 if (!isset($page)) $page = 1;
 
                 $search_target = Context::get('search_target');
-                if( isset($search_target) ){
-                        if ( $search_target == 'tag') $search_target = 'tags';
+                if ($search_target == 'tag') $search_target = 'tags';
+
+                $oXedocsModel = &getModel('xedocs');
+                $oModuleModel = &getModel('module');
+                $oDocumentModel = &getModel('document');
+
+                $output = $oXedocsModel->search($search_keyword, $module_srl, $search_target, $page, 10);
+
+                foreach($output->data as $doc){
+                        $this->resolve_document_details($oModuleModel, $oDocumentModel, $doc);
                 }
 
-                $this->_search_keyword($module_srl, $search_keyword);
+                Context::set('document_list', $output->data);
+                Context::set('total_count', $output->total_count);
+                Context::set('total_page', $output->total_page);
+
+                Context::set('page', $page);
+                Context::set('page_navigation', $output->page_navigation);
             }
 
             $this->setTemplateFile('document_selector');
-        }
-
-
-        function dispXedocsAdminSelectDocumentList()
-        {
-                        //debug_syslog(1, "dispXedocsAdminSelectDocumentList\n");
-
-            if(!Context::get('is_logged')) return new Object(-1, 'msg_not_permitted');
-
-            $oModuleModel = &getModel('module');
-                        $module_srl = Context::get('module_srl');
-                        $search_keyword = Context::get('search_keyword');
-
-
-                        $page =  Context::get('page');
-                        if (!isset($page)) $page = 1;
-
-                        $search_target = Context::get('search_target');
-                        if( isset($search_target) ){
-                                if ( $search_target == 'tag') $search_target = 'tags';
-                        }
-
-                        $this->_search_keyword($search_keyword);
-
-                        $this->setTemplateFile('document_selector');
-
-                        //debug_syslog(1, "dispXedocsAdminSelectDocumentList complete\n");
-
         }
 
 
