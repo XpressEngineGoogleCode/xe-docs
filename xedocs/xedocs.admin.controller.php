@@ -122,44 +122,7 @@
          */
         function procXedocsAdminEditKeyword()
         {
-            $keyword_key = Context::get('orig_title');
-            $user_keyword = Context::get('title');
-            $target_document_srl = Context::get('target_document_srl');
-
-            $keywords = unserialize($this->module_info->keywords);
-            unset($keywords[$keyword_key]);
-            $keywords[$user_keyword] = new stdClass;
-            $keywords[$user_keyword]->title = $user_keyword;
-            $keywords[$user_keyword]->target_document_srl = $target_document_srl;
-
-            $oDocumentModel = &getModel('document');
-            $entry = $oDocumentModel->getAlias($target_document_srl);
-            $keywords[$user_keyword]->document_alias = $entry;
-            $keywords[$user_keyword]->url = getNotEncodedUrl('mid',$this->module_info->mid
-                        , 'entry',$entry
-                        , 'module_srl', ''
-                        , 'module', ''
-                        , 'act', ''
-                        , '_filter', ''
-                        , 'title', ''
-                        , 'orig_title', ''
-                        , 'target_document_srl', '');
-
-
-            $args = clone($this->module_info);
-            $args->keywords = serialize($keywords);
-
-            $oModuleController = &getController('module');
-            $oModuleController->updateModule($args);
-
-            $this->setMessage("success");
-        }
-
-        /**
-         * Adds a new keyword
-         */
-        function procXedocsAdminAddKeyword()
-        {
+            // Load info about current module
             $mid = Context::get('mid');
             $document_srl = Context::get('document_srl');
             $module_srl = Context::get('module_srl');
@@ -169,13 +132,21 @@
                 $this->module_info = $oModuleModel->getModuleInfoByModuleSrl($module_srl);
             }
 
+            // Retrieve POST variables
+            $keyword_key = Context::get('orig_title');
             $user_keyword = Context::get('title');
             $target_document_srl = Context::get('target_document_srl');
 
+            // Load keywords
             if(!isset($this->module_info->keywords))
                 $keywords = array();
             else
                 $keywords = unserialize($this->module_info->keywords);
+
+            // If this is 'edit', delete old keyword value
+            if(isset($keyword_key) && count($keywords))
+                unset($keywords[$keyword_key]);
+
             $keywords[$user_keyword] = new stdClass;
             $keywords[$user_keyword]->title = $user_keyword;
             $keywords[$user_keyword]->target_document_srl = $target_document_srl;
@@ -193,14 +164,24 @@
                         , 'orig_title', ''
                         , 'target_document_srl', '');
 
+
             $args = clone($this->module_info);
             $args->keywords = serialize($keywords);
+
             $oModuleController = &getController('module');
             $output = $oModuleController->updateModule($args);
 
             if(!$output->toBool()) return $output;
 
             $this->setMessage("success");
+        }
+
+        /**
+         * Adds a new keyword
+         */
+        function procXedocsAdminAddKeyword()
+        {
+            $this->procXedocsAdminEditKeyword();
         }
     }
 ?>
