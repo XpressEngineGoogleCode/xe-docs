@@ -66,7 +66,6 @@
         <action name="dispXedocsAdminSkinInfo" type="view" standalone="true" />
         <action name="procXedocsAdminDelete"  type="controller" standalone="true" />
         <action name="procXedocsAdminInsertManual"  type="controller" standalone="true" />
-        <action name="procXedocsAdminCompileKeywords" type="controller" standalone="true" />
         <action name="procXedocsAdminEditKeyword" type="controller" standalone="true" />
         <action name="procXedocsAdminAddKeyword" type="controller" standalone="true" />
         <action name="procXedocsAdminArrangeList" type="controller" standalone="true" />
