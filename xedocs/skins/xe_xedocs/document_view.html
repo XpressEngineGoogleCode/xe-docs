@@ -89,20 +89,15 @@
 			<!--@end-->
 		</div>
 
-		<h2 id="xeDocsTitle">{$oDocument->get('title')}</h2>
-		<!--#include("breadcrumbs.html")-->
-
 		<!--@if(!$oDocument->isExists())-->
-		<div id="rightContainer">
-				<div id="rightcontent" style='margin:2px; color:red; margin-right:20px; font-size:16px; font-weight:bold;' >
-				<br />
-				<br />
+		<div id="xeDocsNoDocument">
+			<br />
 				We could not find your requested manual page. Please click on a node in content tree to see other manual pages.
-				<br />
-				<br />
-			</div>
+			<br />
 		</div>
 		<!--@else-->
+			<h2 id="xeDocsTitle">{$oDocument->get('title')}</h2>
+			<!--#include("breadcrumbs.html")-->
 			<div id="showHideTree" onclick="hidediv1('treeList'); return false;" alt="Close Tree" title="Close tree"></div>
 			<div id="xeDocsContentContainer">
 				{$oDocument->get('content')}
@@ -128,47 +123,9 @@
 				<div style="clear: right;"></div>
 			</div>
 			<!--@end-->
-			<!--@if($oDocument->isExists())-->
-				<div id="xeDocsComments">
-				<!--@if($oDocument->allowComment())-->
-					<h3>Comments:</h3>
-					<!--#include("./comment.html")-->
 
-					<!--@if($grant->write_comment && $oDocument->isEnableComment() && $is_logged)-->
-						<form action="./" method="post" onsubmit="return procFilter(this, insert_comment)" id="add_comment">
-							<input type="hidden" name="mid" value="{$mid}" />
-							<input type="hidden" name="document_srl" value="{$oDocument->document_srl}" />
-							<input type="hidden" name="comment_srl" value="" />
-							<input type="hidden" name="content" value="" />
-							<div class="wikiWrite commentEditor">
-								<div class="editor">{$oDocument->getCommentEditor()}</div>
-								<div class="editorOption">
-								<!--@if(!$is_logged)-->
-								   <input type="text" name="nick_name" class="inputText userName" value="{$lang->writer}" onfocus="this.value=''" />
-												   <input type="password" name="password" class="inputText userPw" value="{$lang->password}" onfocus="this.value=''" />
-												   <input type="text" name="email_address" class="inputText emailAddress" value="{$lang->email_address}" onfocus="this.value=''" />
-												   <input type="text" name="homepage" class="inputText homePage" value="{$lang->homepage}" onfocus="this.value=''" />
-								<!--@end-->
+			<!--#include("./comment_list.html")-->
 
-												<!--@if($is_logged)-->
-														<input type="checkbox" name="notify_message" value="Y" id="notify_message" class="inputCheck" />
-														<label for="notify_message">{$lang->notify}</label>
-												<!--@end-->
-														<input type="checkbox" name="is_secret" value="Y" id="is_secret" class="inputCheck" />
-														<label for="is_secret">{$lang->secret}</label>
-								</div>
-
-								<p>
-									<a class="xeDocsButton" href="#" onclick="jQuery('#add_comment').submit();return false;"><span>Add comment</span></a>
-								</p>
-							</div>
-						</form>
-					<!--@end-->
-				<!--@else-->
-					<p>Comments have been disabled for this page.</p>
-				<!--@end-->
-				</div>
-			<!--@end-->
 		<!--@end-->
 		<div class="cleared"></div>
 	</div>

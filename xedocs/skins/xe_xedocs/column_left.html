@@ -23,9 +23,11 @@
 			<!--@elseif($node->type == 'sibling')-->
 				list-style-image:url('./modules/xedocs/skins/xe_xedocs/img/icon_current_directory.png'); margin-left: 15px;
 			<!--@elseif($node->type == 'child')-->
-				list-style-image:url('./modules/xedocs/skins/xe_xedocs/img/icon_current_directory.png'); margin-left: 30px;
-			<!--@elseif($node->type == 'current')-->
 				list-style-image:url('./modules/xedocs/skins/xe_xedocs/img/icon_current_directory.png'); margin-left: 15px;
+			<!--@elseif($node->type == 'current')-->
+				list-style-image:url('./modules/xedocs/skins/xe_xedocs/img/icon_current_directory.png'); margin-left: 15px; font-weight: bold;
+			<!--elseif($node->type == 'active_root')-->
+				font-weight: bold;
 			<!--@end-->
 		">
 			<a href="{$node->href}">
