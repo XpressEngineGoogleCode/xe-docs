@@ -247,11 +247,6 @@ a.xeDocsButtonAdmin, a.xeDocsButton  {
 	width: 188px
 }
 
-#xeDocsSearchText:focus {
-	background: #ffecec;
-	outline: none;
-}
-
 #xeDocsSearchButton {
 	position: relative;
 	top: -32px;
@@ -556,4 +551,78 @@ a.xeDocsButtonAdmin, a.xeDocsButton  {
 	box-shadow: inset 1px 1px 1px rgba(0, 0, 0, 0.2);
 	-moz-box-shadow: inset 1px 1px 1px rgba(0, 0, 0, 0.2);
 	-webkit-box-shadow: inset 1px 1px 1px rgba(0, 0, 0, 0.2);
+	padding: 8px 9px 6px 9px;
+}
+
+.xeDocsInputText:focus {
+	background: #ffecec;
+	outline: none;
+}
+
+#xeDocsNoDocument {
+	margin: 10px;
+	font-weight: bold;
+}
+
+.xeDocsTableLabel {
+	font-weight: bold;
+	width: 150px;
+}
+
+#xeDocsCommentsList .top {
+	vertical-align: top;
+}
+
+#xeDocsCommentsList td {
+	padding: 5px;
+}
+
+#xeDocsCommentsList .middle {
+	vertical-align: middle;
+}
+
+#xeDocsCommentsList tr:nth-child(2n) {
+	background: #f4f4f4;
+}
+
+#xeDocsComment .date {
+	text-align: right;
+	color: #cb0000;
+}
+
+#xeDocsCommentList {
+	padding: 0;
+	list-style-type: none;
+}
+
+#xeDocsCommentList li {
+	border: 1px solid #d7d7d7;
+	background: #f4f4f4;
+	margin-bottom: 5px;
+}
+
+#xeDocsCommentList .profileImage {
+	border: 1px solid #d7d7d7;
+	margin: 5px;
+	float: left;
+}
+
+#xeDocsCommentList .author {
+	float: left;
+	margin: 5px;
+	font-weight: bold;
+}
+
+#xeDocsCommentList .date {
+	float: right;
+	margin: 5px;
+	color: #cb0000;
+}
+#xeDocsCommentList .content,#xeDocsCommentList .option {
+	border-top: 1px dotted #b9b8b8;
+	padding: 5px;
+}
+
+#xeDocsCommentList .option {
+	text-align: right;
 }

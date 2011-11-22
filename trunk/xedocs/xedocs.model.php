@@ -1192,12 +1192,13 @@ class xedocsModel extends xedocs {
 
                 /* Find and mark parents */
                 $node_srl_iterator = $current_node->parent_srl;
-                while($node_srl_iterator > 0){
+
+                while($node_srl_iterator > 0){			
                     if($documents_tree[$node_srl_iterator]->parent_srl != 0)
                         $documents_tree[$node_srl_iterator]->type = 'parent';
                     else
-                        $documents_tree[$node_srl_iterator]->type = 'active_root';
-                    $node_srl_iterator =  $documents_tree[$node_srl_iterator]->parent_srl;
+						$documents_tree[$node_srl_iterator]->type = 'active_root';
+                    $node_srl_iterator = $documents_tree[$node_srl_iterator]->parent_srl;
                 }
 
                 foreach($documents_tree as $node){
