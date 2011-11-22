@@ -185,6 +185,43 @@
         }
 
         /**
+         * Deletes a keyword
+         */
+        function procXedocsAdminDeleteKeyword(){
+            // Load info about current module
+            $mid = Context::get('mid');
+            $document_srl = Context::get('document_srl');
+            $module_srl = Context::get('module_srl');
+            if((!isset($mid) || !isset($document_srl)) && isset($module_srl)){
+                $oModuleModel = &getModel('module');
+                $this->module_info = $oModuleModel->getModuleInfoByModuleSrl($module_srl);
+            }
+
+            // Retrieve POST variables
+            $keyword = Context::get('keyword');
+
+            // Load keywords
+            if(!isset($this->module_info->keywords))
+                $keywords = array();
+            else
+                $keywords = unserialize($this->module_info->keywords);
+
+            // If this is 'edit', delete old keyword value
+            if(isset($keyword) && count($keywords))
+                unset($keywords[$keyword]);
+
+            $args = clone($this->module_info);
+            $args->keywords = serialize($keywords);
+
+            $oModuleController = &getController('module');
+            $output = $oModuleController->updateModule($args);
+
+            if(!$output->toBool()) return $output;
+
+            $this->setMessage("success");
+        }
+
+        /**
          * Delete all keywords
          */
         function procXedocsAdminClearKeywords(){

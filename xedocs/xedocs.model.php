@@ -822,44 +822,6 @@ class xedocsModel extends xedocs {
 
 	}
 
-	function delete_keyword($module_srl, $keyword)
-	{
-		if(!isset($keyword)){
-			return false;
-		}
-
-		$oModuleModel = &getModel('module');
-		$module_info = $oModuleModel->getModuleInfoByModuleSrl($module_srl);
-		if(!isset($module_info) || !isset($module_info->keywords)){
-			return false;
-		}
-
-		$keywords = $this->string_to_keyword_list($module_info->keywords);
-		$deleted = false;
-		//debug_syslog(1, "there are ".count($keywords)." keywords\n");
-		foreach($keywords as $i=>$val){
-			if(0 == strcmp($val->title,$keyword) ){
-				unset($keywords[$i]);
-				$deleted = true;
-				break;
-			}
-		}
-
-		if($deleted)
-		{
-
-			//debug_syslog(1, "keyword deleted. updating extravars\n");
-
-			$extra_vars = $oModuleModel->getModuleExtraVars($module_srl);
-			$update_args = $extra_vars[$module_srl];
-			$update_args->{'keywords'} = $this->keyword_list_to_string($keywords);
-
-			$oModuleController = &getController('module');
-			$oModuleController->insertModuleExtraVars($module_srl, $update_args);
-		}
-		return $deleted;
-	}
-
 	function _is_search($is_keyword, $target_module_srl, $search_target, $page, $items_per_page= 10)
 	{
 		$oDocumentModel = &getModel('document');

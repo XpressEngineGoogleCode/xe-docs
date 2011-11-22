@@ -71,6 +71,7 @@
         <action name="procXedocsAdminAddKeyword" type="controller" standalone="true" />
         <action name="procXedocsAdminArrangeList" type="controller" standalone="true" />
         <action name="procXedocsAdminClearKeywords" type="controller" standalone="true" />
+        <action name="procXedocsAdminDeleteKeyword" type="controller" standalone="true" />
         <action name="getXedocsTreeList" type="model" />
         <action name="getManualList" type="model" standalone="true" />
     </actions>
