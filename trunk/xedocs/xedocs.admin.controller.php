@@ -160,6 +160,15 @@
          */
         function procXedocsAdminAddKeyword()
         {
+            $mid = Context::get('mid');
+            $document_srl = Context::get('document_srl');
+            $module_srl = Context::get('module_srl');
+            if((!isset($mid) || !isset($document_srl)) && isset($module_srl)){
+                $oModuleModel = &getModel('module');
+
+                $this->module_info = $oModuleModel->getModuleInfoByModuleSrl($module_srl);
+            }
+
             $user_keyword = Context::get('title');
             $target_document_srl = Context::get('target_document_srl');
 
@@ -186,7 +195,6 @@
 
             $args = clone($this->module_info);
             $args->keywords = serialize($keywords);
-
             $oModuleController = &getController('module');
             $output = $oModuleController->updateModule($args);
 
