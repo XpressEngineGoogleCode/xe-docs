@@ -139,21 +139,17 @@
         function dispXedocsAdminEditKeyword()
         {
             $has_target_page = false;
-
             $target_document_srl = Context::get('target_document_srl');
 
             if( isset($target_document_srl) ){
-                            $oDocumentModel = &getModel("document");
-                            $oDocument = $oDocumentModel->getDocument($target_document_srl);
-                            $target_title = "No target document";
-                            if(isset($oDocument)){
-                                    $target_title = $oDocument->getTitle();
-                                    $has_target_page = true;
-                            }
-
-                            Context::set("target_title", $target_title);
-
-
+                $oDocumentModel = &getModel("document");
+                $oDocument = $oDocumentModel->getDocument($target_document_srl);
+                $target_title = "No target document";
+                if(isset($oDocument)){
+                    $target_title = $oDocument->getTitle();
+                    $has_target_page = true;
+                }
+                Context::set("target_title", $target_title);
             }
             Context::set('has_target_page', $has_target_page);
             $this->setTemplateFile("edit_keyword");
@@ -189,6 +185,8 @@
          */
         function dispXedocsAdminAddKeyword()
         {
+            $this->dispXedocsAdminEditKeyword();
+            return;
             $has_target_page = false;
             $module_srl = Context::get('module_srl');
             $target_document_srl = Context::get('target_document_srl');
@@ -208,14 +206,6 @@
             }
             Context::set('keyword', "");
             Context::set("target_title", $target_title);
-
-
-            $oDocumentModel = &getModel("document");
-            $oDocument = $oDocumentModel->getDocument($target_document_srl);
-            $page_content = $oDocument->getContent(false);
-            Context::set('page_content', $page_content);
-            $has_target_page = true;
-
             Context::set('has_target_page', $has_target_page);
 
             $this->setTemplateFile("add_keyword");
