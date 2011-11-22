@@ -307,55 +307,50 @@
         }
 
         /**
-         * @brief Helper methods for adding module info to a document
+         * Displays a list of documents which contain a given keyword,
+         * in order to select one from the list.
+         *
+         * Used for keywords, to choose which page a keyword should link to.
          */
-        function resolve_document_details($oModuleModel, $oDocumentModel, $doc){
-
-            $entry = $oDocumentModel->getAlias($doc->document_srl);
-
-            $module_info = $oModuleModel->getModuleInfoByDocumentSrl($doc->document_srl);
-            $doc->browser_title = $module_info->browser_title;
-            $doc->mid = $module_info->mid;
-
-
-            if ( isset($entry) ){
-                    $doc->entry = $entry;
-            }else{
-                    $doc->entry = "bugbug";
-            }
-        }
-
-        function dispXedocsAdminManualPageSelect()
+         function dispXedocsAdminManualPageSelect()
         {
             if(!Context::get('is_logged')) return new Object(-1, 'msg_not_permitted');
 
             $module_srl = Context::get('module_srl');
             $search_keyword = Context::get('search_keyword');
 
-            if(isset($search_keyword)){
-                $page =  Context::get('page');
-                if (!isset($page)) $page = 1;
+            $page =  Context::get('page');
+            if (!isset($page)) $page = 1;
 
-                $search_target = Context::get('search_target');
-                if ($search_target == 'tag') $search_target = 'tags';
+            $search_target = Context::get('search_target');
+            if(!isset($search_target)) $search_target = 'title';
+            if ($search_target == 'tag') $search_target = 'tags';
 
-                $oXedocsModel = &getModel('xedocs');
-                $oModuleModel = &getModel('module');
-                $oDocumentModel = &getModel('document');
+            $oXedocsModel = &getModel('xedocs');
+            $oModuleModel = &getModel('module');
+            $oDocumentModel = &getModel('document');
 
-                $output = $oXedocsModel->search($search_keyword, $module_srl, $search_target, $page, 10);
+            $output = $oXedocsModel->search($search_keyword, $module_srl, $search_target, $page, 10);
 
-                foreach($output->data as $doc){
-                        $this->resolve_document_details($oModuleModel, $oDocumentModel, $doc);
+            $module_info = $oModuleModel->getModuleInfoByModuleSrl($module_srl);
+            foreach($output->data as $doc){
+                $entry = $oDocumentModel->getAlias($doc->document_srl);
+                $doc->browser_title = $module_info->browser_title;
+                $doc->mid = $module_info->mid;
+
+                if (isset($entry) ){
+                        $doc->entry = $entry;
+                }else{
+                        $doc->entry = "bugbug";
                 }
-
-                Context::set('document_list', $output->data);
-                Context::set('total_count', $output->total_count);
-                Context::set('total_page', $output->total_page);
-
-                Context::set('page', $page);
-                Context::set('page_navigation', $output->page_navigation);
             }
+
+            Context::set('document_list', $output->data);
+            Context::set('total_count', $output->total_count);
+            Context::set('total_page', $output->total_page);
+
+            Context::set('page', $page);
+            Context::set('page_navigation', $output->page_navigation);
 
             $this->setTemplateFile('document_selector');
         }
