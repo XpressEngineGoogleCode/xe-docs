@@ -98,40 +98,32 @@
         </td>
     </tr>
     <tr>
-    
-<tr class="row2">
-    <th scope='col'><div>{$lang->admin_import_manual_collection_name}</div></th>
-	  <td><input type="text" name = "help_name" id="help_name" class="inputTypeText w400" value="{htmlspecialchars($module_info->help_name)}" />
-	  <p>{$lang->about_manual_collection}</p>
-	  </td>
-</tr>
-
-
-<tr class="row2">
-    <th scope='col'><div>{$lang->admin_import_manual_search_rank}</div></th>
-	  <td><input type="text" name = "search_rank" id="search_rank" class="inputTypeText w400" value="{htmlspecialchars($module_info->search_rank)}" />
-	  <p>{$lang->about_admin_import_manual_search_rank}</p>
-	  </td>
-</tr>
-
-
-<tr class = "row2">   
-    <th scope="col"><div>{$lang->admin_import_manual_tags}</div></th>
-	  <td><input type="text" name = "help_tags" id="help_tags" class="inputTypeText w400" value="{htmlspecialchars($module_info->help_tags)}" />
-	  </td>
-
-</tr>
-
-
-
-
-<tr class="row2">
-
-    <th scope='col'><div>{$lang->admin_import_manual_version}</div></th>
-	  <td><input type="text" name = "version_label" id="version_label" class="inputTypeText w400" value="{htmlspecialchars($module_info->version_label)}" /> 
-	  <p>{$lang->about_manual_version}</p> 
-	  </td>
-</tr>
+	<tr class="row2">
+		<th scope='col'><div>{$lang->admin_import_manual_collection_name}</div></th>
+		<td>
+			<input type="text" name = "help_name" id="help_name" class="inputTypeText w400" value="{htmlspecialchars($module_info->help_name)}" />
+			<p>{$lang->about_manual_collection}</p>
+		</td>
+	</tr>
+	<tr class="row2">
+		<th scope='col'><div>{$lang->admin_import_manual_search_rank}</div></th>
+		<td>
+			<input type="text" name = "search_rank" id="search_rank" class="inputTypeText w400" value="<!--@if($module_info->search_rank)-->{htmlspecialchars($module_info->search_rank)}<!--@else-->0<!--@end-->" />
+			<p>{$lang->about_admin_import_manual_search_rank}</p>
+		</td>
+	</tr>
+	<tr class = "row2">   
+		<th scope="col"><div>{$lang->admin_import_manual_tags}</div></th>
+		<td>
+			<input type="text" name = "help_tags" id="help_tags" class="inputTypeText w400" value="{htmlspecialchars($module_info->help_tags)}" />
+		</td>
+	</tr>
+	<tr class="row2">
+		<th scope='col'><div>{$lang->admin_import_manual_version}</div></th>
+		<td><input type="text" name="version_label" id="version_label" class="inputTypeText w400" value="{htmlspecialchars($module_info->version_label)}" /> 
+			<p>{$lang->about_manual_version}</p> 
+		</td>
+	</tr>
 
 		<tr>
 			<th scope="col"><div>{$lang->manual_default_toc_location}</div></th>

@@ -50,8 +50,8 @@
         <action name="procXedocsDeleteComment" type="controller" />
         <action name="procXedocsMoveTree" type="controller" />
         <action name="procXedocsRecompileTree" type="controller" />
-        <action name="dispXedocsAdminView" type="view" standalone="true" admin_index="true" menu_name="dummy_menu" menu_index="true" />
-        <action name="dispXedocsAdminInsertManual" type="view" standalone="true" setup_index="true" menu_name="dummy_menu" />
+        <action name="dispXedocsAdminView" type="view" standalone="true" admin_index="true" />
+        <action name="dispXedocsAdminInsertManual" type="view" standalone="true" setup_index="true" />
         <action name="dispXedocsAdminDeleteManual" type="view" standalone="true" />
         <action name="dispXedocsAdminKeywordList" type="view" standalone="true" />
         <action name="dispXedocsAdminEditKeyword" type="view" standalone="true" />
@@ -73,9 +73,4 @@
         <action name="getXedocsTreeList" type="model" />
         <action name="getManualList" type="model" standalone="true" />
     </actions>
-    <menus>
-        <menu name="dummy_menu">
-            <title xml:lang="en">XE Docs</title>
-        </menu>
-    </menus>
 </module>

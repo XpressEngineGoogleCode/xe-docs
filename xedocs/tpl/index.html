@@ -1,59 +1,58 @@
 <!--%import("filter/zip_config.xml")-->
 
-
-<h1>{$lang->admin_title}</h1>
-
-
-
-
 <!--#include("./header.html")-->
 
 <form action="./" method="get" onsubmit="return doChangeCategory(this);" id="fo_list">
-    <ul>
+    <ul id="xeDocsManualSetList">
     <!--@foreach($manual_list as $no => $val)-->
     {@ $previous_manual_set = $current_manual_set;}
     {@ $current_manual_set = $val->manual_set;}
     <!--@if($previous_manual_set !== $current_manual_set)-->
         <!--@if(isset($previous_manual_set))-->
-                    </tbody>
-                    </table>
-                </li>
+				</tbody>
+				</table>
+				</div>
+			</li>
         <!--@endif-->
-                <li>
-                    <h3>{$val->manual_set}</h3>
-                    <table cellspacing="0" class="rowTable">
-                    <thead>
-                        <tr>
-                            <th scope="col"></th>
-                            <th scope="col" class="half_wide"><div>{$lang->mid}</div></th>
-                            <th scope="col" class="half_wide"><div>{$lang->browser_title}</div></th>
-                            <th scope="col" class="half_wide"><div>{$lang->version_label}</div></th>
-                            <th scope="col"><div>{$lang->regdate}</div></th>
-                            <th scope="col" colspan="3"><div>&nbsp;</div></th>
-                        </tr>
-                    </thead>
-                    <tbody>
+			<li>
+				<div class="table">
+				<table cellspacing="0" border="1" width="100%">
+				<thead>
+					<caption class="h3">{$val->manual_set}</caption>
+					<tr>
+						<th scope="col"></th>
+						<th scope="col"><div>{$lang->mid}</div></th>
+						<th scope="col"><div>{$lang->browser_title}</div></th>
+						<th scope="col"><div>{$lang->version_label}</div></th>
+						<th scope="col"><div>{$lang->regdate}</div></th>
+						<th scope="col"><div>Setup</div></th>
+						<th scope="col"><div>Create copy</div></th>
+						<th scope="col"><div>Delete</div></th>
+					</tr>
+				</thead>
+				<tbody>
         <!--@endif-->
-                    <tr>
-                        <td class="center"><input type="checkbox" name="cart" value="{$val->module_srl}" /></td>
-                        <td>{htmlspecialchars($val->mid)}</td>
-                        <td>
-                                <!-- <a href="./?mid={$val->mid}&amp;act=dispXedocsTreeIndex" onclick="window.open(this.href); return false;">{$val->browser_title}</a>
-                                -->
-                                <a href="{getSiteUrl($val->domain, '', 'mid', $val->mid)}" onclick="window.open(this.href); return false;">{$val->browser_title}</a>
-                        </td>
-                        <td>
-                            {$val->version_label}
-                        </td>
-                        <td>{zdate($val->regdate,"Y-m-d")}</td>
-                        <td><a href="{getUrl('act','dispXedocsAdminManualInfo','module_srl',$val->module_srl)}" class="buttonSet buttonSetting"><span>{$lang->cmd_setup}</span></a></td>
-                        <td><a href="./?module=module&amp;act=dispModuleAdminCopyModule&amp;module_srl={$val->module_srl}" onclick="popopen(this.href);return false;" class="buttonSet buttonCopy"><span>{$lang->cmd_copy}</span></a></td>
-                        <td><a href="{getUrl('act','dispXedocsAdminDeleteManual','module_srl', $val->module_srl)}" class="buttonSet buttonDelete"><span>{$lang->cmd_delete}</span></a></td>
-                    </tr>
-    <!--@end-->
-                   </tbody>
-                    </table>
-                </li>
+			<tr>
+				<td><input type="checkbox" name="cart" value="{$val->module_srl}" /></td>
+				<td>{htmlspecialchars($val->mid)}</td>
+				<td>
+						<!-- <a href="./?mid={$val->mid}&amp;act=dispXedocsTreeIndex" onclick="window.open(this.href); return false;">{$val->browser_title}</a>
+						-->
+						<a href="{getSiteUrl($val->domain, '', 'mid', $val->mid)}" onclick="window.open(this.href); return false;">{$val->browser_title}</a>
+				</td>
+				<td>
+					{$val->version_label}
+				</td>
+				<td>{zdate($val->regdate,"Y-m-d")}</td>
+				<td><a href="{getUrl('act','dispXedocsAdminManualInfo','module_srl',$val->module_srl)}" class="buttonSet buttonSetting"><span>{$lang->cmd_setup}</span></a></td>
+				<td><a href="./?module=module&amp;act=dispModuleAdminCopyModule&amp;module_srl={$val->module_srl}" onclick="popopen(this.href);return false;" class="buttonSet buttonCopy"><span>{$lang->cmd_copy}</span></a></td>
+				<td><a href="{getUrl('act','dispXedocsAdminDeleteManual','module_srl', $val->module_srl)}" class="buttonSet buttonDelete"><span>{$lang->cmd_delete}</span></a></td>
+			</tr>
+		<!--@end-->
+				</tbody>
+				</table>
+				</div>
+			</li>
     </ul>
 </form>
 
