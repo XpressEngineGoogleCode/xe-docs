@@ -333,46 +333,72 @@
              */
             function dispXedocsReplyComment()
             {
+				$oXedocsModel = &getModel('xedocs');
+				$oDocumentModel = &getModel("document");
+				
+				if(!$this->grant->write_comment){
+					return $this->dispXedocsMessage('msg_not_permitted');
+				}
 
-                    if(!$this->grant->write_comment){
-                            return $this->dispXedocsMessage('msg_not_permitted');
+				$document_srl = Context::get('document_srl');
+                $entry = Context::get('entry');
+
+                if (!isset($document_srl))
+                {
+                    // If document_srl is not set, get document by alias (entry)
+                    $document_srl = $oDocumentModel->getDocumentSrlByAlias($this->module_info->mid, $entry);
+                    // If no document was found, just retrieve the root
+                    if(!$document_srl){
+                        $document_srl = $oXedocsModel->get_first_node_srl($this->module_srl);
                     }
-
-
-                    $parent_srl = Context::get('comment_srl');
-
-
-                    if(!$parent_srl) {
-                            return new Object(-1, 'msg_invalid_request');
+                }else{
+                    // Check if given document_srl exists (is valid)
+                    if(!$oXedocsModel->check_document_srl($document_srl, $this->module_info))
+                    {
+                        // Mark this view as invalid if the document_srl is wrong
+                        unset($document_srl);
+                        // Get document_srl of root document
                     }
+                }
+				
+				$oDocument = $oDocumentModel->getDocument($document_srl);
+				Context::set('oDocument', $oDocument);
+				$parent_srl = Context::get('comment_srl');
+
+				/*if(!$parent_srl) {
+					return new Object(-1, 'msg_invalid_request');
+				}
 
 
-                    $oCommentModel = &getModel('comment');
-                    $oSourceComment = $oCommentModel->getComment($parent_srl, $this->grant->manager);
+				$oCommentModel = &getModel('comment');
+				$oSourceComment = $oCommentModel->getComment($parent_srl, $this->grant->manager);
 
 
-                    if(!$oSourceComment->isExists()) {
-                            return $this->dispXedocsMessage('msg_invalid_request');
-                    }
+				if(!$oSourceComment->isExists()) {
+						return $this->dispXedocsMessage('msg_invalid_request');
+				}
 
-                    if( Context::get('document_srl')
-                    && $oSourceComment->get('document_srl') != Context::get('document_srl')) {
+				if( Context::get('document_srl')
+				&& $oSourceComment->get('document_srl') != Context::get('document_srl')) {
 
-                            return $this->dispXedocsMessage('msg_invalid_request');
-                    }
-
-
-                    $oComment = $oCommentModel->getComment();
-                    $oComment->add('parent_srl', $parent_srl);
-                    $oComment->add('document_srl', $oSourceComment->get('document_srl'));
+						return $this->dispXedocsMessage('msg_invalid_request');
+				}
 
 
-                    Context::set('oSourceComment',$oSourceComment);
-                    Context::set('oComment',$oComment);
+				$oComment = $oCommentModel->getComment();*/
+				$oDocumentModel = &getModel("document");
+				$oDocument = $oDocumentModel->getDocument($document_srl);
+				
+				$oDocument->add('parent_srl', $parent_srl);
+				/*$oDocument->add('document_srl', $oSourceComment->get('document_srl'));
 
-                    Context::addJsFilter($this->module_path.'tpl/filter', 'insert_comment.xml');
 
-                    $this->setTemplateFile('comment_form');
+				Context::set('oSourceComment',$oSourceComment);
+				Context::set('oComment',$oComment);
+
+				Context::addJsFilter($this->module_path.'tpl/filter', 'insert_comment.xml');*/
+
+				$this->setTemplateFile('document_view');
             }
 
             /**

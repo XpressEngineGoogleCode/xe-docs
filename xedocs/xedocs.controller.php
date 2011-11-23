@@ -146,9 +146,9 @@
             $oCommentController = &getController('comment');
 
             if(!$obj->comment_srl) {
-                    $obj->comment_srl = getNextSequence();
+				$obj->comment_srl = getNextSequence();
             } else {
-                    $comment = $oCommentModel->getComment($obj->comment_srl, $this->grant->manager);
+				$comment = $oCommentModel->getComment($obj->comment_srl, $this->grant->manager);
             }
 
             if($comment->comment_srl != $obj->comment_srl) {
@@ -184,6 +184,7 @@
             $this->add('mid', Context::get('mid'));
             $this->add('document_srl', $obj->document_srl);
             $this->add('comment_srl', $obj->comment_srl);
+			$this->add('entry', Context::get('entry'));
         }
 
         /**

@@ -7,7 +7,7 @@
 			<ul id="xeDocsCommentList">
 			{@ $_comment_list = $oDocument->getComments() }
 				<!--@foreach($_comment_list as $key => $comment)-->
-				<li id="comment_{$comment->comment_srl}" <!--@if($comment->get('depth'))-->style="margin-left:{($comment->get('depth'))*15}px" <!--@end--> >
+				<li id="comment_{$comment->comment_srl}" <!--@if($comment->get('depth'))-->style="margin-left:{($comment->get('depth'))*30}px" <!--@end--> >
 					<p class="author">Posted by
 						<!--@if(!$comment->member_srl)-->
 							<!--@if($comment->homepage)-->
@@ -53,7 +53,7 @@
 						<!--@if($is_logged)-->
 							<span class="wouldYou"><a href="#popup_menu_area" class="comment_{$comment->comment_srl}">{$lang->cmd_comment_do}</a></span>
 						<!--@end-->
-							<span><a href="{getUrl('act','dispXedocsReplyComment','comment_srl',$comment->comment_srl)}">{$lang->cmd_reply}</a></span> 
+						<span><a href="{getUrl('entry',$entry,'comment_srl',$comment->comment_srl).'#comment_'.$comment->comment_srl}">{$lang->cmd_reply}</a></span> 
 						<!--@if($comment->isGranted() || !$comment->get('member_srl'))-->
 							<span><a href="{getUrl('act','dispXedocsModifyComment','comment_srl',$comment->comment_srl)}">{$lang->cmd_modify_comment}</a></span> 
 							<span><a href="{getUrl('act','dispXedocsDeleteComment','comment_srl',$comment->comment_srl)}">{$lang->cmd_delete}</a></span>
@@ -83,9 +83,69 @@
 						<!--@end-->
 				
 					</div-->
-					<!--@if($comment->get('depth'))-->
-					<!--@end-->
 				</li>
+				<!--@if($comment->comment_srl==$comment_srl)-->
+					<!--@if( $grant->write_comment && $oDocument->isEnableComment() )-->
+					<form action="./" method="post" onsubmit="return procFilter(this, insert_comment)" id="add_comment">
+					<input type="hidden" name="mid" value="{$mid}" />
+					<input type="hidden" name="document_srl" value="{$oDocument->document_srl}" />
+					<input type="hidden" name="comment_srl" value="" />
+					<input type="hidden" name="content" value="" />
+					<input type="hidden" name="parent_srl" value="{$comment_srl}" />
+
+					<table id="xeDocsCommentsList" border="0" cellspacing="0" cellpadding="0" <!--@if($comment->get('depth'))-->style="margin-left:{($comment->get('depth'))*30}px" <!--@end-->>
+					<tbody>						
+						<tr>
+							<td class="xeDocsTableLabel top"><label>Reply to comment:</label></td>
+							<td>
+								{$oDocument->getCommentEditor()}
+							</td>
+						</tr>
+						<!--@if(!$is_logged)-->
+						<tr>
+							<td class="xeDocsTableLabel middle"><label>Username:</label></td>
+							<td>
+								<input type="text" name="nick_name" class="xeDocsInputText userName" value="{$lang->writer}" onfocus="this.value=''" />
+							</td>
+						</tr>
+						<tr>
+							<td class="xeDocsTableLabel middle"><label>Password:</label></td>
+							<td>
+								<input type="password" name="password" class="xeDocsInputText userPw" value="{$lang->password}" onfocus="this.value=''" />
+							</td>
+						</tr>
+						<tr>
+							<td class="xeDocsTableLabel middle"><label>E-mail:</label></td>
+							<td>
+								<input type="text" name="email_address" class="xeDocsInputText emailAddress" value="{$lang->email_address}" onfocus="this.value=''" />
+							</td>
+						</tr>
+						<tr>
+							<td class="xeDocsTableLabel middle"><label>Website/Blog:</label></td>
+							<td>
+								<input type="text" name="homepage" class="xeDocsInputText homePage" value="{$lang->homepage}" onfocus="this.value=''" />
+							</td>
+						</tr>
+						<!--@end-->
+						<tr>
+							<td class="xeDocsTableLabel middle"><label for="notify_message">Notify me if someone reply's to this post.</label></td>
+							<td>
+								<input type="checkbox" name="notify_message" value="Y" id="notify_message" class="inputCheck" />
+							</td>
+						</tr>
+						<tr>
+							<td></td>
+							<td>
+								<!--input type="checkbox" name="is_secret" value="Y" id="is_secret" class="inputCheck" />
+								<label for="is_secret">{$lang->secret}</label-->
+								<p><a class="xeDocsBodyButton" href="#" onclick="jQuery('#add_comment').submit();return false;"><span><span>Add comment</span></span></a></p>
+							</td>
+						</tr>
+					</tbody>
+					</table>
+					</form>
+					<!--@end-->
+				<!--@end-->
 				<!--@end-->
 			</ul>
 			<!--@if($oDocument->comment_page_navigation)-->
@@ -103,6 +163,7 @@
 			<!--@end-->
 		<!--@end-->
 	</div>
+	<!--@if(!$comment_srl)-->
 	<!--@if($oDocument->allowComment())-->
 		<table id="xeDocsCommentsList" border="0" cellspacing="0" cellpadding="0">
 		<tbody>
@@ -165,6 +226,7 @@
 		</table>
 	<!--@else-->
 		<p>Comments have been disabled for this page.</p>
+	<!--@end-->
 	<!--@end-->
 
 <!--@end-->

@@ -4,89 +4,25 @@
 		<!--#include("column_left.html")-->
 		<div id="xeDocsVersion">
 			<!--@if($grant->manager)-->
-			<div id="xeDocsEditorActions">
-				<a href="{getUrl('act','dispXedocsEditPage', 'entry', '')}"><img src="img/icon_add_page.png" alt="Add new page" title="Add new page"/></a>
-				<a href="{getUrl('act','dispXedocsEditPage', 'entry', $entry)}"><img src="img/icon_edit_page.png" alt="Edit page" title="Edit page"/></a>
-				<a href="#" onclick="if(confirm('{$lang->confirm_delete}')) { doDeleteManual('{$oDocument->document_srl}'); }; return false;"><img src="img/icon_delete_page.png" alt="Delete page" title="Delete page"/></a>
-				<a href="{getUrl('act','dispXedocsHistory')}"><img src="img/icon_history.png" alt="History" title="History"/></a>
-			</div>
+				<div id="xeDocsEditorActions">
+					<a href="{getUrl('act','dispXedocsEditPage', 'entry', '')}"><img src="img/icon_add_page.png" alt="Add new page" title="Add new page"/></a>
+					<a href="{getUrl('act','dispXedocsEditPage', 'entry', $entry)}"><img src="img/icon_edit_page.png" alt="Edit page" title="Edit page"/></a>
+					<a href="#" onclick="if(confirm('{$lang->confirm_delete}')) { doDeleteManual('{$oDocument->document_srl}'); }; return false;"><img src="img/icon_delete_page.png" alt="Delete page" title="Delete page"/></a>
+					<a href="{getUrl('act','dispXedocsHistory')}"><img src="img/icon_history.png" alt="History" title="History"/></a>
+				</div>
 			<!--@end-->
 			<p>
-                            <!--@if(count($versions) > 0) -->
-                            <strong>{$lang->versions}</strong>&nbsp;&nbsp;&nbsp;
-				<!--@foreach($versions as $value)-->
-					<!--@if($value->is_current_version)-->
-						<strong><span id="xeDocsCurrentVersion">{$value->version_label}</span></strong>
-					<!--@else-->
-						&nbsp;|&nbsp;<strong><a href='{$value->href}'>{$value->version_label}</a></strong>
-					<!--@end-->
-				<!--@end-->
-                            <!--@end-->
-                            &nbsp;
-			</p>
-
-			<!--@if($oDocument && $oDocument->isExists())-->
-			<!--@if($oDocument->isExists()&&$act!='dispXedocsEditPage'&&$grant->manager)-->
-			<div class="wikiRead">
-				<div class="wikiReadPadding">
-
-				<!--
-					<form action="{getUrl('act','dispXedocsContent','entry','','document_srl','')}" method="get" class="xeDocsSearchForm">
-						<input type="hidden" name="mid" value="{$mid}" />
-						<input type="hidden" name="vid" value="{$vid}" />
-						<input class="xeDocsInputText" type="text" name="entry" />
-						<input class="xeDocsSearchButton" src="img/icon_search.png" type="image" value="{$lang->cmd_move}" alt="{$lang->cmd_move}" />
-					</form>
-				-->
-
-					<!--@if($visit_log)-->
-					<div class="visitLog">
-						{@ $bFirst = true; }
-						<!--@foreach($visit_log as $_entry)-->
-							<!--@if(!$bFirst)--> > <!--@else-->{@ $bFirst = false; }<!--@end--> <a href="{getUrl('entry',$_entry,'document_srl','')}">{$_entry}</a>
-						<!--@end-->
-					</div>
-					<!--@end-->
-
-					<div style='display: none;'>
-						<!--@if($history)-->
-							<a href="#" class="author member_{$history->member_srl}" onclick="return false;">{$history->nick_name}</a>
+				<!--@if(count($versions) > 0) -->
+					<strong>{$lang->versions}</strong>&nbsp;&nbsp;&nbsp;
+					<!--@foreach($versions as $value)-->
+						<!--@if($value->is_current_version)-->
+							<strong><span id="xeDocsCurrentVersion">{$value->version_label}</span></strong>
 						<!--@else-->
-							<!--@if(!$oDocument->getMemberSrl())-->
-								<!--@if($oDocument->isExistsHomepage())-->
-									<a href="{$oDocument->getHomepageUrl()}" onclick="window.open(this.href);return false;" class="author">{$oDocument->getNickName()}</a>
-								<!--@else-->
-									{$oDocument->getNickName()}
-								<!--@end-->
-							<!--@else-->
-								<a href="#popup_menu_area" class="member_{$oDocument->get('member_srl')} author" onclick="return false">{$oDocument->getNickName()}</a>
-							<!--@end-->
+							&nbsp;|&nbsp;<strong><a href='{$value->href}'>{$value->version_label}</a></strong>
 						<!--@end-->
-
-						<span class="ipAddress"><!--@if($grant->manager || $module_info->display_ip_address!='N')-->{$oDocument->getIpaddress()}<!--@end--></span>
-					</div>
-
-
-				</div>
-			</div>
-			<!--@end-->
-			<!--@else-->
-				<div class="wikiRead">
-					<div class="wikiReadHeader">
-						<div class="titleArea">
-
-						</div>
-					</div>
-				</div>
-				<!--@if($visit_log)-->
-				<div class="visitLog">
-					{@ $bFirst = true; }
-					<!--@foreach($visit_log as $_entry)-->
-						<!--@if(!$bFirst)--> > <!--@else-->{@ $bFirst = false; }<!--@end--> <a href="{getUrl('entry',$_entry)}">{$_entry}</a>
 					<!--@end-->
-				</div>
 				<!--@end-->
-			<!--@end-->
+			</p>
 		</div>
 
 		<!--@if(!$oDocument->isExists())-->
