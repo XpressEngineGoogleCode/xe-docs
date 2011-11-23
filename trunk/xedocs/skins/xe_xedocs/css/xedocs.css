@@ -299,6 +299,7 @@ a.xeDocsButtonAdmin, a.xeDocsButton  {
 
 #xeDocsContentContainer {
 	margin: 20px 10px 0 10px;
+	overflow: hidden;
 }
 
 #xeDocsBreadcrumbs {
@@ -346,7 +347,7 @@ a.xeDocsButtonAdmin, a.xeDocsButton  {
 	font-weight: normal;
 	border-bottom: 1px dotted #b9b8b8;
 	padding-bottom: 4px;
-	margin: 8px 0;
+	margin: 5px 0;
 }
 
 .xeDocsTable {
@@ -593,6 +594,7 @@ a.xeDocsButtonAdmin, a.xeDocsButton  {
 #xeDocsCommentList {
 	padding: 0;
 	list-style-type: none;
+	margin: 5px 0;
 }
 
 #xeDocsCommentList li {
