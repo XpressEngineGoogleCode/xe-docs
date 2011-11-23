@@ -58,6 +58,13 @@
             $this->add('page',Context::get('page'));
             $this->add('module_srl',$output->get('module_srl'));
             $this->setMessage($msg_code);
+			
+			$this->setMessage('success_updated', 'info');
+			if(!in_array(Context::getRequestMethod(),array('XMLRPC','JSON'))) {
+                $returnUrl = Context::get('success_return_url') ? Context::get('success_return_url') : getNotEncodedUrl('', 'module', 'admin', 'act', 'dispXedocsAdminInsertManual');
+				$this->setRedirectUrl($returnUrl);
+                return;
+            }
         }
 
         /**

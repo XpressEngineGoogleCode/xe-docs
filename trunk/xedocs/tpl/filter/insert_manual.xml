@@ -4,7 +4,7 @@
         <node target="browser_title" required="true" maxlength="250" />
 
         <node target="help_name" required="true" />
-        <node target="version_label" />
+        <node target="version_label" required="true" />
 		<node target="search_rank" filter="number" default="0"/>
         <node target="toc_location" required = "true" />
 

@@ -25,6 +25,7 @@
 						<th scope="col"><div>{$lang->browser_title}</div></th>
 						<th scope="col"><div>{$lang->version_label}</div></th>
 						<th scope="col"><div>{$lang->regdate}</div></th>
+						<th scope="col"><div>View</div></th>
 						<th scope="col"><div>Setup</div></th>
 						<th scope="col"><div>Create copy</div></th>
 						<th scope="col"><div>Delete</div></th>
@@ -36,14 +37,15 @@
 				<td><input type="checkbox" name="cart" value="{$val->module_srl}" /></td>
 				<td>{htmlspecialchars($val->mid)}</td>
 				<td>
-						<!-- <a href="./?mid={$val->mid}&amp;act=dispXedocsTreeIndex" onclick="window.open(this.href); return false;">{$val->browser_title}</a>
-						-->
-						<a href="{getSiteUrl($val->domain, '', 'mid', $val->mid)}" onclick="window.open(this.href); return false;">{$val->browser_title}</a>
+					{$val->browser_title}
 				</td>
 				<td>
 					{$val->version_label}
 				</td>
 				<td>{zdate($val->regdate,"Y-m-d")}</td>
+				<td>
+					<a href="{getSiteUrl($val->domain, '', 'mid', $val->mid)}" onclick="window.open(this.href); return false;">{$lang->view}</a>
+				</td>
 				<td><a href="{getUrl('act','dispXedocsAdminManualInfo','module_srl',$val->module_srl)}" class="buttonSet buttonSetting"><span>{$lang->cmd_setup}</span></a></td>
 				<td><a href="./?module=module&amp;act=dispModuleAdminCopyModule&amp;module_srl={$val->module_srl}" onclick="popopen(this.href);return false;" class="buttonSet buttonCopy"><span>{$lang->cmd_copy}</span></a></td>
 				<td><a href="{getUrl('act','dispXedocsAdminDeleteManual','module_srl', $val->module_srl)}" class="buttonSet buttonDelete"><span>{$lang->cmd_delete}</span></a></td>
@@ -55,19 +57,9 @@
 			</li>
     </ul>
 </form>
-
-<!-- 버튼 -->
-<div class="clear">
-    <div class="fl">
-        <a href="{getUrl('','module','module','act','dispModuleAdminModuleSetup')}" onclick="doCartSetup(this.href); return false;" class="button green"><span>{$lang->cmd_setup}</span></a>
-        <a href="{getUrl('','module','module','act','dispModuleAdminModuleAdditionSetup')}" onclick="doCartSetup(this.href); return false;" class="button red"><span>{$lang->cmd_addition_setup}</span></a>
-        <a href="{getUrl('','module','module','act','dispModuleAdminModuleGrantSetup')}" onclick="doCartSetup(this.href); return false;" class="button blue"><span>{$lang->cmd_manage_grant}</span></a>
-    </div>
-    <div class="fr">
-        <a href="{getUrl('act','dispXedocsAdminInsertManual','module_srl','')}" class="button black strong"><span>{$lang->cmd_make}</span></a>
-    </div>
-</div>
-
-
-
-
+<p class="btnArea">
+	<span class="btn small"><a href="{getUrl('','module','module','act','dispModuleAdminModuleSetup')}" onclick="doCartSetup(this.href); return false;" class="button green">{$lang->cmd_setup}</a></span>
+	<span class="btn small"><a href="{getUrl('','module','module','act','dispModuleAdminModuleAdditionSetup')}" onclick="doCartSetup(this.href); return false;" class="button red">{$lang->cmd_addition_setup}</a></span>
+	<span class="btn small"><a href="{getUrl('','module','module','act','dispModuleAdminModuleGrantSetup')}" onclick="doCartSetup(this.href); return false;" class="button blue">{$lang->cmd_manage_grant}</a></span>
+	<span class="btn small"><a href="{getUrl('act','dispXedocsAdminInsertManual','module_srl','')}" class="button black strong">{$lang->cmd_xedocs_insert_manual}</a></span>
+</p>

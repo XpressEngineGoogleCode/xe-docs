@@ -10,7 +10,7 @@ function completeInsertManual(ret_obj) {
     var page = ret_obj['page'];
     var module_srl = ret_obj['module_srl'];
 
-    alert(message);
+    alert(ret_obj['message']);
 
     var url = current_url.setQuery('act','dispXedocsAdminInsertManual');
     if(module_srl) url = url.setQuery('module_srl',module_srl);
