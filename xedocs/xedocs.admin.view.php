@@ -259,6 +259,10 @@
                 $keyword_count = 0;
 
                 foreach($keywords as $keyword){
+                    if(isset($filter_keyword)){
+                        $pos = strpos($keyword->title, $filter_keyword);
+                        if($pos === false) continue;
+                    }
                     $keyword_count++;
                     if($keyword_count < $start) continue;
                     if($keyword_count > $start + $items_per_page) break;
