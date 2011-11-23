@@ -732,6 +732,10 @@ class xedocsModel extends xedocs {
             $keyword_frequency = array();
             $keyword_replacement = array();
 
+            // Disable libxml errors - it throws many exceptions with HTML that is not correctly formatted
+            // See http://www.php.net/manual/en/domdocument.loadhtml.php#95463
+            libxml_use_internal_errors(true);
+
             // Replace keywords with links and save replacements made in an array
             $dom = new DOMDocument;
             $dom->formatOutput = TRUE;
@@ -752,13 +756,15 @@ class xedocsModel extends xedocs {
                 }
             }
 
-            $content = $dom->saveHTML($dom->documentElement);;
+            $content = $dom->saveHTML($dom->documentElement);
 
             // Add a See also section at the end of the document, based on previous replacements made
             $links = array();
             foreach($keyword_frequency as $keyword => $frequency){
                 $links[$frequency][] = $keyword_replacement[$keyword];
             }
+
+            ksort($links);
 
             if(count($links) > 0){
                 $see_also_content = '<h4> See Also:</h4><ul>';
@@ -1193,7 +1199,7 @@ class xedocsModel extends xedocs {
                 /* Find and mark parents */
                 $node_srl_iterator = $current_node->parent_srl;
 
-                while($node_srl_iterator > 0){			
+                while($node_srl_iterator > 0){
                     if($documents_tree[$node_srl_iterator]->parent_srl != 0)
                         $documents_tree[$node_srl_iterator]->type = 'parent';
                     else
