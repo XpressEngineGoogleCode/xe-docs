@@ -126,8 +126,8 @@
             $skin_list = $oModuleModel->getSkins($this->module_path);
             Context::set('skin_list',$skin_list);
 
-            $oLayoutMode = &getModel('layout');
-            $layout_list = $oLayoutMode->getLayoutList();
+            $oLayoutModel = &getModel('layout');
+            $layout_list = $oLayoutModel->getLayoutList();
             Context::set('layout_list', $layout_list);
 
             $this->setTemplateFile('manual_insert');
