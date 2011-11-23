@@ -1,19 +1,20 @@
 <!--%import("js/manual_admin.js")-->
+<!--%import("css/style.css")-->
 
-<h3 class="xeAdmin">{$lang->xedocs} <span class="gray">{$lang->cmd_management}</span></h3>
+<h2 class="h2">{$lang->xedocs} <span class="gray">{$lang->cmd_management}</span></h2>
 
 <div class="infoText">{nl2br($lang->about_xedocs)}</div>
 
 <!--@if($module_info)-->
 <div class="header4">
     <!--@if($module_info->mid)-->
-    <h4 class="xeAdmin">{$module_info->mid} <!--@if($module_info->is_default=='Y')--><span class="bracket">({$lang->is_default})</span><!--@end--> <span class="vr">|</span>
+		<h4 class="xeAdmin">{$module_info->mid} <!--@if($module_info->is_default=='Y')--><span class="bracket">({$lang->is_default})</span><!--@end--> <span class="vr">|</span>
              <a href="{getSiteUrl($module_info->domain,'','mid',$module_info->mid)}" onclick="window.open(this.href); return false;" class="view">View Manual</a>
 
-          <!--
-          <a href="./?mid={$module_info->mid}&act=dispXedocsTreeIndex" onclick="window.open(this.href); return false;" > View Manual </a>"
-          -->
-          </h4>
+		<!--
+			<a href="./?mid={$module_info->mid}&act=dispXedocsTreeIndex" onclick="window.open(this.href); return false;" > View Manual </a>"
+		-->
+		</h4>
     <!--@end-->
 
     <ul class="localNavigation">
