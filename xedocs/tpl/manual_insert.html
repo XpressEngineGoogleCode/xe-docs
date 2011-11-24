@@ -1,9 +1,5 @@
 <!--#include("header.html")-->
 
-<div cond="$XE_VALIDATOR_MESSAGE" class="message {$XE_VALIDATOR_MESSAGE_TYPE}">
-	<p>{$XE_VALIDATOR_MESSAGE}</p>
-</div>
-
 <form action="./" method="post" enctype="multipart/form-data" class="form" ruleset="insert_manual">
     <input type="hidden" name="page" value="{$page}" />
     <input type="hidden" name="module_srl" value="{$module_info->module_srl}" />
