@@ -33,8 +33,6 @@
                     $args->use_comment = 'Y';
             }
 
-            unset($args->manual_name);
-
             if($args->module_srl) {
                     $module_info = $oModuleModel->getModuleInfoByModuleSrl($args->module_srl);
                     if($module_info->module_srl != $args->module_srl){
@@ -102,7 +100,13 @@
 
             $this->add('module','xedocs');
             $this->add('page',Context::get('page'));
-            $this->setMessage('success_deleted');
+            $this->setMessage('success_deleted', 'info');
+
+            if(!in_array(Context::getRequestMethod(),array('XMLRPC','JSON'))) {
+                $returnUrl = Context::get('success_return_url') ? Context::get('success_return_url') : getNotEncodedUrl('', 'module', 'admin', 'act', 'dispXedocsAdminView');
+                $this->setRedirectUrl($returnUrl);
+                return;
+            }
         }
 
 
