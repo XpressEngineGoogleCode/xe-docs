@@ -1,10 +1,11 @@
-<!--%import("filter/delete_manual.xml")-->
-<!--%import("js/manual_admin.js")-->
 <!--#include("header.html")-->
 
-<form action="./" method="get" onsubmit="return procFilter(this, delete_manual)">
-<input type="hidden" name="page" value="{$page}" />
-<input type="hidden" name="module_srl" value="{$module_info->module_srl}" />
+<form action="./" method="get" ruleset="delete_manual">
+    <input type="hidden" name="page" value="{$page}" />
+    <input type="hidden" name="module_srl" value="{$module_info->module_srl}" />
+    <input type="hidden" name="act" value="procXedocsAdminDelete" />
+    <input type="hidden" name="module" value="xedocs" />
+    <input type="hidden" name="success_return_url" value="{getUrl('act', 'dispXedocsAdminView', 'module_srl', '')}" />
 
     <h4 class="xeAdmin">{$lang->confirm_delete}</h4>
     <table cellspacing="0" class="rowTable">

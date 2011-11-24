@@ -1,5 +1,9 @@
 <!--#include("./header.html")-->
 
+<div cond="$XE_VALIDATOR_MESSAGE" class="message {$XE_VALIDATOR_MESSAGE_TYPE}">
+	<p>{$XE_VALIDATOR_MESSAGE}</p>
+</div>
+
 <form action="./" method="get" onsubmit="return doChangeCategory(this);" id="fo_list">
     <ul id="xeDocsManualSetList">
     <!--@foreach($manual_list as $no => $val)-->
