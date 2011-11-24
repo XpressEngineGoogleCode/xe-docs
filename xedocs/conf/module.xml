@@ -55,7 +55,7 @@
         <action name="dispXedocsAdminDeleteManual" type="view" standalone="true" />
         <action name="dispXedocsAdminKeywordList" type="view" standalone="true" />
         <action name="dispXedocsAdminEditKeyword" type="view" standalone="true" />
-        <action name="dispXedocsAdminDeleteKeyword" type="view" standalone="true" />
+        <action name="dispXedocsAdminDeleteKeyword" type="view" standalone="true" ruleset="delete_keyword" />
         <action name="dispXedocsAdminAddKeyword" type="view" standalone="true" />
         <action name="dispXedocsAdminManualPageSelect" type="view" standalone="true" />
         <action name="dispXedocsAdminManualInfo" type="view" standalone="true" />

@@ -38,7 +38,7 @@
         <input type="hidden" name="act" value="procXedocsAdminEditKeyword" cond="isset($keyword)" />
         <input type="hidden" name="act" value="procXedocsAdminAddKeyword" cond="!isset($keyword)" />
         <input type="hidden" name="module" value="xedocs" />
-        <input type="hidden" name="success_return_url" value="{getUrl('act', 'dispXedocsAdminKeywordList', 'module_srl', $module_info->module_srl)}" />
+        <input type="hidden" name="success_return_url" value="{getUrl('act', 'dispXedocsAdminKeywordList', 'module_srl', $module_info->module_srl, 'keyword', '', 'target_document_srl', '')}" />
 
     <table cellspacing="0" class="rowTable">
 	    <tr>

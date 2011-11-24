@@ -1,5 +1,4 @@
 <!--%import("filter/clear_keywords.xml")-->
-<!--%import("filter/delete_keyword.xml")-->
 <!--%import("js/manual_admin.js")-->
 <!--#include("header.html")-->
 
@@ -41,11 +40,13 @@
                class="buttonSet buttonSetting"><span>{$lang->cmd_edit}</span></a>
         </td>
         <td>
-            <form action="./" method="get" onsubmit="return procFilter(this, delete_keyword)">
+            <form action="./" method="post" ruleset="delete_keyword">
                 <input type="hidden" name="module_srl" value="{$module_info->module_srl}" />
                 <input type="hidden" name="module" value="admin" />
                 <input type="hidden" name="act" value="procXedocsAdminDeleteKeyword" />
                 <input type="hidden" name="keyword" value="{$keyword->title}" />
+                <input type="hidden" name="success_return_url" value="{getUrl('act', 'dispXedocsAdminKeywordList', 'module_srl', $module_info->module_srl, 'keyword', '')}" />
+
                 <input type="submit" value="{$lang->cmd_delete}" />
             </form>
         </td>
