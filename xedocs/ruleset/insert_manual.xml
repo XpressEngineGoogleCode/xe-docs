@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ruleset version="1.5.0">
+    <customrules>
+    </customrules>
+    <fields>
+        <field target="mid" required="true" maxlength="3:40" filter="alpha_number" />
+        <field target="browser_title" required="true" maxlength="2:250" />
+        <field target="help_name" required="true" />
+        <field target="version_label" required="true" />
+	<field target="search_rank" filter="number" default="0"/>
+        <field target="toc_location" required = "true" />
+    </fields>
+</ruleset>
