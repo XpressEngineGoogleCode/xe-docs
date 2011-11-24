@@ -233,7 +233,7 @@
 
             if(!$output->toBool()) return $output;
 
-            $this->setMessage("success_deleted");
+            $this->setMessage("success_deleted", 'info');
 
             if(!in_array(Context::getRequestMethod(),array('XMLRPC','JSON'))) {
                 $returnUrl = Context::get('success_return_url') ? Context::get('success_return_url') : getNotEncodedUrl('', 'module', 'admin', 'act', 'dispXedocsAdminKeywordList');
@@ -264,7 +264,13 @@
 
             if(!$output->toBool()) return $output;
 
-            $this->setMessage("success");
+            $this->setMessage("success_deleted", 'info');
+
+            if(!in_array(Context::getRequestMethod(),array('XMLRPC','JSON'))) {
+                $returnUrl = Context::get('success_return_url') ? Context::get('success_return_url') : getNotEncodedUrl('', 'module', 'admin', 'act', 'dispXedocsAdminKeywordList');
+                $this->setRedirectUrl($returnUrl);
+                return;
+            }
         }
     }
 ?>

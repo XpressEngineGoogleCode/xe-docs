@@ -1,9 +1,0 @@
-<filter name="clear_keywords" module="xedocs" act="procXedocsAdminClearKeywords" confirm_msg_code="confirm_delete">
-    <form>
-        <node target="module_srl" required="true" />
-    </form>
-    <response callback_func="completeClearKeywords">
-        <tag name="error" />
-        <tag name="message" />
-    </response>
-</filter>

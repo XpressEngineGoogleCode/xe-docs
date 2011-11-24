@@ -40,7 +40,7 @@
                class="buttonSet buttonSetting"><span>{$lang->cmd_edit}</span></a>
         </td>
         <td>
-            <form action="./" method="post" ruleset="delete_keyword">
+            <form action="./" method="post" ruleset="delete_keyword" onsubmit='return confirm("Are you sure you want to delete this keyword?");'>
                 <input type="hidden" name="module_srl" value="{$module_info->module_srl}" />
                 <input type="hidden" name="module" value="admin" />
                 <input type="hidden" name="act" value="procXedocsAdminDeleteKeyword" />
@@ -70,12 +70,14 @@
 <!--@end-->
 
 <div id="keyword_commands">
-    <form action="./" method="get" onsubmit="return procFilter(this, clear_keywords)">
+    <form action="./" method="post" ruleset="clear_keywords" onsubmit="return confirm('Are you sure you want to delete all keywords?')">
         <a href="{getUrl('act','dispXedocsAdminAddKeyword','module_srl',$module_srl, 'keyword', '', 'target_document_srl', '')}" class="button blue"><span>{$lang->cmd_create_keword}</span></a>
         &nbsp
         <input type="hidden" name="module_srl" value="{$module_info->module_srl}" />
         <input type="hidden" name="module" value="admin" />
         <input type="hidden" name="act" value="procXedocsAdminClearKeywords" />
+        <input type="hidden" name="success_return_url" value="{getUrl('act', 'dispXedocsAdminKeywordList', 'module_srl', $module_info->module_srl, 'keyword', '')}" />
+
         <span class="button blue"><input type="submit" value="{$lang->cmd_clear_kewords}" /></span>
     </form>
 </div>

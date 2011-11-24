@@ -68,7 +68,7 @@
         <action name="procXedocsAdminEditKeyword" type="controller" standalone="true" ruleset="edit_keyword" />
         <action name="procXedocsAdminAddKeyword" type="controller" standalone="true" ruleset="edit_keyword" />
         <action name="procXedocsAdminArrangeList" type="controller" standalone="true" />
-        <action name="procXedocsAdminClearKeywords" type="controller" standalone="true" />
+        <action name="procXedocsAdminClearKeywords" type="controller" standalone="true" ruleset="clear_keywords" />
         <action name="procXedocsAdminDeleteKeyword" type="controller" standalone="true" />
         <action name="getXedocsTreeList" type="model" />
         <action name="getManualList" type="model" standalone="true" />
