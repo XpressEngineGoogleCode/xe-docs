@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ruleset version="1.5.0">
+    <customrules>
+    </customrules>
+    <fields>
+        <field target="module_srl" required="true" />
+        <field target="keyword" required="true" />
+        <field target="title" required="true" />
+        <field target="orig_title" required="false" />
+        <field target="target_document_srl" required="true" />
+    </fields>
+</ruleset>

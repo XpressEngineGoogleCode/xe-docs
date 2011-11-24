@@ -181,7 +181,14 @@
 
             if(!$output->toBool()) return $output;
 
-            $this->setMessage("success");
+            $this->setMessage("success_registed", 'info');
+
+            if(!in_array(Context::getRequestMethod(),array('XMLRPC','JSON'))) {
+                $returnUrl = Context::get('success_return_url') ? Context::get('success_return_url') : getNotEncodedUrl('', 'module', 'admin', 'act', 'dispXedocsAdminView');
+                $this->setRedirectUrl($returnUrl);
+                return;
+            }
+
         }
 
         /**

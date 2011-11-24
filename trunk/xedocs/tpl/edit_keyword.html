@@ -1,6 +1,3 @@
-<!--%import("filter/edit_keyword.xml")-->
-<!--%import("js/manual_admin.js")-->
-
 <script type="text/javascript">
     function insertSelectedManualPage(id, document_srl, mid, browser_title) {
         var obj= xGetElementById(id);
@@ -34,10 +31,14 @@
     Use keywords in order to automatically link documents between each other. For instance, if your keyword is CSQL and you chose to open the documentation page about it, XE Docs will replace every occurence of "CSQL" in all pages of the manual with a link to the page you chose.
 </div>
 
-<form action="./" method="get" onsubmit="return procFilter(this, edit_keyword)" >
+<form action="./" method="get" ruleset="edit_keyword" >
 	<input type="hidden" name="page" value="{$page}" />
 	<input type="hidden" name="module_srl" value="{$module_info->module_srl}" />
 	<input type="hidden" name="orig_title" value="{$keyword}" />
+        <input type="hidden" name="act" value="procXedocsAdminEditKeyword" cond="isset($keyword)" />
+        <input type="hidden" name="act" value="procXedocsAdminAddKeyword" cond="!isset($keyword)" />
+        <input type="hidden" name="module" value="xedocs" />
+        <input type="hidden" name="success_return_url" value="{getUrl('act', 'dispXedocsAdminKeywordList', 'module_srl', $module_info->module_srl)}" />
 
     <table cellspacing="0" class="rowTable">
 	    <tr>

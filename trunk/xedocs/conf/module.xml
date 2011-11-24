@@ -63,10 +63,10 @@
         <action name="dispXedocsAdminAdditionSetup" type="view" standalone="true" />
         <action name="dispXedocsAdminArrange" type="view" standalone="true" />
         <action name="dispXedocsAdminSkinInfo" type="view" standalone="true" />
-        <action name="procXedocsAdminDelete"  type="controller" standalone="true" ruleset="delete_manual" />
+        <action name="procXedocsAdminDelete"  type="controller" standalone="true"   />
         <action name="procXedocsAdminInsertManual"  type="controller" standalone="true"  ruleset="insert_manual" />
-        <action name="procXedocsAdminEditKeyword" type="controller" standalone="true" />
-        <action name="procXedocsAdminAddKeyword" type="controller" standalone="true" />
+        <action name="procXedocsAdminEditKeyword" type="controller" standalone="true" ruleset="edit_keyword" />
+        <action name="procXedocsAdminAddKeyword" type="controller" standalone="true" ruleset="edit_keyword" />
         <action name="procXedocsAdminArrangeList" type="controller" standalone="true" />
         <action name="procXedocsAdminClearKeywords" type="controller" standalone="true" />
         <action name="procXedocsAdminDeleteKeyword" type="controller" standalone="true" />
