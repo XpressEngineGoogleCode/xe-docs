@@ -1,145 +1,139 @@
-<!--%import("filter/insert_manual.xml")-->
-<load target="./js/manual_admin.js" usecdn="true" />
-
 <!--#include("header.html")-->
 
 <div cond="$XE_VALIDATOR_MESSAGE" class="message {$XE_VALIDATOR_MESSAGE_TYPE}">
 	<p>{$XE_VALIDATOR_MESSAGE}</p>
 </div>
 
-<form action="./" method="post" onsubmit="return procFilter(this, insert_manual)" enctype="multipart/form-data" class="form">
-<input type="hidden" name="page" value="{$page}" />
-<input type="hidden" name="module_srl" value="{$module_info->module_srl}" />
+<form action="./" method="post" enctype="multipart/form-data" class="form" ruleset="insert_manual">
+    <input type="hidden" name="page" value="{$page}" />
+    <input type="hidden" name="module_srl" value="{$module_info->module_srl}" />
+    <input type="hidden" name="mid" value="{$module_info->mid}" cond="$logged_info->is_admin!='Y'" />
+    <input type="hidden" name="act" value="procXedocsAdminInsertManual" />
+    <input type="hidden" name="module" value="xedocs" />
+    <input type="hidden" name="success_return_url" value="{getUrl('act', $act)}" cond="$module_info->module_srl" />
+    <input type="hidden" name="success_return_url" value="{getUrl('act', 'dispXedocsAdminView')}" cond="!$module_info->module_srl" />
 
-<ul>
-	<!--@if($logged_info->is_admin!='Y')-->
-    <input type="hidden" name="mid" value="{$module_info->mid}" />
-    <!--@else-->
-	<li>
-		<p class="q">{$lang->mid}</p>
-		<p class="a"><input type="text" name="mid" value="{$module_info->mid}" /></p>
-		<p class="desc">{$lang->about_mid}</p>
-	</li>
+    <ul>
+	<!--@if($logged_info->is_admin=='Y')-->
+            <li>
+                <p class="q">{$lang->mid}</p>
+                <p class="a"><input type="text" name="mid" value="{$module_info->mid}" /></p>
+                <p class="desc">{$lang->about_mid}</p>
+            </li>
 	<!--@end-->
-	<li>
-		<p class="q">{$lang->module_category}</p>
-		<p class="a">
-            <select name="module_category_srl">
-                <option value="0">{$lang->notuse}</option>
-                <!--@foreach($module_category as $key => $val)-->
-                <option value="{$key}" <!--@if($module_info->module_category_srl==$key)-->selected="selected"<!--@end-->>{$val->title}</option>
-                <!--@end-->
-            </select>
-		</p>
-		<p class="desc">{$lang->about_module_category}</p>
-	</li>
-	<li>
-		<p class="q">{$lang->use_comment}</p>
-		<p class="a">
-            <select name="use_comment">
-                <option value="N" <!--@if($module_info->use_comment=='N')-->selected="selected"<!--@end--> >{$lang->notuse}</option>
-                <option value="Y" <!--@if($module_info->use_comment!='N')-->selected="selected"<!--@end--> >{$lang->use}</option>
-            </select>
-		</p>
-		<p class="desc">{$lang->xedocs_about_use_comment}</p>
-	</li>
-	<li>
-		<p class="q">{$lang->browser_title}</p>
-		<p class="a">
-			<input type="text" name="browser_title" value="{htmlspecialchars($module_info->browser_title)}" id="browser_title" />
-            <a href="{getUrl('','module','module','act','dispModuleAdminLangcode','target','browser_title')}" onclick="popopen(this.href);return false;" class="buttonSet buttonSetting"><span>{$lang->cmd_find_langcode}</span></a>
-		</p>
-		<p class="desc">{$lang->xedocs_about_browser_title}</p>
-	</li>
-	<li>
-		<p class="q">{$lang->layout}</p>
-		<p class="a">
-            <select name="layout_srl">
-				<option value="0">{$lang->notuse}</option>
-				<!--@foreach($layout_list as $key => $val)-->
-				<option value="{$val->layout_srl}" <!--@if($module_info->layout_srl==$val->layout_srl)-->selected="selected"<!--@end-->>{$val->title} ({$val->layout})</option>
-				<!--@end-->
-            </select>
-		</p>
-		<p class="desc">{$lang->about_layout}</p>
-	</li>
-	<li>
-		<p class="q">{$lang->skin}</p>
-		<p class="a">
-            <select name="skin">
-                <!--@foreach($skin_list as $key=>$val)-->
-                <option value="{$key}" <!--@if($module_info->skin==$key ||(!$module_info->skin && $key=='xe_xedocs'))-->selected="selected"<!--@end-->>{$val->title}</option>
-                <!--@end-->
-            </select>
-		</p>
-		<p class="desc">{$lang->about_skin}</p>
-	</li>
-	<li>
+            <li>
+                <p class="q">{$lang->module_category}</p>
+                <p class="a">
+                    <select name="module_category_srl">
+                        <option value="0">{$lang->notuse}</option>
+                        <!--@foreach($module_category as $key => $val)-->
+                        <option value="{$key}" <!--@if($module_info->module_category_srl==$key)-->selected="selected"<!--@end-->>{$val->title}</option>
+                        <!--@end-->
+                    </select>
+                </p>
+                <p class="desc">{$lang->about_module_category}</p>
+            </li>
+            <li>
+                <p class="q">{$lang->use_comment}</p>
+                <p class="a">
+                    <select name="use_comment">
+                        <option value="N" <!--@if($module_info->use_comment=='N')-->selected="selected"<!--@end--> >{$lang->notuse}</option>
+                        <option value="Y" <!--@if($module_info->use_comment!='N')-->selected="selected"<!--@end--> >{$lang->use}</option>
+                    </select>
+                </p>
+                <p class="desc">{$lang->xedocs_about_use_comment}</p>
+            </li>
+            <li>
+                <p class="q">{$lang->browser_title}</p>
+                <p class="a">
+                    <input type="text" name="browser_title" value="{htmlspecialchars($module_info->browser_title)}" id="browser_title" />
+                    <a href="{getUrl('','module','module','act','dispModuleAdminLangcode','target','browser_title')}" onclick="popopen(this.href);return false;" class="buttonSet buttonSetting"><span>{$lang->cmd_find_langcode}</span></a>
+                </p>
+                <p class="desc">{$lang->xedocs_about_browser_title}</p>
+            </li>
+            <li>
+                <p class="q">{$lang->layout}</p>
+                <p class="a">
+                    <select name="layout_srl">
+                                        <option value="0">{$lang->notuse}</option>
+                                        <!--@foreach($layout_list as $key => $val)-->
+                                        <option value="{$val->layout_srl}" <!--@if($module_info->layout_srl==$val->layout_srl)-->selected="selected"<!--@end-->>{$val->title} ({$val->layout})</option>
+                                        <!--@end-->
+                    </select>
+                </p>
+                <p class="desc">{$lang->about_layout}</p>
+            </li>
+            <li>
+                <p class="q">{$lang->skin}</p>
+                <p class="a">
+                    <select name="skin">
+                        <!--@foreach($skin_list as $key=>$val)-->
+                        <option value="{$key}" <!--@if($module_info->skin==$key ||(!$module_info->skin && $key=='xe_xedocs'))-->selected="selected"<!--@end-->>{$val->title}</option>
+                        <!--@end-->
+                    </select>
+                </p>
+                <p class="desc">{$lang->about_skin}</p>
+            </li>
+            <li>
 		<p class="q">{$lang->description}</p>
 		<p class="a">
-			<textarea name="description" class="inputTypeTextArea fullWidth">{htmlspecialchars($module_info->description)}</textarea>
+                    <textarea name="description" class="inputTypeTextArea fullWidth">{htmlspecialchars($module_info->description)}</textarea>
 		</p>
 		<p class="desc">{$lang->about_description}</p>
-	</li>
-	<li>
-		<p class="q">{$lang->header_text}</p>
-		<p class="a">
-            <textarea name="header_text" class="inputTypeTextArea fullWidth" id="header_text">{htmlspecialchars($module_info->header_text)}</textarea>
-            <a href="{getUrl('','module','module','act','dispModuleAdminLangcode','target','header_text')}" onclick="popopen(this.href);return false;" class="buttonSet buttonSetting"><span>{$lang->cmd_find_langcode}</span></a>
-		</p>
-		<p class="desc">{$lang->about_header_text}</p>
-	</li>
-	<li>
-		<p class="q">{$lang->footer_text}</p>
-		<p class="a">
-            <textarea name="footer_text" class="inputTypeTextArea fullWidth" id="footer_text">{htmlspecialchars($module_info->footer_text)}</textarea>
-            <a href="{getUrl('','module','module','act','dispModuleAdminLangcode','target','footer_text')}" onclick="popopen(this.href);return false;" class="buttonSet buttonSetting"><span>{$lang->cmd_find_langcode}</span></a>
-		</p>
-		<p class="desc">{$lang->about_footer_text}</p>
-	</li>
-	<li>
-		<p class="q">{$lang->admin_import_manual_collection_name}</p>
-		<p class="a">
-            <input type="text" name = "help_name" id="help_name" class="inputTypeText w400" value="{htmlspecialchars($module_info->help_name)}" />
-		</p>
-		<p class="desc">{$lang->about_manual_collection}</p>
-	</li>
-	<li>
-		<p class="q">{$lang->admin_import_manual_search_rank}</p>
-		<p class="a">
-            <input type="text" name = "search_rank" id="search_rank" class="inputTypeText w400" value="<!--@if($module_info->search_rank)-->{htmlspecialchars($module_info->search_rank)}<!--@else-->0<!--@end-->" />
-		</p>
-		<p class="desc">{$lang->about_admin_import_manual_search_rank}</p>
-	</li>
-	<li>
-		<p class="q">{$lang->admin_import_manual_tags}</p>
-		<p class="a">
-            <input type="text" name = "help_tags" id="help_tags" class="inputTypeText w400" value="{htmlspecialchars($module_info->help_tags)}" />
-		</p>
-	</li>
-	<li>
-		<p class="q">{$lang->admin_import_manual_tags}</p>
-		<p class="a">
-            <input type="text" name = "help_tags" id="help_tags" class="inputTypeText w400" value="{htmlspecialchars($module_info->help_tags)}" />
-		</p>
-	</li>
-	<li>
-		<p class="q">{$lang->admin_import_manual_version}</p>
-		<p class="a">
-            <input type="text" name="version_label" id="version_label" class="inputTypeText w400" value="{htmlspecialchars($module_info->version_label)}" />
-		</p>
-		<p class="desc">{$lang->about_manual_version}</p>
-	</li>
-	<li>
-		<p class="q">{$lang->manual_default_toc_location}</p>
-		<p class="a">
-			<select name="toc_location">
-				<option value="Right" <!--@if($module_info->toc_location=='Right')-->selected="selected"<!--@end--> >{$lang->right}</option>
-				<option value="Left" <!--@if($module_info->toc_location!='Right')-->selected="selected"<!--@end--> >{$lang->left}</option>
-			</select>
-		</p>
-		<p class="desc">{$lang->about_manual_default_toc_location}</p>
-	</li>
+            </li>
+            <li>
+                <p class="q">{$lang->header_text}</p>
+                <p class="a">
+                    <textarea name="header_text" class="inputTypeTextArea fullWidth" id="header_text">{htmlspecialchars($module_info->header_text)}</textarea>
+                    <a href="{getUrl('','module','module','act','dispModuleAdminLangcode','target','header_text')}" onclick="popopen(this.href);return false;" class="buttonSet buttonSetting"><span>{$lang->cmd_find_langcode}</span></a>
+                </p>
+                <p class="desc">{$lang->about_header_text}</p>
+            </li>
+            <li>
+                <p class="q">{$lang->footer_text}</p>
+                <p class="a">
+                    <textarea name="footer_text" class="inputTypeTextArea fullWidth" id="footer_text">{htmlspecialchars($module_info->footer_text)}</textarea>
+                    <a href="{getUrl('','module','module','act','dispModuleAdminLangcode','target','footer_text')}" onclick="popopen(this.href);return false;" class="buttonSet buttonSetting"><span>{$lang->cmd_find_langcode}</span></a>
+                </p>
+                <p class="desc">{$lang->about_footer_text}</p>
+            </li>
+            <li>
+                <p class="q">{$lang->admin_import_manual_collection_name}</p>
+                <p class="a">
+                    <input type="text" name = "help_name" id="help_name" class="inputTypeText w400" value="{htmlspecialchars($module_info->help_name)}" />
+                </p>
+                <p class="desc">{$lang->about_manual_collection}</p>
+            </li>
+            <li>
+                <p class="q">{$lang->admin_import_manual_search_rank}</p>
+                <p class="a">
+                    <input type="text" name = "search_rank" id="search_rank" class="inputTypeText w400" value="<!--@if($module_info->search_rank)-->{htmlspecialchars($module_info->search_rank)}<!--@else-->0<!--@end-->" />
+                </p>
+                <p class="desc">{$lang->about_admin_import_manual_search_rank}</p>
+            </li>
+            <li>
+                <p class="q">{$lang->admin_import_manual_tags}</p>
+                <p class="a">
+                    <input type="text" name = "help_tags" id="help_tags" class="inputTypeText w400" value="{htmlspecialchars($module_info->help_tags)}" />
+                </p>
+            </li>
+            <li>
+                <p class="q">{$lang->admin_import_manual_version}</p>
+                <p class="a">
+                    <input type="text" name="version_label" id="version_label" class="inputTypeText w400" value="{htmlspecialchars($module_info->version_label)}" />
+                </p>
+                <p class="desc">{$lang->about_manual_version}</p>
+            </li>
+            <li>
+                <p class="q">{$lang->manual_default_toc_location}</p>
+                <p class="a">
+                    <select name="toc_location">
+                            <option value="Right" <!--@if($module_info->toc_location=='Right')-->selected="selected"<!--@end--> >{$lang->right}</option>
+                            <option value="Left" <!--@if($module_info->toc_location!='Right')-->selected="selected"<!--@end--> >{$lang->left}</option>
+                    </select>
+                </p>
+                <p class="desc">{$lang->about_manual_default_toc_location}</p>
+            </li>
 </ul>
 <p class="btnArea">
 	<span class="btn small"><a href="#" onclick="history.back(); return false;">{$lang->cmd_back}</a></span>

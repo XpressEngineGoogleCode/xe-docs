@@ -29,7 +29,6 @@
 
             $args = Context::getRequestVars();
             $args->module = 'xedocs';
-            $args->mid = $args->manual_name;
             if($args->use_comment!='N'){
                     $args->use_comment = 'Y';
             }
@@ -55,14 +54,12 @@
                     return $output;
             }
 
-            $this->add('page',Context::get('page'));
-            $this->add('module_srl',$output->get('module_srl'));
-            $this->setMessage($msg_code);
-			
-			$this->setMessage('success_updated', 'info');
-			if(!in_array(Context::getRequestMethod(),array('XMLRPC','JSON'))) {
-                $returnUrl = Context::get('success_return_url') ? Context::get('success_return_url') : getNotEncodedUrl('', 'module', 'admin', 'act', 'dispXedocsAdminInsertManual');
-				$this->setRedirectUrl($returnUrl);
+            $this->add('module_srl',$args->module_srl);
+            $this->setMessage('success_registed', 'info');
+
+            if(!in_array(Context::getRequestMethod(),array('XMLRPC','JSON'))) {
+                $returnUrl = Context::get('success_return_url') ? Context::get('success_return_url') : getNotEncodedUrl('', 'module', 'admin', 'act', 'dispXedocsAdminView');
+                $this->setRedirectUrl($returnUrl);
                 return;
             }
         }
