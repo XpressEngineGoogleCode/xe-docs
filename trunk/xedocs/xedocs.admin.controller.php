@@ -104,22 +104,6 @@
             }
         }
 
-
-        function _update_keyword($keyword, $orig_keyword=null)
-        {
-
-                //debug_syslog(1, "_update_keyword(".$keyword.", orig=".$orig_keyword.")\n");
-                $module_srl = Context::get('module_srl');
-                $target_document_srl = Context::get('target_document_srl');
-
-                $oXedocsModel = &getModel('xedocs');
-                $updated = $oXedocsModel->update_keyword($module_srl, $orig_keyword, $keyword, $target_document_srl);
-                if($updated){
-                        //debug_syslog(1, "keyword updated\n");
-                }
-
-        }
-
         /**
          * Edits an existing keyword
          */
