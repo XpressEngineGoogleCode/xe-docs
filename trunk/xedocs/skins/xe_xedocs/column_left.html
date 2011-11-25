@@ -1,11 +1,9 @@
 <div id="xeDocsTree">
 	<div id="xeDocsSearch">
-		<form action="{getUrl()}" method="get" >
-			<input type="hidden" name="vid" value="{$vid}" />
-			<input type="hidden" name="mid" value="{$mid}" />
-			<input type="hidden" name="category" value="" />
+		<form action="{getUrl('mid', $mid, 'search_keyword', $search_keyword, 'act', 'dispXedocsSearchResults', 'vid', $vid)}" method="get" >
 			<input type="hidden" name="search_target" value="title_content" />
 			<input type="hidden" name="act" value="dispXedocsSearchResults" />
+                        <input type="hidden" name="error_return_url" value="" />
 
 			<input id="xeDocsSearchText" type="text" name="search_keyword" value="{$search_keyword}" class="xeDocsInputText" />
 			<input id="xeDocsSearchButton" type="submit" value="" title="{$lang->Search}" />

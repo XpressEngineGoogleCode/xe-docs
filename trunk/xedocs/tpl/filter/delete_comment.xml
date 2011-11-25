@@ -1,4 +1,4 @@
-<filter name="delete_comment" module="xedocs" act="procXedocsDeleteComment">
+<filter name="delete_comment" module="xedocs" act="procXedocsDeleteComment" confirm_msg_code="confirm_delete">
   <form>
     <node target="comment_srl" required="true" />
   </form>

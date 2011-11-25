@@ -17,7 +17,7 @@
 						<input type="hidden" name="parent_srl" value="{$oComment->get('parent_srl')}" />
 
 						<table id="xeDocsCommentsList" border="0" cellspacing="0" cellpadding="0" width="100%">
-							<tbody>						
+							<tbody>
 								<tr>
 									<td class="xeDocsTableLabel top"><label>Edit comment:</label></td>
 									<td>
@@ -88,7 +88,14 @@
 							<a href="{getUrl('entry',$entry,'comment_srl',$comment->comment_srl).'#comment_'.$comment->comment_srl}" class="xeDocsBodyButton"><span><span>Reply</span></span></a>
 							<!--@if($comment->isGranted() || !$comment->get('member_srl'))-->
 								<a href="{getUrl('act','dispXedocsModifyComment','comment_srl',$comment->comment_srl)}" class="xeDocsBodyButton"><span><span>{$lang->cmd_modify_comment}</span></span></a>
-								<a href="{getUrl('act','dispXedocsDeleteComment','comment_srl',$comment->comment_srl)}" class="xeDocsBodyButton"><span><span>{$lang->cmd_delete}</span></span></a>
+                                                                <form action="./" method="post" onsubmit="return procFilter(this, delete_comment)" style="display:inline">
+                                                                    <input type="hidden" name="mid" value="{$mid}" />
+                                                                    <input type="hidden" name="page" value="{$page}" />
+                                                                    <input type="hidden" name="document_srl" value="{$comment->document_srl}" />
+                                                                    <input type="hidden" name="comment_srl" value="{$comment->comment_srl}" />
+                                                                    <span class="xeDocsBodyButton"><span><span><input type="submit" value="{$lang->cmd_delete}" class="xeDocsBodyButton" style="background-color:transparent;border:0;padding:0;"></input></span></span></span>
+
+                                                                </form>
 							<!--@end-->
 						</div>
 						<!--@if($comment->get('voted_count')!=0 || $comment->get('blamed_count') != 0)-->
@@ -109,7 +116,7 @@
 						<input type="hidden" name="parent_srl" value="{$comment_srl}" />
 
 						<table id="xeDocsCommentsList" border="0" cellspacing="0" cellpadding="0" <!--@if($comment->get('depth'))-->style="padding-left:{($comment->get('depth'))*30}px;" <!--@end--> width="100%">
-						<tbody>						
+						<tbody>
 							<tr>
 								<td class="xeDocsTableLabel top"><label>Reply to comment:</label></td>
 								<td>
@@ -166,16 +173,16 @@
 			</ul>
 			<!--@if($oDocument->comment_page_navigation)-->
 				<div class="pagination">
-					<a href="{getUrl('cpage',1)}#comment" class="prevEnd">{$lang->first_page}</a> 
+					<a href="{getUrl('cpage',1)}#comment" class="prevEnd">{$lang->first_page}</a>
 					<!--@while($page_no = $oDocument->comment_page_navigation->getNextPage())-->
 						<!--@if($cpage == $page_no)-->
-							<strong>{$page_no}</strong> 
+							<strong>{$page_no}</strong>
 						<!--@else-->
 							<a href="{getUrl('cpage',$page_no)}#comment">{$page_no}</a>
 						<!--@end-->
 					<!--@end-->
 					<a href="{getUrl('cpage',$oDocument->comment_page_navigation->last_page)}#comment" class="nextEnd">{$lang->last_page}</a>
-				</div>					
+				</div>
 			<!--@end-->
 		<!--@end-->
 	</div>
@@ -189,7 +196,7 @@
 			<input type="hidden" name="document_srl" value="{$oDocument->document_srl}" />
 			<input type="hidden" name="comment_srl" value="" />
 			<input type="hidden" name="content" value="" />
-			
+
 			<tr>
 				<td class="xeDocsTableLabel top"><label>Add Comment:</label></td>
 				<td>

@@ -78,6 +78,7 @@
                 $oDocumentModel = &getModel("document");
                 if($document_srl){
                     $this->setTemplateFile('document_view');
+                    Context::addJsFilter($this->module_path.'tpl/filter', 'delete_comment.xml');
 
                     $oDocument = $oDocumentModel->getDocument($document_srl);
 
@@ -424,6 +425,7 @@
 				Context::addJsFilter($this->module_path.'tpl/filter', 'insert_comment.xml');*/
 
 				$this->setTemplateFile('document_view');
+                                Context::addJsFilter($this->module_path.'tpl/filter', 'delete_comment.xml');
             }
 
             /**
@@ -482,40 +484,7 @@
 					Context::set('oDocument', $oDocument);
 
                     $this->setTemplateFile('document_view');
-            }
-
-            /**
-             * @brief Opens view for confirming deletion of a comment
-             */
-            function dispXedocsDeleteComment()
-            {
-
-                    if(!$this->grant->write_comment){
-                            return $this->dispXedocsMessage('msg_not_permitted');
-                    }
-
-                    $comment_srl = Context::get('comment_srl');
-
-
-                    if($comment_srl) {
-                            $oCommentModel = &getModel('comment');
-                            $oComment = $oCommentModel->getComment($comment_srl, $this->grant->manager);
-                    }
-
-
-                    if(!$oComment->isExists() ) {
-                            return $this->dispXedocsContent();
-                    }
-
-                    if(!$oComment->isGranted()){
-						return new Object(-1,'msg_not_permitted');
-                    }
-
-                    Context::set('oComment',$oComment);
-
                     Context::addJsFilter($this->module_path.'tpl/filter', 'delete_comment.xml');
-
-                    $this->setTemplateFile('delete_comment_form');
             }
 
             /**
