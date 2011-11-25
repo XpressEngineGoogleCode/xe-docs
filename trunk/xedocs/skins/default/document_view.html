@@ -1,0 +1,71 @@
+	<!--#include("header.html")-->
+
+	<div id="xeDocsBody">
+		<!--#include("column_left.html")-->
+		<div id="xeDocsVersion">
+			<!--@if($grant->manager)-->
+				<div id="xeDocsEditorActions">
+					<a href="{getUrl('act','dispXedocsEditPage', 'entry', '')}"><img src="img/icon_add_page.png" alt="Add new page" title="Add new page"/></a>
+					<a href="{getUrl('act','dispXedocsEditPage', 'entry', $entry)}"><img src="img/icon_edit_page.png" alt="Edit page" title="Edit page"/></a>
+					<a href="#" onclick="if(confirm('{$lang->confirm_delete}')) { doDeleteManual('{$oDocument->document_srl}'); }; return false;"><img src="img/icon_delete_page.png" alt="Delete page" title="Delete page"/></a>
+					<a href="{getUrl('act','dispXedocsHistory')}"><img src="img/icon_history.png" alt="History" title="History"/></a>
+				</div>
+			<!--@end-->
+			<p>
+				<!--@if(count($versions) > 0) -->
+					<strong>{$lang->versions}</strong>&nbsp;&nbsp;&nbsp;
+					<!--@foreach($versions as $value)-->
+						<!--@if($value->is_current_version)-->
+							{@ $current_version = $value->version_label; }
+							<strong><span id="xeDocsCurrentVersion">{$module_info->help_name} {$value->version_label}</span></strong>
+						<!--@else-->
+							<strong><a href='{$value->href}'>{$module_info->help_name} {$value->version_label}</a></strong>
+						<!--@end-->
+						<!--@if(count($versions)>1)-->
+							&nbsp;|&nbsp;
+						<!--@end-->
+					<!--@end-->
+				<!--@end-->
+			</p>
+		</div>
+
+		<!--@if(!$oDocument->isExists())-->
+		<div id="xeDocsNoDocument">
+			<br />
+				We could not find your requested manual page. Please click on a node in content tree to see other manual pages.
+			<br />
+		</div>
+		<!--@else-->
+			<h2 id="xeDocsTitle">{$oDocument->get('title')} (v{$current_version})</h2>
+			<!--#include("breadcrumbs.html")-->
+			<div id="showHideTree" onclick="hidediv1('treeList'); return false;" alt="Close Tree" title="Close tree"></div>
+			<div id="xeDocsContentContainer">
+				{$oDocument->get('content')}
+			</div>
+			<!--@if($oDocumentPrev && $oDocumentNext)-->
+			<div id='xeDocsPageNav'>
+				<!--@if($oDocumentPrev)-->
+					<p id="xeDocsPrev">
+						<span>Previous document:</span>
+						<a href="{getSiteUrl($site_module_info->domain, '','mid',$mid,'entry',$oPrevDocEntry)}">
+						{$oDocumentPrev->getTitle()}</a>
+					</p>
+				<!--@end-->
+				<!--@if($oDocumentNext)-->
+					<p id="xeDocsNext">
+						<span>Next document:</span>
+						<a href="{getSiteUrl($site_module_info->domain, '','mid',$mid,'entry',$oNextDocEntry)}">
+						{$oDocumentNext->getTitle()}</a>
+					</p>
+				<!--@end-->
+				<div style="clear: right;"></div>
+			</div>
+			<!--@end-->
+
+			<!--#include("./comment_list.html")-->
+
+		<!--@end-->
+		<div class="cleared"></div>
+	</div>
+
+<!--#include("footer.html")-->

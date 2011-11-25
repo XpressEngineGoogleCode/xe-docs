@@ -1,0 +1,56 @@
+<!--#include("header.html")-->
+
+<form action="./" method="post" onsubmit="return procFilter(this, insert)" id="fo_write">
+	<input type="hidden" name="mid" value="{$mid}" />
+	<input type="hidden" name="document_srl" value="{$document_srl}" />
+	
+	<!--@if($history)-->
+		<input type="hidden" name="content" value="{htmlspecialchars($history->content)}" />
+	<!--@else-->
+		<input type="hidden" name="content" value="{$oDocument->getContentText()}" />
+	<!--@end-->
+	
+	<!--@if($oDocument->isExists()&&$oDocument->get('title')=='Front Page')-->
+		<input type="hidden" name="title" value="{$oDocument->get('title')}" />
+	<!--@end-->
+
+	<div id="xeDocsBody2">
+	
+		<h2 id="xeDocsTitle">Add new page:</h2>
+		<table id="xeDocsCommentsList" border="0" cellspacing="0" cellpadding="0" width="99%">
+		<tbody>	
+			<tr>
+				<td colspan="2"></td>
+			</tr>
+			<tr>
+				<td class="xeDocsTableLabel middle"><label>Page title:</label></td>
+				<td>
+					<input type="text" name="title" value="{$entry}" class="xeDocsInputText" />
+				</td>
+			</tr>
+			<tr>
+				<td class="xeDocsTableLabel top"><label>Page contents:</label></td>
+				<td>
+					{$oDocument->getEditor()}
+				</td>
+			</tr>
+			<tr>
+				<td class="xeDocsTableLabel"><label>{$lang->tag}s</label></td>
+				<td>
+					<p>
+						<input type="text" name="tags" value="{htmlspecialchars($oDocument->get('tags'))}" class="xeDocsInputText" title="Tag" style="width: 400px;"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{$lang->about_tag}
+					</p>
+				</td>
+			</tr>
+			<tr>
+				<td></td>
+				<td>
+					<p><a href="#" onclick="jQuery('#fo_write').submit();return false;" class="xeDocsBodyButton"><span><span>{$lang->cmd_registration}</span></span></a></p>
+				</td>
+			</tr>
+		</tbody>
+		</table>
+	</div>
+</form>
+
+<!--#include("footer.html")-->

@@ -1,0 +1,255 @@
+<!--@if($oDocument->isExists())-->
+	<div id="xeDocsComments">
+		<!--@if(!$oDocument->getCommentCount())-->
+			<h3>Comments</h3>
+			<p>No Comments have been added yet.</p>
+		<!--@else-->
+			<h3>{$oDocument->getCommentcount()} comment<!--@if($oDocument->getCommentcount()>1)-->s<!--@end--></h3>
+			<ul id="xeDocsCommentList">
+			{@ $_comment_list = $oDocument->getComments() }
+				<!--@foreach($_comment_list as $key => $comment)-->
+				<!--@if( $act=='dispXedocsModifyComment' && $comment->comment_srl==$comment_srl )-->
+					<form action="./" method="post" onsubmit="return procFilter(this, insert_comment)" id="editComment">
+						<input type="hidden" name="mid" value="{$mid}" />
+						<input type="hidden" name="document_srl" value="{$oDocument->document_srl}" />
+						<input type="hidden" name="comment_srl" value="{$oComment->get('comment_srl')}" />
+						<input type="hidden" name="content" value="{htmlspecialchars($oComment->get('content'))}" />
+						<input type="hidden" name="parent_srl" value="{$oComment->get('parent_srl')}" />
+
+						<table id="xeDocsCommentsList" border="0" cellspacing="0" cellpadding="0" width="100%">
+							<tbody>
+								<tr>
+									<td class="xeDocsTableLabel top"><label>Edit comment:</label></td>
+									<td>
+										{$editor}
+									</td>
+								</tr>
+								<tr>
+									<td class="xeDocsTableLabel middle"><label for="notify_message">Notify me if someone reply's to this post.</label></td>
+									<td>
+										<input type="checkbox" name="notify_message" value="Y" id="notify_message" class="inputCheck" />
+									</td>
+								</tr>
+								<tr>
+									<td></td>
+									<td>
+										<!--input type="checkbox" name="is_secret" value="Y" id="is_secret" class="inputCheck" />
+										<label for="is_secret">{$lang->secret}</label-->
+										<p><a class="xeDocsBodyButton" href="#" onclick="jQuery('#editComment').submit();return false;"><span><span>Edit comment</span></span></a></p>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</form>
+				<!--@else-->
+					<li id="comment_{$comment->comment_srl}" <!--@if($comment->get('depth'))-->style="margin-left:{($comment->get('depth'))*30}px" <!--@end--> >
+						<p class="author">Posted by
+							<!--@if(!$comment->member_srl)-->
+								<!--@if($comment->homepage)-->
+									<a href="{$comment->homepage}" onclick="window.open(this.href);return false;">{$comment->getNickName()}</a>
+								<!--@else-->
+									{$comment->getNickName()}
+								<!--@end-->
+							<!--@else-->
+								<a href="#popup_menu_area" class="member_{$comment->member_srl}" onclick="return false">{$comment->getNickName()}</a>
+							<!--@end-->
+						</p>
+						<p class="date">
+							{$comment->getRegdate('Y.m.d')}
+							 | {$comment->getRegdate('H:i:s')}
+							<!--@if($grant->manager)-->
+								 | {$comment->getIpaddress()}
+							<!--@end-->
+						</p>
+						<div class="cleared"></div>
+						<div class="content">
+							<!--@if($comment->getProfileImage())-->
+								<img src="{$comment->getProfileImage()}" alt="avatar" class="profileImage" />
+							<!--@end-->
+							{$comment->getContent()}
+						</div>
+						<div class="cleared"></div>
+						<div class="others">
+							<!--@if($comment->hasUploadedFIles())-->
+							<dl class="attachedFile">
+								<dt><img src="./img/common/iconFiles.gif" width="27" height="11" alt="{$lang->uploaded_file}" /> <button type="button" class="fileToggle" onclick="jQuery(this).parents('dl.attachedFile').toggleClass('open');return false;">{$lang->uploaded_file} ({$comment->get('uploaded_count')})</button></dt>
+								<dd>
+									<ul class="files">
+										{@ $_uploaded_files = $comment->getUploadedFiles() }
+										<!--@foreach($_uploaded_files as $key => $file)-->
+										<li><a href="{getUrl('')}{$file->download_url}">{$file->source_filename} <span class="bubble">[File Size:{FileHandler::filesize($file->file_size)}/Download{number_format($file->download_count)}]</span></a></li>
+										<!--@end-->
+									</ul>
+								</dd>
+							</dl>
+							<!--@end-->
+						</div>
+						<div class="option">
+							<a href="{getUrl('entry',$entry,'comment_srl',$comment->comment_srl).'#comment_'.$comment->comment_srl}" class="xeDocsBodyButton"><span><span>Reply</span></span></a>
+							<!--@if($comment->isGranted() || !$comment->get('member_srl'))-->
+								<a href="{getUrl('act','dispXedocsModifyComment','comment_srl',$comment->comment_srl)}" class="xeDocsBodyButton"><span><span>{$lang->cmd_modify_comment}</span></span></a>
+                                                                <form action="./" method="post" onsubmit="return procFilter(this, delete_comment)" style="display:inline">
+                                                                    <input type="hidden" name="mid" value="{$mid}" />
+                                                                    <input type="hidden" name="page" value="{$page}" />
+                                                                    <input type="hidden" name="document_srl" value="{$comment->document_srl}" />
+                                                                    <input type="hidden" name="comment_srl" value="{$comment->comment_srl}" />
+                                                                    <span class="xeDocsBodyButton"><span><span><input type="submit" value="{$lang->cmd_delete}" class="xeDocsBodyButton" style="background-color:transparent;border:0;padding:0;"></input></span></span></span>
+
+                                                                </form>
+							<!--@end-->
+						</div>
+						<!--@if($comment->get('voted_count')!=0 || $comment->get('blamed_count') != 0)-->
+						<p class="vote">
+							<span>{$lang->cmd_vote}</span> {$comment->get('voted_count')?$comment->get('voted_count'):0}
+							<span>{$lang->cmd_vote_down}</span>
+							{$comment->get('blamed_count')?$comment->get('blamed_count'):0}
+						</p>
+						<!--@end-->
+					</li>
+					<!--@if( $comment->comment_srl == $comment_srl )-->
+					<!--@if( $grant->write_comment && $oDocument->isEnableComment() )-->
+						<form action="./" method="post" onsubmit="return procFilter(this, insert_comment)" id="add_comment">
+						<input type="hidden" name="mid" value="{$mid}" />
+						<input type="hidden" name="document_srl" value="{$oDocument->document_srl}" />
+						<input type="hidden" name="comment_srl" value="" />
+						<input type="hidden" name="content" value="" />
+						<input type="hidden" name="parent_srl" value="{$comment_srl}" />
+
+						<table id="xeDocsCommentsList" border="0" cellspacing="0" cellpadding="0" <!--@if($comment->get('depth'))-->style="padding-left:{($comment->get('depth'))*30}px;" <!--@end--> width="100%">
+						<tbody>
+							<tr>
+								<td class="xeDocsTableLabel top"><label>Reply to comment:</label></td>
+								<td>
+									{$editor}
+								</td>
+							</tr>
+							<!--@if(!$is_logged)-->
+							<tr>
+								<td class="xeDocsTableLabel middle"><label>Username:</label></td>
+								<td>
+									<input type="text" name="nick_name" class="xeDocsInputText userName" value="{$lang->writer}" onfocus="this.value=''" />
+								</td>
+							</tr>
+							<tr>
+								<td class="xeDocsTableLabel middle"><label>Password:</label></td>
+								<td>
+									<input type="password" name="password" class="xeDocsInputText userPw" value="{$lang->password}" onfocus="this.value=''" />
+								</td>
+							</tr>
+							<tr>
+								<td class="xeDocsTableLabel middle"><label>E-mail:</label></td>
+								<td>
+									<input type="text" name="email_address" class="xeDocsInputText emailAddress" value="{$lang->email_address}" onfocus="this.value=''" />
+								</td>
+							</tr>
+							<tr>
+								<td class="xeDocsTableLabel middle"><label>Website/Blog:</label></td>
+								<td>
+									<input type="text" name="homepage" class="xeDocsInputText homePage" value="{$lang->homepage}" onfocus="this.value=''" />
+								</td>
+							</tr>
+							<!--@end-->
+							<tr>
+								<td class="xeDocsTableLabel middle"><label for="notify_message">Notify me if someone reply's to this post.</label></td>
+								<td>
+									<input type="checkbox" name="notify_message" value="Y" id="notify_message" class="inputCheck" />
+								</td>
+							</tr>
+							<tr>
+								<td></td>
+								<td>
+									<!--input type="checkbox" name="is_secret" value="Y" id="is_secret" class="inputCheck" />
+									<label for="is_secret">{$lang->secret}</label-->
+									<p><a class="xeDocsBodyButton" href="#" onclick="jQuery('#add_comment').submit();return false;"><span><span>Add comment</span></span></a></p>
+								</td>
+							</tr>
+						</tbody>
+						</table>
+						</form>
+					<!--@end-->
+					<!--@end-->
+				<!--@end-->
+				<!--@end-->
+			</ul>
+			<!--@if($oDocument->comment_page_navigation)-->
+				<div class="pagination">
+					<a href="{getUrl('cpage',1)}#comment" class="prevEnd">{$lang->first_page}</a>
+					<!--@while($page_no = $oDocument->comment_page_navigation->getNextPage())-->
+						<!--@if($cpage == $page_no)-->
+							<strong>{$page_no}</strong>
+						<!--@else-->
+							<a href="{getUrl('cpage',$page_no)}#comment">{$page_no}</a>
+						<!--@end-->
+					<!--@end-->
+					<a href="{getUrl('cpage',$oDocument->comment_page_navigation->last_page)}#comment" class="nextEnd">{$lang->last_page}</a>
+				</div>
+			<!--@end-->
+		<!--@end-->
+	</div>
+	<!--@if(!$comment_srl)-->
+	<!--@if($oDocument->allowComment())-->
+		<table id="xeDocsCommentsList" border="0" cellspacing="0" cellpadding="0" width="99%">
+		<tbody>
+			<!--@if( $grant->write_comment && $oDocument->isEnableComment() )-->
+			<form action="./" method="post" onsubmit="return procFilter(this, insert_comment)" id="add_comment">
+			<input type="hidden" name="mid" value="{$mid}" />
+			<input type="hidden" name="document_srl" value="{$oDocument->document_srl}" />
+			<input type="hidden" name="comment_srl" value="" />
+			<input type="hidden" name="content" value="" />
+
+			<tr>
+				<td class="xeDocsTableLabel top"><label>Add Comment:</label></td>
+				<td>
+					{$editor}
+				</td>
+			</tr>
+			<!--@if(!$is_logged)-->
+			<tr>
+				<td class="xeDocsTableLabel middle"><label>Username:</label></td>
+				<td>
+					<input type="text" name="nick_name" class="xeDocsInputText userName" value="{$lang->writer}" onfocus="this.value=''" />
+				</td>
+			</tr>
+			<tr>
+				<td class="xeDocsTableLabel middle"><label>Password:</label></td>
+				<td>
+					<input type="password" name="password" class="xeDocsInputText userPw" value="{$lang->password}" onfocus="this.value=''" />
+				</td>
+			</tr>
+			<tr>
+				<td class="xeDocsTableLabel middle"><label>E-mail:</label></td>
+				<td>
+					<input type="text" name="email_address" class="xeDocsInputText emailAddress" value="{$lang->email_address}" onfocus="this.value=''" />
+				</td>
+			</tr>
+			<tr>
+				<td class="xeDocsTableLabel middle"><label>Website/Blog:</label></td>
+				<td>
+					<input type="text" name="homepage" class="xeDocsInputText homePage" value="{$lang->homepage}" onfocus="this.value=''" />
+				</td>
+			</tr>
+			<!--@end-->
+			<tr>
+				<td class="xeDocsTableLabel middle"><label for="notify_message">Notify me if someone reply's to this post.</label></td>
+				<td>
+					<input type="checkbox" name="notify_message" value="Y" id="notify_message" class="inputCheck" />
+				</td>
+			</tr>
+			<tr>
+				<td></td>
+				<td>
+					<!--input type="checkbox" name="is_secret" value="Y" id="is_secret" class="inputCheck" />
+					<label for="is_secret">{$lang->secret}</label-->
+					<p><a class="xeDocsBodyButton" href="#" onclick="jQuery('#add_comment').submit();return false;"><span><span>Add comment</span></span></a></p>
+				</td>
+			</tr>
+			</form>
+			<!--@end-->
+		</tbody>
+		</table>
+	<!--@else-->
+		<p>Comments have been disabled for this page.</p>
+	<!--@end-->
+	<!--@end-->
+
+<!--@end-->
