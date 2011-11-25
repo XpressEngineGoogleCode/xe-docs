@@ -42,7 +42,6 @@
         <action name="dispXedocsModifyTree" type="view" />
         <action name="dispXedocsReplyComment" type="view" />
         <action name="dispXedocsModifyComment" type="view" />
-        <action name="dispXedocsDeleteComment" type="view" />
 	<action name='dispXedocsCommentEditor' type="view" />
         <action name="procXedocsInsertDocument" type="controller" />
         <action name="procXedocsInsertComment" type="controller" />

@@ -7,6 +7,7 @@
 	<!--ul id="tabSystem">
 		<!--@foreach($module_list as $modul)-->
 		<li>
+                    Bububibi
 			<form action="{getUrl()}" method="get" >
 				<input type="hidden" name="vid" value="{$vid}" />
 
@@ -14,10 +15,10 @@
 
 				<input type="hidden" name="category" value="" />
 				<input type="hidden" name="search_target" value="title_content" />
-				<input class="xeDocsInputText" type="hidden" name="search_keyword" value="{$search_keyword}"/>	
-								
+				<input class="xeDocsInputText" type="hidden" name="search_keyword" value="{$search_keyword}"/>
+
 				<input type="hidden" name="act" value="dispXedocsSearchResults" />
-				
+
 				<input class="<!--@if($mid==$modul->mid)-->on<!--@end-->" type="submit" value = "{$lang->ResultsFrom.$modul->browser_title}" />
 			</form>
 		</li>
@@ -31,7 +32,7 @@
 		<p>{$lang->msg_document_more_search}</p>
 		<!--@end-->
 	<!--@else-->
-	
+
 	<p id="xeDocsSearchInfo">
 		<strong>{number_format($total_count)} results match your querry.</strong>
 		<!--@if($total_count>50)-->
