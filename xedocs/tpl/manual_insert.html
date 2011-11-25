@@ -73,14 +73,14 @@
             <li>
 		<p class="q">{$lang->description}</p>
 		<p class="a">
-                    <textarea name="description" class="inputTypeTextArea fullWidth">{htmlspecialchars($module_info->description)}</textarea>
+                    <textarea rows="6" name="description">{htmlspecialchars($module_info->description)}</textarea>
 		</p>
 		<p class="desc">{$lang->about_description}</p>
             </li>
             <li>
                 <p class="q">{$lang->header_text}</p>
                 <p class="a">
-                    <textarea name="header_text" class="inputTypeTextArea fullWidth" id="header_text">{htmlspecialchars($module_info->header_text)}</textarea>
+                    <textarea rows="6" name="header_text" id="header_text">{htmlspecialchars($module_info->header_text)}</textarea>
                     <a href="{getUrl('','module','module','act','dispModuleAdminLangcode','target','header_text')}" onclick="popopen(this.href);return false;" class="buttonSet buttonSetting"><span>{$lang->cmd_find_langcode}</span></a>
                 </p>
                 <p class="desc">{$lang->about_header_text}</p>
@@ -88,7 +88,7 @@
             <li>
                 <p class="q">{$lang->footer_text}</p>
                 <p class="a">
-                    <textarea name="footer_text" class="inputTypeTextArea fullWidth" id="footer_text">{htmlspecialchars($module_info->footer_text)}</textarea>
+                    <textarea rows="6" name="footer_text" id="footer_text">{htmlspecialchars($module_info->footer_text)}</textarea>
                     <a href="{getUrl('','module','module','act','dispModuleAdminLangcode','target','footer_text')}" onclick="popopen(this.href);return false;" class="buttonSet buttonSetting"><span>{$lang->cmd_find_langcode}</span></a>
                 </p>
                 <p class="desc">{$lang->about_footer_text}</p>
@@ -119,16 +119,6 @@
                     <input type="text" name="version_label" id="version_label" class="inputTypeText w400" value="{htmlspecialchars($module_info->version_label)}" />
                 </p>
                 <p class="desc">{$lang->about_manual_version}</p>
-            </li>
-            <li>
-                <p class="q">{$lang->manual_default_toc_location}</p>
-                <p class="a">
-                    <select name="toc_location">
-                            <option value="Right" <!--@if($module_info->toc_location=='Right')-->selected="selected"<!--@end--> >{$lang->right}</option>
-                            <option value="Left" <!--@if($module_info->toc_location!='Right')-->selected="selected"<!--@end--> >{$lang->left}</option>
-                    </select>
-                </p>
-                <p class="desc">{$lang->about_manual_default_toc_location}</p>
             </li>
 </ul>
 <p class="btnArea">

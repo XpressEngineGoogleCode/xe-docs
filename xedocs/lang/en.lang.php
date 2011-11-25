@@ -6,8 +6,6 @@ $lang->manual_ids_count = "Total number of configured manuals";
 $lang->admin_import_manual_collection_name = "Manual Set";
 $lang->about_manual_collection = "Manuals will be automatically grouped by their manual set. If you want to create a manual set for different versions of your software just add the same Manual Set value, and different versions.";
 $lang->about_manual_version = "Version label of the manual (i.e.: '2.0', '3.1' etc )";
-$lang->manual_default_toc_location = "Toc placement";
-$lang->about_manual_default_toc_location = "Toc placemant : right or left";
 $lang->admin_import_manual_version = "Version Label";
 $lang->admin_import_manual_tags = "Tags";
 $lang->admin_import_manual_mid ="Module Id";
@@ -53,7 +51,7 @@ $lang->manual_page_sumarry = "Sumarry";
 $lang->cmd_update_keyword = "Apply";
 $lang->filter_keywords = "Filter Keywords";
 $lang->cmd_clear_kewords = "Clear Keywords";
-$lang->cmd_create_keword = "Create Keyword";
+$lang->cmd_create_keword = "Add Keyword";
 $lang->cmd_filter_kewords = "Apply filter";
 
 $lang->use_comment = 'Use Comments';

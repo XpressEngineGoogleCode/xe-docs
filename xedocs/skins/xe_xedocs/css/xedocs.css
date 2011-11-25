@@ -627,4 +627,5 @@ a.xeDocsButtonAdmin, a.xeDocsButton  {
 
 #xeDocsCommentList .option {
 	text-align: right;
+	padding: 10px 5px;
 }

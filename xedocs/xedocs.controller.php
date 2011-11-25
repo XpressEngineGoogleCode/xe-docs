@@ -184,7 +184,6 @@
             $this->add('mid', Context::get('mid'));
             $this->add('document_srl', $obj->document_srl);
             $this->add('comment_srl', $obj->comment_srl);
-			$this->add('entry', Context::get('entry'));
         }
 
         /**
