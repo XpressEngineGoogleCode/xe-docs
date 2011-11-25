@@ -41,6 +41,11 @@ body {
 	margin: 0;
 }
 
+#xeDocsHeader h1 a {
+	color: #fff;
+	text-decoration: none;
+}
+
 .xeDocsButton {
 	border-radius: 20px;
 	-moz-border-radius: 20px;
