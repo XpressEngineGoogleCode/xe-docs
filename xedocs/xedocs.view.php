@@ -440,9 +440,8 @@
                             return $this->dispXedocsMessage('msg_invalid_request');
                     }
 
-
                     if(!$oComment->isGranted()) {
-                            return $this->setTemplateFile('input_password_form');
+						return new Object(-1,'msg_not_permitted');
                     }
 
                     Context::set('oSourceComment', $oCommentModel->getComment());
@@ -465,8 +464,12 @@
 					$option->height = 150;
 					$editor = $oEditorModel->getEditor(0, $option);
 					Context::set('editor', $editor);
+					
+					$oDocumentModel = &getModel("document");
+					$oDocument = $oDocumentModel->getDocument($document_srl);
+					Context::set('oDocument', $oDocument);
 
-                    $this->setTemplateFile('comment_form');
+                    $this->setTemplateFile('document_view');
             }
 
             /**
