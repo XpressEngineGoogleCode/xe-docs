@@ -21,7 +21,7 @@ function completeInsertComment(ret_obj) {
     /*var url = current_url.setQuery('mid',mid).setQuery('document_srl',document_srl).setQuery('act','');
     if(comment_srl) url = url.setQuery('',comment_srl)+"#comment_"+comment_srl;*/
 	
-	var url = current_url.setQuery('comment_srl','')+'#comment_'+comment_srl;
+	var url = current_url.setQuery('act','').setQuery('comment_srl','')+'#comment_'+comment_srl;
 
     location.href = url;
 }

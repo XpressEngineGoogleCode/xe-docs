@@ -119,7 +119,7 @@
         function dispXedocsAdminInsertManual()
         {
             if(!in_array($this->module_info->module, array('admin', 'xedocs'))) {
-                    return $this->alertMessage('msg_invalid_request');
+				return $this->alertMessage('msg_invalid_request');
             }
 
             $oModuleModel = &getModel('module');
