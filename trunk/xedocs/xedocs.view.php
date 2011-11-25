@@ -101,7 +101,7 @@
                         $oDocument->add('content', $content);
                     }
                 } else {
-                    $this->setTemplateFile('create_document');
+                    $this->setTemplateFile('document_add_new');
 
                     $oDocument = $oDocumentModel->getDocument(0);
                     $oDocument->add('title', 'Create new page');

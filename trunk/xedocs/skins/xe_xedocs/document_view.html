@@ -16,9 +16,13 @@
 					<strong>{$lang->versions}</strong>&nbsp;&nbsp;&nbsp;
 					<!--@foreach($versions as $value)-->
 						<!--@if($value->is_current_version)-->
-							<strong><span id="xeDocsCurrentVersion">{$value->version_label}</span></strong>
+							{@ $current_version = $value->version_label; }
+							<strong><span id="xeDocsCurrentVersion">{$module_info->help_name} {$value->version_label}</span></strong>
 						<!--@else-->
-							&nbsp;|&nbsp;<strong><a href='{$value->href}'>{$value->version_label}</a></strong>
+							<strong><a href='{$value->href}'>{$module_info->help_name} {$value->version_label}</a></strong>
+						<!--@end-->
+						<!--@if(count($versions)>1)-->
+							&nbsp;|&nbsp;
 						<!--@end-->
 					<!--@end-->
 				<!--@end-->
@@ -32,7 +36,7 @@
 			<br />
 		</div>
 		<!--@else-->
-			<h2 id="xeDocsTitle">{$oDocument->get('title')}</h2>
+			<h2 id="xeDocsTitle">{$oDocument->get('title')} (v{$current_version})</h2>
 			<!--#include("breadcrumbs.html")-->
 			<div id="showHideTree" onclick="hidediv1('treeList'); return false;" alt="Close Tree" title="Close tree"></div>
 			<div id="xeDocsContentContainer">

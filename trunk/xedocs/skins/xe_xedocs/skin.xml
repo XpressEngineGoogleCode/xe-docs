@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <skin version="0.2">
-	<title xml:lang="en">XE Docs skin</title>
+	<title xml:lang="en">XE Docs default skin</title>
 	<description xml:lang="en">The default XE Docs skin.</description>
     <version>1.0</version>
-    <date>2011-18-11</date>
+    <date>2011-28-11</date>
     <author email_address="admin@xpressengine.org" link="http://www.xpressengine.org">
         <name xml:lang="en">XE Developers</name>
     </author>
