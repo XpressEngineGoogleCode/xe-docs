@@ -22,11 +22,6 @@
             $oModuleController = &getController('module');
             $oModuleModel = &getModel('module');
 
-            $toc_location = Context::get('toc_location');
-            if(!isset($toc_location)){
-                Context::set('toc_location', "Left"); //set default
-            }
-
             $args = Context::getRequestVars();
             $args->module = 'xedocs';
             if($args->use_comment!='N'){

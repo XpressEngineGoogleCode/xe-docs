@@ -22,7 +22,7 @@
 					<p class="date">
 						{$comment->getRegdate('Y.m.d')}
 						 | {$comment->getRegdate('H:i:s')}
-						<!--@if($grant->manager || $module_info->display_ip_address!='N')-->
+						<!--@if($grant->manager)-->
 							 | {$comment->getIpaddress()}
 						<!--@end-->
 					</p>
@@ -50,13 +50,10 @@
 						<!--@end-->
 					</div>
 					<div class="option">
-						<!--@if($is_logged)-->
-							<span class="wouldYou"><a href="#popup_menu_area" class="comment_{$comment->comment_srl}">{$lang->cmd_comment_do}</a></span>
-						<!--@end-->
-						<span><a href="{getUrl('entry',$entry,'comment_srl',$comment->comment_srl).'#comment_'.$comment->comment_srl}">{$lang->cmd_reply}</a></span> 
+						<a href="{getUrl('entry',$entry,'comment_srl',$comment->comment_srl).'#comment_'.$comment->comment_srl}" class="xeDocsBodyButton"><span><span>Reply</span></span></a>
 						<!--@if($comment->isGranted() || !$comment->get('member_srl'))-->
-							<span><a href="{getUrl('act','dispXedocsModifyComment','comment_srl',$comment->comment_srl)}">{$lang->cmd_modify_comment}</a></span> 
-							<span><a href="{getUrl('act','dispXedocsDeleteComment','comment_srl',$comment->comment_srl)}">{$lang->cmd_delete}</a></span>
+							<a href="{getUrl('act','dispXedocsModifyComment','comment_srl',$comment->comment_srl)}" class="xeDocsBodyButton" target="_blank"><span><span>{$lang->cmd_modify_comment}</span></span></a>
+							<a href="{getUrl('act','dispXedocsDeleteComment','comment_srl',$comment->comment_srl)}" class="xeDocsBodyButton"><span><span>{$lang->cmd_delete}</span></span></a>
 						<!--@end-->
 					</div>
 					<!--@if($comment->get('voted_count')!=0 || $comment->get('blamed_count') != 0)-->
@@ -93,12 +90,13 @@
 					<input type="hidden" name="content" value="" />
 					<input type="hidden" name="parent_srl" value="{$comment_srl}" />
 
-					<table id="xeDocsCommentsList" border="0" cellspacing="0" cellpadding="0" <!--@if($comment->get('depth'))-->style="margin-left:{($comment->get('depth'))*30}px" <!--@end-->>
+					<table id="xeDocsCommentsList" border="0" cellspacing="0" cellpadding="0" <!--@if($comment->get('depth'))-->style="padding-left:{($comment->get('depth'))*30}px;" <!--@end--> width="100%">
 					<tbody>						
 						<tr>
 							<td class="xeDocsTableLabel top"><label>Reply to comment:</label></td>
 							<td>
-								{$oDocument->getCommentEditor()}
+								<!--{$oDocument->getCommentEditor()}-->
+								{$editor}
 							</td>
 						</tr>
 						<!--@if(!$is_logged)-->
@@ -165,7 +163,7 @@
 	</div>
 	<!--@if(!$comment_srl)-->
 	<!--@if($oDocument->allowComment())-->
-		<table id="xeDocsCommentsList" border="0" cellspacing="0" cellpadding="0">
+		<table id="xeDocsCommentsList" border="0" cellspacing="0" cellpadding="0" width="99%">
 		<tbody>
 			<!--@if( $grant->write_comment && $oDocument->isEnableComment() )-->
 			<form action="./" method="post" onsubmit="return procFilter(this, insert_comment)" id="add_comment">
@@ -177,7 +175,7 @@
 			<tr>
 				<td class="xeDocsTableLabel top"><label>Add Comment:</label></td>
 				<td>
-					{$oDocument->getCommentEditor()}
+					{$editor}
 				</td>
 			</tr>
 			<!--@if(!$is_logged)-->

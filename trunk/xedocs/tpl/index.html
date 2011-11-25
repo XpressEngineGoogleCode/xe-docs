@@ -14,39 +14,35 @@
         <!--@endif-->
 			<li>
 				<div class="table">
-				<table cellspacing="0" border="1" width="100%">
+				<table cellspacing="0" border="1">
+				<caption class="h3">{$val->manual_set}</caption>
 				<thead>
-					<caption class="h3">{$val->manual_set}</caption>
 					<tr>
-						<th scope="col"></th>
-						<th scope="col"><div>{$lang->mid}</div></th>
-						<th scope="col"><div>{$lang->browser_title}</div></th>
-						<th scope="col"><div>{$lang->version_label}</div></th>
-						<th scope="col"><div>{$lang->regdate}</div></th>
-						<th scope="col"><div>View</div></th>
-						<th scope="col"><div>Setup</div></th>
-						<th scope="col"><div>Create copy</div></th>
-						<th scope="col"><div>Delete</div></th>
+						<th></th>
+						<th>{$lang->mid}</th>
+						<th width="40%">Description</th>
+						<th>{$lang->version_label}</th>
+						<th>{$lang->regdate}</th>
+						<th style="text-align: center;">View</th>
+						<th style="text-align: center;">Setup</th>
+						<th style="text-align: center;">Refresh alias</th>
+						<th style="text-align: center;">Create copy</th>
+						<th style="text-align: center;">Delete</th>
 					</tr>
 				</thead>
 				<tbody>
         <!--@endif-->
 			<tr>
-				<td><input type="checkbox" name="cart" value="{$val->module_srl}" /></td>
-				<td>{htmlspecialchars($val->mid)}</td>
-				<td>
-					{$val->browser_title}
-				</td>
-				<td>
-					{$val->version_label}
-				</td>
-				<td>{zdate($val->regdate,"Y-m-d")}</td>
-				<td>
-					<a href="{getSiteUrl($val->domain, '', 'mid', $val->mid)}" onclick="window.open(this.href); return false;">{$lang->view}</a>
-				</td>
-				<td><a href="{getUrl('act','dispXedocsAdminManualInfo','module_srl',$val->module_srl)}" class="buttonSet buttonSetting"><span>{$lang->cmd_setup}</span></a></td>
-				<td><a href="./?module=module&amp;act=dispModuleAdminCopyModule&amp;module_srl={$val->module_srl}" onclick="popopen(this.href);return false;" class="buttonSet buttonCopy"><span>{$lang->cmd_copy}</span></a></td>
-				<td><a href="{getUrl('act','dispXedocsAdminDeleteManual','module_srl', $val->module_srl)}" class="buttonSet buttonDelete"><span>{$lang->cmd_delete}</span></a></td>
+				<td style="vertical-align: middle;"><input type="checkbox" name="cart" value="{$val->module_srl}" /></td>
+				<td style="text-align: center; vertical-align: middle;">{htmlspecialchars($val->mid)}</td>
+				<td style="white-space: normal; vertical-align: middle;">{$val->description}</td>
+				<td style="text-align: center; vertical-align: middle;">{$val->version_label}</td>
+				<td style="text-align: center; vertical-align: middle;">{zdate($val->regdate,"Y-m-d")}</td>
+				<td style="text-align: center; vertical-align: middle;"><a href="{getSiteUrl($val->domain, '', 'mid', $val->mid)}" onclick="window.open(this.href); return false;" class="button">{$lang->view}</a></td>
+				<td style="text-align: center; vertical-align: middle;"><span class="btn"><a href="{getUrl('act','dispXedocsAdminManualInfo','module_srl',$val->module_srl)}" class="buttonSet buttonSetting" class="button">{$lang->cmd_setup}</a></span></td>
+				<td style="text-align: center; vertical-align: middle;"><span class="btn"><a href="#" onclick="doArrangeXedocsList({$val->module_srl}); return false;" class="button">{$lang->arrange_list}</a></td>
+				<td style="text-align: center; vertical-align: middle;"><span class="btn"><a href="./?module=module&amp;act=dispModuleAdminCopyModule&amp;module_srl={$val->module_srl}" onclick="popopen(this.href);return false;">{$lang->cmd_copy}</a></span></td>
+				<td style="text-align: center; vertical-align: middle;"><span class="btn"><a href="{getUrl('act','dispXedocsAdminDeleteManual','module_srl', $val->module_srl)}" class="button">{$lang->cmd_delete}</a></span></td>
 			</tr>
 		<!--@end-->
 				</tbody>

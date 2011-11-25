@@ -156,6 +156,22 @@
 
                 /* Add XML filter for comment */
                 Context::addJsFilter($this->module_path.'tpl/filter', 'insert_comment.xml');
+				
+				/* Set custom editor for comments instead of default one */
+				$oEditorModel = &getModel('editor');
+
+				// get an editor
+				$option->primary_key_name = 'comment_srl';
+				$option->content_key_name = 'content';
+				$option->allow_fileupload = false;
+				$option->enable_autosave = false;
+				$option->disable_html = true;
+				$option->enable_default_component = false;
+				$option->enable_component = false;
+				$option->resizable = true;
+				$option->height = 150;
+				$editor = $oEditorModel->getEditor(0, $option);
+				Context::set('editor', $editor);
             }
 
             /**
@@ -432,11 +448,26 @@
                             return $this->setTemplateFile('input_password_form');
                     }
 
-
                     Context::set('oSourceComment', $oCommentModel->getComment());
                     Context::set('oComment', $oComment);
 
                     Context::addJsFilter($this->module_path.'tpl/filter', 'insert_comment.xml');
+					
+					/* Set custom editor for comments instead of default one */
+					$oEditorModel = &getModel('editor');
+
+					// get an editor
+					$option->primary_key_name = 'comment_srl';
+					$option->content_key_name = 'content';
+					$option->allow_fileupload = false;
+					$option->enable_autosave = false;
+					$option->disable_html = true;
+					$option->enable_default_component = false;
+					$option->enable_component = false;
+					$option->resizable = true;
+					$option->height = 150;
+					$editor = $oEditorModel->getEditor(0, $option);
+					Context::set('editor', $editor);
 
                     $this->setTemplateFile('comment_form');
             }
