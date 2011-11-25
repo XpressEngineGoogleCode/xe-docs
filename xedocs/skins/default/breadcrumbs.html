@@ -1,0 +1,10 @@
+<div id="xeDocsBreadcrumbs">
+	<!--@foreach($documents_tree as $node)-->
+		<!--@if($node->type=='parent' || $node->type=='active_root')-->
+                    <a href="{$node->href}"> {$node->title} </a>
+                    <strong>&nbsp;&raquo;&nbsp;</strong>
+                <!--@elseif($node->type=='current')-->
+                    {$node->title}
+		<!--@end-->
+	<!--@end-->
+</div>

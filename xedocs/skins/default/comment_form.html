@@ -1,0 +1,44 @@
+<!--%import("css/xedocs.css")-->
+
+<form action="./" method="post" onsubmit="return procFilter(this, insert_comment)" id="editComment" >
+<input type="hidden" name="mid" value="{$mid}" />
+<input type="hidden" name="document_srl" value="{$oComment->get('document_srl')}" />
+<input type="hidden" name="comment_srl" value="{$oComment->get('comment_srl')}" />
+<input type="hidden" name="content" value="{htmlspecialchars($oComment->get('content'))}" />
+<input type="hidden" name="parent_srl" value="{$oComment->get('parent_srl')}" />
+
+<table id="xeDocsCommentsList" border="0" cellspacing="0" cellpadding="0" width="100%">
+	<tbody>						
+		<tr>
+			<td class="xeDocsTableLabel top"><label>Edit comment:</label></td>
+			<td>
+				{$editor}
+			</td>
+		</tr>
+		<tr>
+			<td class="xeDocsTableLabel middle"><label for="notify_message">Notify me if someone reply's to this post.</label></td>
+			<td>
+				<input type="checkbox" name="notify_message" value="Y" id="notify_message" class="inputCheck" />
+			</td>
+		</tr>
+		<tr>
+			<td></td>
+			<td>
+				<!--input type="checkbox" name="is_secret" value="Y" id="is_secret" class="inputCheck" />
+				<label for="is_secret">{$lang->secret}</label-->
+				<p><a class="xeDocsBodyButton" href="#" onclick="jQuery('#editComment').submit();return false;"><span><span>Edit comment</span></span></a></p>
+			</td>
+		</tr>
+	</tbody>
+</table>
+	
+	<div class="editorOption">
+	<!--@if(!$is_logged)-->
+	   <input type="text" name="nick_name" class="inputText userName" value="{$lang->writer}" onfocus="this.value=''" />
+	   <input type="password" name="password" class="inputText userPw" value="{$lang->password}" onfocus="this.value=''" />
+	   <input type="text" name="email_address" class="inputText emailAddress" value="{$lang->email_address}" onfocus="this.value=''" />
+	   <input type="text" name="homepage" class="inputText homePage" value="{$lang->homepage}" onfocus="this.value=''" />
+	<!--@end-->
+	</div>
+
+</form>

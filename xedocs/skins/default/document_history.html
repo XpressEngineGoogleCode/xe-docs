@@ -1,0 +1,54 @@
+<!--#include("header.html")-->
+
+<div id="xeDocsBody">
+	<!--#include("column_left.html")-->
+
+	<h2 id="xeDocsTitle">{$oDocument->getTitle()} - Page history</h2>
+
+	<table cellspacing="0" border="0" summary="Document history list" class="xeDocsTable">
+		<thead>
+			<tr>
+				<th scope="col" class="left">{$lang->date}</th>
+				<th scope="col" class="center">{$lang->author}</th>
+				<th scope="col" class="center" colspan="2" width="20%">Actions</th>
+			</tr>
+		</thead>
+		<tbody>
+			<!--@if(!$page || $page == 1)-->
+			<tr>
+				<td class="left">{$oDocument->getUpdate()}</td>
+				<td class="center"><a href="#" onclick="return false;" class="member_{$oDocument->get('member_srl')}">{$oDocument->get("nick_name")}</a></td>
+				<td class="center">
+					<a href="{getUrl('act','dispXedocsIndex','history_srl','')}" class="xeDocsBodyButton"><span><span>{$lang->cmd_view}</span></span></a>
+				</td>
+				<td class="center">
+					<span>current version</span>
+				</td>
+			</tr>
+			<!--@end-->
+
+			<!--@foreach($histories as $val)-->
+			<tr>
+				<td class="left">{zdate($val->regdate, 'Y.m.d H:i:s')}</td>
+				<td class="center"><a href="#" onclick="return false;" class="member_{$val->member_srl}">{$val->nick_name}</a></td>
+				<td class="center">
+					<a href="{getUrl('act','dispXedocsHistoryPage','history_srl',$val->history_srl)}" class="xeDocsBodyButton"><span><span>{$lang->cmd_view}</span></span></a>
+				</td>
+				<td class="center">
+					<a href="{getUrl('act','dispXedocsEditPage','history_srl',$val->history_srl)}" class="xeDocsBodyButton"><span><span>Restore</span></span></a>
+				</td>
+			</tr>
+			<!--@end-->
+		</tbody>
+		<tfoot>
+			<tr>
+				<td colspan="4">
+				</td>
+			</tr>
+		</tfoot>
+	</table>
+
+	<div class="cleared"></div>
+</div>
+
+<!--#include("footer.html")-->
