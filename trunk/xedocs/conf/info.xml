@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module version="0.2">
-    <title xml:lang="en">Documentation System</title>
-    <description xml:lang="en">Documentation display module for XpressEngine</description>
+    <title xml:lang="en">XE Docs</title>
+    <description xml:lang="en">XE Docs enables you to easily create and manage online manuals for yuor products.</description>
     <version>0.1</version>
     <date>2010-11-26</date>
     <category>service</category>
