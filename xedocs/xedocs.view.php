@@ -292,6 +292,12 @@
 
                     $this->_searchKeyword($target_mid, $is_keyword);
 
+                    /* Get manual tree */
+                    $oXedocsModel = &getModel('xedocs');
+                    $module_srl = $this->module_info->module_srl;
+                    $document_srl = $oXedocsModel->getHomepageDocumentSrl($this->module_srl);
+                    $this->_loadSidebarTreeMenu($module_srl, $document_srl);
+
                     $this->setTemplateFile('document_search');
             }
 
@@ -323,6 +329,12 @@
                             $search_option[$opt] = Context::getLang($opt);
                     }
                     Context::set('search_option', $search_option);
+
+                    /* Get manual tree */
+                    $oXedocsModel = &getModel('xedocs');
+                    $module_srl = $this->module_info->module_srl;
+                    $document_srl = $oXedocsModel->getHomepageDocumentSrl($this->module_srl);
+                    $this->_loadSidebarTreeMenu($module_srl, $document_srl);
 
                     $this->setTemplateFile('document_list_all');
             }
@@ -464,7 +476,7 @@
 					$option->height = 150;
 					$editor = $oEditorModel->getEditor(0, $option);
 					Context::set('editor', $editor);
-					
+
 					$oDocumentModel = &getModel("document");
 					$oDocument = $oDocumentModel->getDocument($document_srl);
 					Context::set('oDocument', $oDocument);
