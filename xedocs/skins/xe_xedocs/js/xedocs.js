@@ -77,5 +77,9 @@ function Tree(){
 
 //equalize columns to avoid messy CSS hack
 jQuery(document).ready(function() {
-	jQuery('#xeDocsTree').height(jQuery('#xeDocsBody').height());
+	if ( jQuery('#xeDocsBody').height() >= 200 ) {
+		jQuery('#xeDocsTree').height(jQuery('#xeDocsBody').height());
+	} else {
+		jQuery('#xeDocsTree').height(200);
+	}
 })
