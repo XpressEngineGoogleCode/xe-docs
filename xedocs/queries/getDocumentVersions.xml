@@ -21,4 +21,7 @@
         <condition operation="equal" column="version_label.module_srl" default="modules.module_srl" pipe="and" />
         <condition operation="equal" column="version_label.name" default="version_label" pipe="and" />
     </conditions>
+    <navigation>
+        <index var="sort_order" default="version_label.value" order="asc" />
+    </navigation>
 </query>
