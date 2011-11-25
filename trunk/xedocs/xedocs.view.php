@@ -63,11 +63,11 @@
                     $document_srl = $oDocumentModel->getDocumentSrlByAlias($this->module_info->mid, $entry);
                     // If no document was found, just retrieve the root
                     if(!$document_srl){
-                        $document_srl = $oXedocsModel->getHomepageDocumentSrl($this->module_srl);
+                        $document_srl = $oXedocsModel->get_first_node_srl($this->module_srl);
                     }
                 }else{
                     // Check if given document_srl exists (is valid)
-                    if(!$oXedocsModel->documentExistsAndBelongsToManual($document_srl, $this->module_info->mid))
+                    if(!$oXedocsModel->check_document_srl($document_srl, $this->module_info))
                     {
                         // Mark this view as invalid if the document_srl is wrong
                         unset($document_srl);
@@ -130,6 +130,9 @@
                 }
                 Context::set("versions",  $versions);
 
+                $meta = $oXedocsModel->get_meta($module_srl, $document_srl);
+                Context::set("meta", $meta);
+
                 Context::setBrowserTitle($this->module_info->browser_title." - ".$oDocument->getTitle());
 
                 /* Load navigation data */
@@ -153,7 +156,7 @@
 
                 /* Add XML filter for comment */
                 Context::addJsFilter($this->module_path.'tpl/filter', 'insert_comment.xml');
-
+				
 				/* Set custom editor for comments instead of default one */
 				$oEditorModel = &getModel('editor');
 
@@ -246,7 +249,7 @@
                     $page = Context::get('page');
 
                     if(!$document_srl)
-                         $document_srl = $oXedocsModel->getHomepageDocumentSrl($this->module_srl);
+                         $document_srl = $oXedocsModel->get_first_node_srl($this->module_srl);
                     $oDocument = $oDocumentModel->getDocument($document_srl);
 
                     if(!$oDocument->isExists()){
@@ -348,7 +351,7 @@
             {
 				$oXedocsModel = &getModel('xedocs');
 				$oDocumentModel = &getModel("document");
-
+				
 				if(!$this->grant->write_comment){
 					return $this->dispXedocsMessage('msg_not_permitted');
 				}
@@ -362,18 +365,18 @@
                     $document_srl = $oDocumentModel->getDocumentSrlByAlias($this->module_info->mid, $entry);
                     // If no document was found, just retrieve the root
                     if(!$document_srl){
-                        $document_srl = $oXedocsModel->getHomepageDocumentSrl($this->module_srl);
+                        $document_srl = $oXedocsModel->get_first_node_srl($this->module_srl);
                     }
                 }else{
                     // Check if given document_srl exists (is valid)
-                    if(!$oXedocsModel->documentExistsAndBelongsToManual($document_srl, $this->module_info->mid))
+                    if(!$oXedocsModel->check_document_srl($document_srl, $this->module_info))
                     {
                         // Mark this view as invalid if the document_srl is wrong
                         unset($document_srl);
                         // Get document_srl of root document
                     }
                 }
-
+				
 				$oDocument = $oDocumentModel->getDocument($document_srl);
 				Context::set('oDocument', $oDocument);
 				$parent_srl = Context::get('comment_srl');
@@ -401,7 +404,7 @@
 				$oComment = $oCommentModel->getComment();*/
 				$oDocumentModel = &getModel("document");
 				$oDocument = $oDocumentModel->getDocument($document_srl);
-
+				
 				$oDocument->add('parent_srl', $parent_srl);
 				/*$oDocument->add('document_srl', $oSourceComment->get('document_srl'));
 
@@ -448,7 +451,7 @@
                     Context::set('oComment', $oComment);
 
                     Context::addJsFilter($this->module_path.'tpl/filter', 'insert_comment.xml');
-
+					
 					/* Set custom editor for comments instead of default one */
 					$oEditorModel = &getModel('editor');
 
@@ -496,7 +499,7 @@
                     }
 
                     if(!$oComment->isGranted()){
-                            return $this->setTemplateFile('input_password_form');
+						return new Object(-1,'msg_not_permitted');
                     }
 
                     Context::set('oComment',$oComment);
