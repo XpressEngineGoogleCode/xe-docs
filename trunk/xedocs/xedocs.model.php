@@ -223,7 +223,7 @@
                 }
 
                 foreach($documents_tree as $node){
-                    $node->href = getSiteUrl('document','','mid',$mid,'entry',$node->alias);
+                    $node->href = getSiteUrl('','mid',$mid,'entry',$node->alias);
                     if(!isset($documents_tree[$node->document_srl]->type)){
                         if($node->parent_srl == 0)
                                 $documents_tree[$node->document_srl]->type = 'root';

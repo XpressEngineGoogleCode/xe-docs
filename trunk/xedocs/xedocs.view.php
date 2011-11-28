@@ -127,7 +127,7 @@
                 $version_count = count($versions);
                 for($i = 0; $i < $version_count; $i++){
                     $versions[$i]->is_current_version = ($versions[$i]->document_srl == $document_srl);
-                    $versions[$i]->href = getSiteUrl('document','','mid',$versions[$i]->mid,'entry',$versions[$i]->alias);
+                    $versions[$i]->href = getSiteUrl('','mid',$versions[$i]->mid,'entry',$versions[$i]->alias);
                 }
                 Context::set("versions",  $versions);
 
