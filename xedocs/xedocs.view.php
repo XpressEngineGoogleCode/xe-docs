@@ -463,25 +463,29 @@
 
                     Context::addJsFilter($this->module_path.'tpl/filter', 'insert_comment.xml');
 
-					/* Set custom editor for comments instead of default one */
-					$oEditorModel = &getModel('editor');
+                    /* Set custom editor for comments instead of default one */
+                    $oEditorModel = &getModel('editor');
 
-					// get an editor
-					$option->primary_key_name = 'comment_srl';
-					$option->content_key_name = 'content';
-					$option->allow_fileupload = false;
-					$option->enable_autosave = false;
-					$option->disable_html = true;
-					$option->enable_default_component = false;
-					$option->enable_component = false;
-					$option->resizable = true;
-					$option->height = 150;
-					$editor = $oEditorModel->getEditor(0, $option);
-					Context::set('editor', $editor);
+                    // get an editor
+                    $option->primary_key_name = 'comment_srl';
+                    $option->content_key_name = 'content';
+                    $option->allow_fileupload = false;
+                    $option->enable_autosave = false;
+                    $option->disable_html = true;
+                    $option->enable_default_component = false;
+                    $option->enable_component = false;
+                    $option->resizable = true;
+                    $option->height = 150;
+                    $editor = $oEditorModel->getEditor(0, $option);
+                    Context::set('editor', $editor);
 
-					$oDocumentModel = &getModel("document");
-					$oDocument = $oDocumentModel->getDocument($document_srl);
-					Context::set('oDocument', $oDocument);
+                    $oDocumentModel = &getModel("document");
+                    $oDocument = $oDocumentModel->getDocument($document_srl);
+                    Context::set('oDocument', $oDocument);
+
+                    /* Get manual tree */
+                    $module_srl=$oDocument->get('module_srl');
+                    $this->_loadSidebarTreeMenu($module_srl, $document_srl);
 
                     $this->setTemplateFile('document_view');
                     Context::addJsFilter($this->module_path.'tpl/filter', 'delete_comment.xml');
