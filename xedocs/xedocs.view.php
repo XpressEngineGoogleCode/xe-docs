@@ -16,7 +16,7 @@
                 /* Init template path */
                 $template_path = sprintf("%sskins/%s/",$this->module_path, $this->module_info->skin);
                 if(!is_dir($template_path) || !$this->module_info->skin) {
-                        $this->module_info->skin = 'xe_xedocs';
+                        $this->module_info->skin = 'default';
                         $template_path = sprintf("%sskins/%s/",$this->module_path, $this->module_info->skin);
                 }
                 $this->setTemplatePath($template_path);
