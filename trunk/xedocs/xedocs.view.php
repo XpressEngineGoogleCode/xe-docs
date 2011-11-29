@@ -32,9 +32,6 @@
                 $this->use_history = $document_config->use_history;
                 Context::set('use_history', $document_config->use_history);
 
-                /* Load js files needed for all views */
-                Context::addJsFile($this->module_path.'tpl/js/manual.js');
-
                 /* Make grant information available in template files  */
                 Context::set('grant', $this->grant);
             }
