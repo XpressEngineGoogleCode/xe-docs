@@ -3,6 +3,6 @@
     <customrules>
     </customrules>
     <fields>
-        <field target="module_srl" required="true" />
+        <field name="module_srl" required="true" />
     </fields>
 </ruleset>

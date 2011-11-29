@@ -3,7 +3,7 @@
     <customrules>
     </customrules>
     <fields>
-        <field target="module_srl" required="true" />
-        <field target="keyword" required="true" />
+        <field name="module_srl" required="true" />
+        <field name="keyword" required="true" />
     </fields>
 </ruleset>

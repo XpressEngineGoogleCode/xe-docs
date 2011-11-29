@@ -3,10 +3,10 @@
     <customrules>
     </customrules>
     <fields>
-        <field target="module_srl" required="true" />
-        <field target="keyword" required="true" />
-        <field target="title" required="true" />
-        <field target="orig_title" required="false" />
-        <field target="target_document_srl" required="true" />
+        <field name="module_srl" required="true" />
+        <field name="keyword" required="true" />
+        <field name="title" required="true" />
+        <field name="orig_title" required="false" />
+        <field name="target_document_srl" required="true" />
     </fields>
 </ruleset>
