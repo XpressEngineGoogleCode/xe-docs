@@ -21,6 +21,7 @@
         <!--@end-->
         <!--@if(isset($module_srl))-->
             <li <!--@if($act=='dispXedocsAdminManualInfo')-->class="on"<!--@end-->><a href="{getUrl('act','dispXedocsAdminManualInfo')}">{$lang->cmd_xedocs_view_info}</a></li>
+
             <li <!--@if($act=='dispXedocsAdminAdditionSetup')-->class="on"<!--@end-->><a href="{getUrl('act','dispXedocsAdminAdditionSetup')}">{$lang->cmd_addition_setup}</a></li>
             <li <!--@if($act=='dispXedocsAdminGrantInfo')-->class="on"<!--@end-->><a href="{getUrl('act','dispXedocsAdminGrantInfo')}">{$lang->cmd_manage_grant}</a></li>
             <li <!--@if($act=='dispXedocsAdminSkinInfo')-->class="on"<!--@end-->><a href="{getUrl('act','dispXedocsAdminSkinInfo')}">{$lang->cmd_manage_skin}</a></li>
@@ -32,7 +33,9 @@
 					<a href="{getUrl('act','dispXedocsAdminEditKeyword')}">{$lang->edit_keyword}</a>
 				<!--@end-->
 			</li>
-        <!--@end-->
+       <!--@else-->
+           <li <!--@if($act=='dispXedocsAdminInsertManual')-->class="on"<!--@end-->><a href="{getUrl('act','dispXedocsAdminInsertManual')}">{$lang->cmd_xedocs_insert_manual}</a></li>
+       <!--@end-->
     </ul>
 </div>
 <!--@end-->

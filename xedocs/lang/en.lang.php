@@ -59,4 +59,5 @@ $lang->arrange_list = 'Refresh alias';
 $lang->version_label = 'Version';
 $lang->xedocs_about_use_comment = 'Enables/Disables comments for all the pages of this manual.';
 $lang->xedocs_about_browser_title = 'Set the browser title displayed for your manual pages. The final format of the page title will be: {Browser Title Value} - Page title.';
+$lang->help_name = 'manual set - this is the high level manual name, and not the specific version';
 ?>
