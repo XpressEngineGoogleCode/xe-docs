@@ -64,7 +64,7 @@
                 <p class="a">
                     <select name="skin">
                         <!--@foreach($skin_list as $key=>$val)-->
-                        <option value="{$key}" <!--@if($module_info->skin==$key ||(!$module_info->skin && $key=='xe_xedocs'))-->selected="selected"<!--@end-->>{$val->title}</option>
+                        <option value="{$key}" <!--@if($module_info->skin==$key ||(!$module_info->skin && $key=='default'))-->selected="selected"<!--@end-->>{$val->title}</option>
                         <!--@end-->
                     </select>
                 </p>
