@@ -1,0 +1,59 @@
+<!--#include("./header.html")-->
+
+<form action="./" method="get" onsubmit="return doChangeCategory(this);" id="fo_list">
+    <ul id="xeDocsManualSetList">
+    <!--@foreach($manual_list as $no => $val)-->
+    {@ $previous_manual_set = $current_manual_set;}
+    {@ $current_manual_set = $val->manual_set;}
+    <!--@if($previous_manual_set !== $current_manual_set)-->
+        <!--@if(isset($previous_manual_set))-->
+				</tbody>
+				</table>
+				</div>
+			</li>
+        <!--@endif-->
+			<li>
+				<div class="table">
+				<table cellspacing="0" border="1">
+				<caption>{$val->manual_set}</caption>
+				<thead>
+					<tr>
+						<th></th>
+						<th>{$lang->mid}</th>
+						<th width="40%">Description</th>
+						<th>{$lang->version_label}</th>
+						<th>{$lang->regdate}</th>
+						<th style="text-align: center;">View</th>
+						<th style="text-align: center;">Setup</th>
+						<th style="text-align: center;">Refresh alias</th>
+						<th style="text-align: center;">Create copy</th>
+						<th style="text-align: center;">Delete</th>
+					</tr>
+				</thead>
+				<tbody>
+        <!--@endif-->
+			<tr>
+				<td style="vertical-align: middle;"><input type="checkbox" name="cart" value="{$val->module_srl}" /></td>
+				<td style="vertical-align: middle;">{htmlspecialchars($val->mid)}</td>
+				<td style="white-space: normal; vertical-align: middle;">{$val->description}</td>
+				<td style="text-align: center; vertical-align: middle;">{$val->version_label}</td>
+				<td style="text-align: center; vertical-align: middle;">{zdate($val->regdate,"Y-m-d")}</td>
+				<td style="text-align: center; vertical-align: middle;"><a href="{getSiteUrl($val->domain, '', 'mid', $val->mid)}" onclick="window.open(this.href); return false;" class="button">{$lang->view}</a></td>
+				<td style="text-align: center; vertical-align: middle;"><span class="btn"><a href="{getUrl('act','dispXedocsAdminManualInfo','module_srl',$val->module_srl)}" class="buttonSet buttonSetting" class="button">{$lang->cmd_setup}</a></span></td>
+				<td style="text-align: center; vertical-align: middle;"><span class="btn"><a href="#" onclick="doArrangeXedocsList({$val->module_srl}); return false;" class="button">{$lang->arrange_list}</a></td>
+				<td style="text-align: center; vertical-align: middle;"><span class="btn"><a href="./?module=module&amp;act=dispModuleAdminCopyModule&amp;module_srl={$val->module_srl}" onclick="popopen(this.href);return false;">{$lang->cmd_copy}</a></span></td>
+				<td style="text-align: center; vertical-align: middle;"><span class="btn"><a href="{getUrl('act','dispXedocsAdminDeleteManual','module_srl', $val->module_srl)}" class="button">{$lang->cmd_delete}</a></span></td>
+			</tr>
+		<!--@end-->
+				</tbody>
+				</table>
+				</div>
+			</li>
+    </ul>
+</form>
+<p class="btnArea">
+	<span class="btn small"><a href="{getUrl('','module','module','act','dispModuleAdminModuleSetup')}" onclick="doCartSetup(this.href); return false;" class="button green">{$lang->cmd_setup}</a></span>
+	<span class="btn small"><a href="{getUrl('','module','module','act','dispModuleAdminModuleAdditionSetup')}" onclick="doCartSetup(this.href); return false;" class="button red">{$lang->cmd_addition_setup}</a></span>
+	<span class="btn small"><a href="{getUrl('','module','module','act','dispModuleAdminModuleGrantSetup')}" onclick="doCartSetup(this.href); return false;" class="button blue">{$lang->cmd_manage_grant}</a></span>
+<!--	<span class="btn small"><a href="{getUrl('act','dispXedocsAdminInsertManual','module_srl','')}" class="button black strong">{$lang->cmd_xedocs_insert_manual}</a></span>-->
+</p>

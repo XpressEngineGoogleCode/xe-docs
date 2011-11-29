@@ -1,0 +1,53 @@
+<!--#include("./header.html")-->
+
+<script type="text/javascript">
+    function insertSelectedManualPage(id, document_srl, mid, browser_title) {
+        var obj= xGetElementById(id);
+        obj.value = document_srl;
+        var sObj = xGetElementById('link_'+id);
+
+        href_value = '/?document_srl='+document_srl;
+        sObj.href = href_value;
+        sObj.innerText = browser_title;
+    }
+
+    function searchThroughPages(href){
+        var keyword = document.getElementById('title').value;
+        href = href + '&search_keyword=' + keyword + '#content';
+        popopen(href, 'Select Manual Page');
+    }
+    var xe_root = "{_XE_PATH_}";
+</script>
+
+<p>Use keywords in order to automatically link documents between each other. For instance, if your keyword is CSQL and you chose to open the documentation page about it, XE Docs will replace every occurence of "CSQL" in all pages of the manual with a link to the page you chose.</p>
+
+<form action="./" method="get" ruleset="edit_keyword" class="form">
+	<input type="hidden" name="page" value="{$page}" />
+	<input type="hidden" name="module_srl" value="{$module_info->module_srl}" />
+	<input type="hidden" name="orig_title" value="{$keyword}" />
+        <input type="hidden" name="act" value="procXedocsAdminEditKeyword" cond="isset($keyword)" />
+        <input type="hidden" name="act" value="procXedocsAdminAddKeyword" cond="!isset($keyword)" />
+        <input type="hidden" name="module" value="xedocs" />
+        <input type="hidden" name="success_return_url" value="{getUrl('act', 'dispXedocsAdminKeywordList', 'module_srl', $module_info->module_srl, 'keyword', '', 'target_document_srl', '')}" />
+
+	<ul>
+		<li>
+			<p class="q">{$lang->keyword}</p>
+			<p class="a"><input id='title' name='title' type="text" value='{$keyword}'></input></p>
+			<p class="desc">Pick a keyword!</p>
+		</li>
+		<li>
+			<p class="q">Target Manual Page</p>
+			<p class="a">
+				<input type="hidden", value='{$target_document_srl}' name="target_document_srl" id='target_document_srl' />
+				<a id='link_target_document_srl' href="{getUrl( 'mid', $mid,  'module_srl',$module_srl,'document_srl', $target_document_srl, 'act', 'dispXedocsIndex')}" onclick="window.open(this.href); return false;" title="Open document in new window">{$target_title}</a>
+				<span class="btn"><a href="{getUrl('mid', $mid, 'module_srl',$module_srl,'document_srl', $target_document_srl, 'act', 'dispXedocsAdminManualPageSelect', 'id', 'target_document_srl')}" onclick="searchThroughPages(this.href);return false;">Select manual page</a></span>
+			</p>
+			<p class="desc">Pick what page should open when the keyword link is clicked.</p>
+		</li>
+	</ul>
+	<p class="btnArea">
+		<span class="btn small"><input type="submit" value="{$lang->cmd_update_keyword}" /></span>
+		<span class="btn small"><a href="#" onclick="history.back(); return false;">{$lang->cmd_back}</a></span>
+	</p>
+</form>

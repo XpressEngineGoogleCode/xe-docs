@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="xedocs" default="dist">
+	<property name="config.build_dir" value="./build" override="true" />
+	<property name="config.svn" value="D:\svn\bin\svn.exe" override="true" />
+	<property name="release.repo" value="http://xe-docs.googlecode.com/svn/trunk/xedocs" override="true" />
+	<property name="release.name" value="xedocs.1.0" override="true" />
+	
+    <!-- ============================================  -->
+    <!-- Target: prepare                               -->
+    <!-- ============================================  -->
+    <target name="prepare">
+		<echo msg="Removing directory ${config.build_dir}" />
+		<exec command="rm -rf ${config.build_dir}" />
+        <echo msg="Making directory ${config.build_dir}" />
+        <mkdir dir="${config.build_dir}" />
+    </target>
+
+    <!-- ============================================  -->
+    <!-- Target: build                                 -->
+    <!-- ============================================  -->
+    <target name="build" depends="prepare">
+        <echo msg="Exporting repo files to build directory..." />
+		<exec command="${config.svn} export ${release.repo} ${config.build_dir}/xedocs" />
+		<exec command="rm ${config.build_dir}/xedocs/build.xml" />
+    </target>
+
+    <!-- ============================================  -->
+    <!-- (DEFAULT)  Target: dist                       --> 
+    <!-- ============================================  -->
+    <target name="dist" depends="build">
+        <echo msg="Creating archive..." />
+
+        <tar destfile="${config.build_dir}/${release.name}.tar.gz" compression="gzip">
+            <fileset dir="${config.build_dir}/xedocs">
+                <include name="*" />
+            </fileset>
+        </tar>
+		
+		<zip destfile="${config.build_dir}/${release.name}.zip" basedir="${config.build_dir}/xedocs" />
+		
+		<exec command="rm -rf ${config.build_dir}/xedocs" />
+		
+        <echo msg="Files copied and compressed in build directory OK!" />
+    </target>
+</project>

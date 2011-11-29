@@ -1,0 +1,57 @@
+<!--%import("js/manual_admin.js")-->
+<!--%import("css/style.css")-->
+
+<h1 class="h1">{$lang->xedocs} {$lang->cmd_management}</h1>
+
+<div class="infoText">{nl2br($lang->about_xedocs)}</div>
+
+<!--@if($module_info)-->
+<div class="header4">
+    <!--@if($module_info->mid)-->
+		<h2><a href="{getSiteUrl($module_info->domain,'','mid',$module_info->mid)}" onclick="window.open(this.href); return false;" class="view">{$module_info->mid}</a><!--@if($module_info->is_default=='Y')--><span class="bracket">({$lang->is_default})</span><!--@end--></h2>
+    <!--@end-->
+
+    <ul class="localNavigation">
+        <!--@if($module=='admin')-->
+			<!--@if($act!='dispXedocsAdminView')-->
+				<li><a href="{getUrl('act','dispXedocsAdminView','module_srl','')}">{$lang->cmd_manual_list}</a></li>
+			<!--@end-->
+        <!--@else-->
+            <li><a href="{getUrl('act','')}">{$lang->cmd_back}</a></li>
+        <!--@end-->
+        <!--@if(isset($module_srl))-->
+            <li <!--@if($act=='dispXedocsAdminManualInfo')-->class="on"<!--@end-->><a href="{getUrl('act','dispXedocsAdminManualInfo')}">{$lang->cmd_xedocs_view_info}</a></li>
+
+            <li <!--@if($act=='dispXedocsAdminAdditionSetup')-->class="on"<!--@end-->><a href="{getUrl('act','dispXedocsAdminAdditionSetup')}">{$lang->cmd_addition_setup}</a></li>
+            <li <!--@if($act=='dispXedocsAdminGrantInfo')-->class="on"<!--@end-->><a href="{getUrl('act','dispXedocsAdminGrantInfo')}">{$lang->cmd_manage_grant}</a></li>
+            <li <!--@if($act=='dispXedocsAdminSkinInfo')-->class="on"<!--@end-->><a href="{getUrl('act','dispXedocsAdminSkinInfo')}">{$lang->cmd_manage_skin}</a></li>
+            <li <!--@if($act=='dispXedocsAdminKeywordList')-->class="on"<!--@end-->><a href="{getUrl('act','dispXedocsAdminKeywordList')}">{$lang->cmd_manage_keywords}</a></li>
+			<li <!--@if($act=='dispXedocsAdminAddKeyword'||$act=='dispXedocsAdminEditKeyword')-->class="on"<!--@end-->>
+				<!--@if($act!='dispXedocsAdminEditKeyword')-->
+					<a href="{getUrl('act','dispXedocsAdminAddKeyword')}">{$lang->cmd_create_keword}</a>
+				<!--@else-->
+					<a href="{getUrl('act','dispXedocsAdminEditKeyword')}">{$lang->edit_keyword}</a>
+				<!--@end-->
+			</li>
+       <!--@else-->
+           <li <!--@if($act=='dispXedocsAdminInsertManual')-->class="on"<!--@end-->><a href="{getUrl('act','dispXedocsAdminInsertManual')}">{$lang->cmd_xedocs_insert_manual}</a></li>
+       <!--@end-->
+    </ul>
+</div>
+<!--@end-->
+
+<!--@if(isset($module_srl))-->
+	<h3 class="h3">
+		<!--@if($act=='dispXedocsAdminManualInfo')-->{$lang->cmd_xedocs_view_info}<!--@end-->
+		<!--@if($act=='dispXedocsAdminAdditionSetup')-->{$lang->cmd_addition_setup}<!--@end-->
+		<!--@if($act=='dispXedocsAdminGrantInfo')-->{$lang->cmd_manage_grant}<!--@end-->
+		<!--@if($act=='dispXedocsAdminSkinInfo')-->{$lang->cmd_manage_skin}<!--@end-->
+		<!--@if($act=='dispXedocsAdminKeywordList')-->{$lang->cmd_manage_keywords}<!--@end-->
+		<!--@if($act=='dispXedocsAdminAddKeyword')-->{$lang->cmd_create_keword}<!--@end-->
+		<!--@if($act=='dispXedocsAdminEditKeyword')-->{$lang->edit_keyword}<!--@end-->
+	</h3>
+<!--@end-->
+
+<div cond="$XE_VALIDATOR_MESSAGE" class="message {$XE_VALIDATOR_MESSAGE_TYPE}">
+	<p>{$XE_VALIDATOR_MESSAGE}</p>
+</div>

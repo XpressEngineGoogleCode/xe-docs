@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module version="0.2">
+    <title xml:lang="en">XE Docs</title>
+    <description xml:lang="en">XE Docs enables you to easily create and manage online manuals for your products.</description>
+    <version>1.0</version>
+    <date>2011-11-29</date>
+    <category>service</category>
+    <author email_address="xe_dev@arnia.ro" link="http://www.arnia.ro/">
+        <name xml:lang="en">Arnia</name>
+    </author>
+</module>

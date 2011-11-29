@@ -1,0 +1,79 @@
+<!--%import("filter/clear_keywords.xml")-->
+<!--#include("./header.html")-->
+
+<!--@if(0 == $total_keywords)-->
+<p>
+	{$lang->no_keywords}
+</p>
+<!--@else-->
+
+<!-- Filter keywords button -->
+<form action="./" method="get">
+    <input type="hidden" name="module" value="admin" />
+    <input type="hidden" name="page" value="{$page}" />
+    <input type="hidden" name="module_srl" value="{$module_info->module_srl}" />
+    <input type="hidden" name="act" value="dispXedocsAdminKeywordList" />
+
+    {$lang->filter_keywords} <input type="text" value="{$filter_keyword}" name="filter_keyword" />
+
+    <span class="button black strong"><input type="submit" value="{$lang->cmd_filter_kewords}" /></span>
+</form>
+
+<table cellspacing="0" class="rowTable">
+    <tr>
+        <th scope="col"><div>{$lang->keyword}</div></th>
+		<th scope="col"><div>Document</div></th>
+		<th scope="col"><div>Edit</div></th>
+		<th scope="col"><div>Delete</div></th>
+    </tr>
+    <!--@foreach($keyword_list as $keyword)-->
+    <tr>
+        <td>
+            {$keyword->title}
+        </td>
+        <td>
+            <a href="{$keyword->url}" target="_blank">{$keyword->document_alias}</a>
+        </td>
+        <td>
+            <span class="but"><a href="{getUrl('act','dispXedocsAdminEditKeyword','module_srl',$module_srl, 'keyword', $keyword->title, 'target_document_srl', $keyword->target_document_srl )}">{$lang->cmd_edit}</a></span>
+        </td>
+        <td>
+            <form action="./" method="post" ruleset="delete_keyword" onsubmit='return confirm("Are you sure you want to delete this keyword?");'>
+                <input type="hidden" name="module_srl" value="{$module_info->module_srl}" />
+                <input type="hidden" name="module" value="admin" />
+                <input type="hidden" name="act" value="procXedocsAdminDeleteKeyword" />
+                <input type="hidden" name="keyword" value="{$keyword->title}" />
+                <input type="hidden" name="success_return_url" value="{getUrl('act', 'dispXedocsAdminKeywordList', 'module_srl', $module_info->module_srl, 'keyword', '')}" />
+
+                <input type="submit" value="{$lang->cmd_delete}" />
+            </form>
+        </td>
+    </tr>
+    <!--@end-->
+</table>
+
+<div class="pagination a1">
+        <a href="{getUrl('page','','module_srl',$module_srl,'division',$division,'last_division',$last_division,'act','dispXedocsAdminKeywordList')}" class="prevEnd">{$lang->first_page}</a>
+        <!--@while($page_no = $page_navigation->getNextPage())-->
+                <!--@if($page == $page_no)-->
+                        <strong>{$page_no}</strong>
+                <!--@else-->
+                        <a href="{getUrl('page',$page_no,'module_srl', $module_srl,'division',$division,'last_division',$last_division,'act','dispXedocsAdminKeywordList')}">{$page_no}</a>
+                <!--@end-->
+        <!--@end-->
+        <a href="{getUrl('page',$page_navigation->last_page,'module_srl', $module_srl,'division',$division,'last_division',$last_division,'act','dispXedocsAdminKeywordList')}" class="nextEnd">{$lang->last_page}</a>
+</div>
+
+
+<!--@end-->
+
+<form action="./" method="post" ruleset="clear_keywords" onsubmit="return confirm('Are you sure you want to delete all keywords?')">
+	<span class="btn"><a href="{getUrl('act','dispXedocsAdminAddKeyword','module_srl',$module_srl, 'keyword', '', 'target_document_srl', '')}">{$lang->cmd_create_keword}</a></span>
+	&nbsp;
+	<input type="hidden" name="module_srl" value="{$module_info->module_srl}" />
+	<input type="hidden" name="module" value="admin" />
+	<input type="hidden" name="act" value="procXedocsAdminClearKeywords" />
+	<input type="hidden" name="success_return_url" value="{getUrl('act', 'dispXedocsAdminKeywordList', 'module_srl', $module_info->module_srl, 'keyword', '')}" />
+
+	<span class="btn"><input type="submit" value="{$lang->cmd_clear_kewords}" /></span>
+</form>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<skin version="0.2">
+	<title xml:lang="en">XE Docs default skin</title>
+	<description xml:lang="en">The default XE Docs skin.</description>
+    <version>1.0</version>
+    <date>2011-28-11</date>
+    <author email_address="admin@xpressengine.org" link="http://www.xpressengine.org">
+        <name xml:lang="en">XE Developers</name>
+    </author>
+    <license>GPL</license>
+    <extra_vars>
+        <var name="title" type="text">
+            <title xml:lang="en">Title</title>
+			<description xml:lang="en">Plase input the title.</description>
+        </var>
+		<var name="sub_title" type="text">
+			<title xml:lang="en">Subtitle</title>
+			<description xml:lang="en">Please input the subtitle which will be displayed beside title.</description>
+        </var>
+		<var name="comment" type="textarea">
+            <title xml:lang="en">Description</title>
+			<description xml:lang="en">You may input description which will be displayed under the title.</description>
+        </var>
+		<var name="logo_image" type="image">
+			<title xml:lang="en">Logo image</title>
+			<description xml:lang="en">Please input a logo image which will be displayed on the top of the layout.</description>
+		</var>
+	</extra_vars>
+</skin>

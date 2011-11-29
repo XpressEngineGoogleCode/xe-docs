@@ -1,0 +1,82 @@
+<!--%import("js/manual_admin.js")-->
+<!--%import("../../common/css/popup.css")-->
+
+
+<div id="popHeader">
+    <h3 class="xeAdmin">{$lang->manual_page_selector}</h3>
+</div>
+<div id="popBody">
+    <form action="./" method="post">
+        <input type="hidden" name="module_srl" value="{$module_srl}" />
+        <input type="hidden" name="mid" value="{$mid}" />
+        <input type="hidden" name="id" value="{$id}" />
+        <input type="hidden" name="act" value="dispXedocsAdminManualPageSelect" />
+        <table class="rowTable" cellspacing="0">
+        <tbody>
+            <!--@if($site_count && $logged_info->is_admin == 'Y')-->
+            <tr>
+                <th><div>{$lang->virtual_site}</div></th>
+                <td>
+                    <input type="text" name="site_keyword" value="{$site_keyword}" class="inputTypeText w200" /> <span class="button blue"><input type="submit" value="{$lang->cmd_search}" /></span>
+                    <p>{$lang->about_search_virtual_site}</p>
+                </td>
+            </tr>
+            <!--@end-->
+            <tr>
+                <th><div>{$lang->manual_page}</div></th>
+                <td>
+                	<input name='search_keyword' class="inputTypeText w200" type="text" value='{$search_keyword}' />
+                </td>
+                <td>
+                    <span class="button blue"><input type="submit" value="{$lang->cmd_search}" /></span>
+                </td>
+            </tr>
+        </tbody>
+        </table>
+        </form>
+</hr>
+        <table class="rowTable" cellspacing="0">
+        <thead>
+            <tr>
+
+                <th><div>{$lang->manual_page_name}</div></th>
+                <th ><div>{$lang->manual_page_sumarry}</div></th>
+                <th class="w200"><div>{$lang->cmd_select}</div></th>
+            <tr>
+        </thead>
+        <tbody>
+			<!--@foreach($document_list as $document)-->
+				<tr>
+
+						<td>
+							<a href="{getFullUrl( '','mid',$document->mid).'/entry/'.$document->entry}">{$document->entry}</a>
+							<span><em>({$document->browser_title})</em></span>
+						</td>
+
+						<td>{preg_replace('/^[ \t]*[\r\n]+/m', '', $document->getSummary(200))}
+						<!-- <p class="search-url">{getFullUrl( '','mid',$document->mid).'/entry/'.$document->entry}{$itemURL}</p> -->
+						</td>
+						<td>
+							<a href="#" onclick="insertManualPage('{$id}', '{$document->document_srl}', '{$mid}', '{$document->getTitle()}');  return false;" class="button green"><span>{$lang->cmd_select}</span></a>
+						</td>
+				</tr>
+			<!--@end-->
+
+        </tbody>
+        </table>
+
+		<div class="pagination a1">
+			<a href="{getUrl('page','','document_srl','','division',$division,'last_division',$last_division,'entry','')}" class="prevEnd">{$lang->first_page}</a>
+			<!--@while($page_no = $page_navigation->getNextPage())-->
+				<!--@if($page == $page_no)-->
+					<strong>{$page_no}</strong>
+				<!--@else-->
+					<a href="{getUrl('page',$page_no,'document_srl','','division',$division,'last_division',$last_division,'entry','')}">{$page_no}</a>
+				<!--@end-->
+			<!--@end-->
+			<a href="{getUrl('page',$page_navigation->last_page,'document_srl','','division',$division,'last_division',$last_division,'entry','')}" class="nextEnd">{$lang->last_page}</a>
+		</div>
+
+
+
+</div>

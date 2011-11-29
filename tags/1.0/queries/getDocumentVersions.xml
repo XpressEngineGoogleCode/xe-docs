@@ -1,0 +1,27 @@
+<query id="getDocumentVersions" action="select">
+    <tables>
+        <table name="module_extra_vars" alias="manuals" />
+        <table name="document_aliases" alias="versions" />
+        <table name="modules" alias="modules" />
+        <table name="module_extra_vars" alias="version_label" />
+    </tables>
+    <columns>
+        <column name="manuals.module_srl" alias="module_srl" />
+        <column name="versions.document_srl" alias="document_srl" />
+        <column name="versions.alias_title" alias="alias" />
+        <column name="modules.mid" alias="mid" />
+        <column name="version_label.value" alias="version_label" />
+    </columns>
+    <conditions>
+        <condition operation="equal" column="manuals.name" default="help_name" />
+        <condition operation="equal" column="manuals.value" var="manual_set" notnull="notnull" pipe="and" />
+        <condition operation="equal" column="versions.module_srl" default="manuals.module_srl" pipe="and" />
+        <condition operation="equal" column="versions.alias_title" var="alias" notnull="notnull" pipe="and" />
+        <condition operation="equal" column="modules.module_srl" default="manuals.module_srl" pipe="and" />
+        <condition operation="equal" column="version_label.module_srl" default="modules.module_srl" pipe="and" />
+        <condition operation="equal" column="version_label.name" default="version_label" pipe="and" />
+    </conditions>
+    <navigation>
+        <index var="sort_order" default="version_label.value" order="asc" />
+    </navigation>
+</query>
