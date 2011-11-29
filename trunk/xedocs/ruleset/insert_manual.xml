@@ -8,6 +8,5 @@
         <field name="help_name" required="true" />
         <field name="version_label" required="true" />
 	<field name="search_rank" filter="number" default="0"/>
-        <field name="toc_location" required = "true" />
     </fields>
 </ruleset>
