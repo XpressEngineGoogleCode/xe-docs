@@ -26,6 +26,10 @@ body {
 	color: #1780ab;
 }
 
+#xeDocs a img {
+	border: none;
+}
+
 #xeDocs p {
 	line-height: 20px;
 }
