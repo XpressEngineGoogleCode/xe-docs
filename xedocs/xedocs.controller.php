@@ -89,10 +89,11 @@
 
                 $this->setMessage($msg_code);
         }
-
+		
         /**
          * @brief Method for sending email notification to admin when comments are added
          */
+	/*
         function sendCommentChangeNotification($oDocument, $obj)
         {
                 $oMail = new Mail();
@@ -116,7 +117,7 @@
                 }
 
         }
-
+	*/
         /**
          * @brief Action for adding or editing a comment
          */
@@ -165,10 +166,11 @@
                             $output = $oCommentController->insertComment($obj);
                     }
 
-
+			/*
                     if($output->toBool() && $this->module_info->admin_mail) {
                             $this->sendCommentChangeNotification($oDocument, $obj);
                     }
+			 */
 
             } else {
                     $obj->parent_srl = $comment->parent_srl;
